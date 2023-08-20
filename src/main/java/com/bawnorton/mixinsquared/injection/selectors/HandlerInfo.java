@@ -27,9 +27,6 @@ package com.bawnorton.mixinsquared.injection.selectors;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import org.spongepowered.asm.mixin.injection.selectors.*;
 import org.spongepowered.asm.mixin.injection.struct.InvalidMemberDescriptorException;
 import org.spongepowered.asm.mixin.injection.struct.TargetNotSupportedException;
@@ -81,56 +78,22 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
     private final boolean forceField;
 
     /**
-     * The actual String value passed into the {@link #parse} method 
+     * The actual String value passed into the {@link #parse} method
      */
     private final String input;
 
     /**
-     * The actual String value passed into the {@link #parse} method 
+     * The actual String value passed into the {@link #parse} method
      */
     private final String tail;
 
     /**
      * ctor
      *
-     * @param name Member name, must not be null
-     * @param matches Quantifier specifying the number of matches required
-     */
-    public HandlerInfo(String name, Quantifier matches) {
-        this(name, null, null, matches, null, null);
-    }
-
-    /**
-     * ctor
-     *
-     * @param name Member name, must not be null
-     * @param owner Member owner, can be null otherwise must be in internal form
-     *      without L;
-     * @param matches Quantifier specifying the number of matches required
-     */
-    public HandlerInfo(String name, String owner, Quantifier matches) {
-        this(name, owner, null, matches, null, null);
-    }
-
-    /**
-     * ctor
-     *
-     * @param name Member name, must not be null
-     * @param owner Member owner, can be null otherwise must be in internal form
-     *      without L;
-     * @param desc Member descriptor, can be null
-     */
-    public HandlerInfo(String name, String owner, String desc) {
-        this(name, owner, desc, Quantifier.DEFAULT, null, null);
-    }
-
-    /**
-     * ctor
-     *
-     * @param name Member name, must not be null
-     * @param owner Member owner, can be null otherwise must be in internal form
-     *      without L;
-     * @param desc Member descriptor, can be null
+     * @param name    Member name, must not be null
+     * @param owner   Member owner, can be null otherwise must be in internal form
+     *                without L;
+     * @param desc    Member descriptor, can be null
      * @param matches Quantifier specifying the number of matches required
      */
     public HandlerInfo(String name, String owner, String desc, Quantifier matches) {
@@ -140,10 +103,10 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
     /**
      * ctor
      *
-     * @param name Member name, must not be null
-     * @param owner Member owner, can be null otherwise must be in internal form
-     *      without L;
-     * @param desc Member descriptor, can be null
+     * @param name    Member name, must not be null
+     * @param owner   Member owner, can be null otherwise must be in internal form
+     *                without L;
+     * @param desc    Member descriptor, can be null
      * @param matches Quantifier specifying the number of matches required
      */
     public HandlerInfo(String name, String owner, String desc, Quantifier matches, String tail) {
@@ -153,10 +116,10 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
     /**
      * ctor
      *
-     * @param name Member name, must not be null
-     * @param owner Member owner, can be null otherwise must be in internal form
-     *      without L;
-     * @param desc Member descriptor, can be null
+     * @param name    Member name, must not be null
+     * @param owner   Member owner, can be null otherwise must be in internal form
+     *                without L;
+     * @param desc    Member descriptor, can be null
      * @param matches Quantifier specifying the number of matches required
      */
     public HandlerInfo(String name, String owner, String desc, Quantifier matches, String tail, String input) {
@@ -171,33 +134,6 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
         this.forceField = false;
         this.tail = tail;
         this.input = input;
-    }
-
-    /**
-     * Initialise a HandlerInfo using the supplied insn which must be an instance
-     * of MethodInsnNode or FieldInsnNode.
-     *
-     * @param insn instruction node to copy values from
-     */
-    public HandlerInfo(AbstractInsnNode insn) {
-        this.matches = Quantifier.DEFAULT;
-        this.forceField = false;
-        this.input = null;
-        this.tail = null;
-
-        if (insn instanceof MethodInsnNode) {
-            MethodInsnNode methodNode = (MethodInsnNode)insn;
-            this.owner = methodNode.owner;
-            this.name = methodNode.name;
-            this.desc = methodNode.desc;
-        } else if (insn instanceof FieldInsnNode) {
-            FieldInsnNode fieldNode = (FieldInsnNode)insn;
-            this.owner = fieldNode.owner;
-            this.name = fieldNode.name;
-            this.desc = fieldNode.desc;
-        } else {
-            throw new IllegalArgumentException("insn must be an instance of MethodInsnNode or FieldInsnNode");
-        }
     }
 
     /**
@@ -234,7 +170,7 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
      * Initialise a remapped HandlerInfo with a new name
      *
      * @param original Original HandlerInfo
-     * @param owner new owner
+     * @param owner    new owner
      */
     private HandlerInfo(HandlerInfo original, String owner) {
         this.owner = owner;
@@ -244,6 +180,107 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
         this.forceField = original.forceField;
         this.tail = original.tail;
         this.input = null;
+    }
+
+    public static void parse(Iterable<?> selectors, ISelectorContext context, Set<ITargetSelector> parsed) {
+        for (Object selector : selectors) {
+            if (selector instanceof String) {
+                String string = (String) selector;
+                if (string.endsWith("/")) {
+                    // TODO: HandlerMemberMatcher
+                    MemberMatcher regexMatcher = MemberMatcher.parse(string, context);
+                    parsed.add(regexMatcher);
+                    continue;
+                }
+                if (!string.startsWith("@")) {
+                    parsed.add(HandlerInfo.parse((String) selector, context));
+                }
+            }
+        }
+    }
+
+    /**
+     * Parse a HandlerInfo from a string
+     *
+     * @param input   String to parse HandlerInfo from
+     * @param context Selector context for this parse request
+     * @return parsed HandlerInfo
+     */
+    public static HandlerInfo parse(final String input, final ISelectorContext context) {
+        String desc = null;
+        String owner = null;
+        String name = Strings.nullToEmpty(input).replaceAll("\\s", "");
+        String tail = null;
+
+        int arrowPos = name.indexOf(HandlerInfo.ARROW);
+        if (arrowPos > -1) {
+            tail = name.substring(arrowPos + 2);
+            name = name.substring(0, arrowPos);
+        }
+
+        if (context != null) {
+            name = context.remap(name);
+        }
+
+        int lastDotPos = name.lastIndexOf('.');
+        int semiColonPos = name.indexOf(';');
+        if (lastDotPos > -1) {
+            owner = name.substring(0, lastDotPos).replace('.', '/');
+            name = name.substring(lastDotPos + 1);
+        } else if (semiColonPos > -1 && name.startsWith("L")) {
+            owner = name.substring(1, semiColonPos).replace('.', '/');
+            name = name.substring(semiColonPos + 1);
+        }
+
+        int parenPos = name.indexOf('(');
+        int colonPos = name.indexOf(':');
+        if (parenPos > -1) {
+            desc = name.substring(parenPos);
+            name = name.substring(0, parenPos);
+        } else if (colonPos > -1) {
+            desc = name.substring(colonPos + 1);
+            name = name.substring(0, colonPos);
+        }
+
+        if ((name.indexOf('/') > -1 || name.indexOf('.') > -1) && owner == null) {
+            owner = name;
+            name = "";
+        }
+
+        // Use default quantifier with negative max value. Used to indicate that
+        // an explicit quantifier was not parsed from the selector string, this
+        // allows us to provide backward-compatible behaviour for injection
+        // points vs. selecting target members which have different default
+        // semantics when omitting the quantifier. This is handled by consumers
+        // calling configure() with SELECT_MEMBER or SELECT_INSTRUCTION to
+        // promote the default case to a concrete case.
+        Quantifier quantifier = Quantifier.DEFAULT;
+        if (name.endsWith("*")) {
+            quantifier = Quantifier.ANY;
+            name = name.substring(0, name.length() - 1);
+        } else if (name.endsWith("+")) {
+            quantifier = Quantifier.PLUS;
+            name = name.substring(0, name.length() - 1);
+        } else if (name.endsWith("}")) {
+            quantifier = Quantifier.NONE; // Assume invalid until quantifier is parsed
+            int bracePos = name.indexOf("{");
+            if (bracePos >= 0) {
+                try {
+                    quantifier = Quantifier.parse(name.substring(bracePos));
+                    name = name.substring(0, bracePos);
+                } catch (Exception ex) {
+                    // Handled later in validate since matchCount will be 0
+                }
+            }
+        } else if (name.contains("{")) {
+            quantifier = Quantifier.NONE; // Probably incomplete quantifier
+        }
+
+        if (name.isEmpty()) {
+            name = null;
+        }
+
+        return new HandlerInfo(name, owner, desc, quantifier, tail, input);
     }
 
     @Override
@@ -310,7 +347,7 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
     }
 
     /**
-     * Returns this HandlerInfo as a java-style descriptor 
+     * Returns this HandlerInfo as a java-style descriptor
      */
     @Override
     public String toDescriptor() {
@@ -361,7 +398,7 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
      * a field
      */
     private String getReturnType() {
-        if (this.desc == null || this.desc.indexOf(')') == -1 || this.desc.indexOf('(') != 0 ) {
+        if (this.desc == null || this.desc.indexOf(')') == -1 || this.desc.indexOf('(') != 0) {
             return null;
         }
 
@@ -449,7 +486,7 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
      * Get whether this member represents a constructor or class initialiser
      *
      * @return true if member name is <tt>&lt;init&gt;</tt> or
-     *      <tt>&lt;clinit&gt;</tt>
+     * <tt>&lt;clinit&gt;</tt>
      */
     @Override
     public boolean isInitialiser() {
@@ -461,7 +498,6 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
      * of the descriptor are basically sane.
      *
      * @return fluent
-     *
      * @throws InvalidSelectorException if any validation check fails
      */
     @Override
@@ -480,9 +516,7 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
             // decent stab at it in order to detect really obvious cases where
             // the user types a dot instead of a semicolon
             if (this.input != null && this.input.lastIndexOf('.') > 0 && this.owner.startsWith("L")) {
-                throw new InvalidMemberDescriptorException(this.input, "Malformed owner: " + this.owner + " If you are seeing this message"
-                        + "unexpectedly and the owner appears to be correct, replace the owner descriptor with formal type L" + this.owner
-                        + "; to suppress this error");
+                throw new InvalidMemberDescriptorException(this.input, "Malformed owner: " + this.owner + " If you are seeing this message" + "unexpectedly and the owner appears to be correct, replace the owner descriptor with formal type L" + this.owner + "; to suppress this error");
             }
         }
 
@@ -524,12 +558,10 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
                         retType.getInternalName(); // sanity check
                     }
                     if (!retString.equals(retType.getDescriptor())) {
-                        throw new InvalidMemberDescriptorException(this.input, "Invalid return type \"" + retString + "\" in descriptor: "
-                                + this.desc);
+                        throw new InvalidMemberDescriptorException(this.input, "Invalid return type \"" + retString + "\" in descriptor: " + this.desc);
                     }
                 } catch (Exception ex) {
-                    throw new InvalidMemberDescriptorException(this.input, "Invalid return type \"" + retString + "\" in descriptor: "
-                            + this.desc);
+                    throw new InvalidMemberDescriptorException(this.input, "Invalid return type \"" + retString + "\" in descriptor: " + this.desc);
                 }
             }
         }
@@ -561,14 +593,14 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
         if (this.name != null && name != null) {
             boolean caseMatch = true;
             int start = name.indexOf(this.name);
-            if(start == -1) {
+            if (start == -1) {
                 start = name.toLowerCase().indexOf(this.name.toLowerCase());
                 caseMatch = false;
             }
             if (start == -1) return MatchResult.NONE;
 
             String uid = name.substring(start - 8, start);
-            if(!uid.matches("\\$[a-z]{3}[0-9]{3}\\$")) return MatchResult.NONE;
+            if (!uid.matches("\\$[a-z]{3}[0-9]{3}\\$")) return MatchResult.NONE;
 
             return caseMatch ? MatchResult.EXACT_MATCH : MatchResult.MATCH;
         }
@@ -584,14 +616,10 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
             return false;
         }
 
-        ITargetSelectorConstructor other = (ITargetSelectorConstructor)obj;
-        boolean otherForceField = other instanceof HandlerInfo ? ((HandlerInfo)other).forceField
-                : other instanceof ITargetSelectorRemappable && ((ITargetSelectorRemappable) other).isField();
+        ITargetSelectorConstructor other = (ITargetSelectorConstructor) obj;
+        boolean otherForceField = other instanceof HandlerInfo ? ((HandlerInfo) other).forceField : other instanceof ITargetSelectorRemappable && ((ITargetSelectorRemappable) other).isField();
 
-        return this.compareMatches(other) && this.forceField == otherForceField
-                && Objects.equal(this.owner, other.getOwner())
-                && Objects.equal(this.name, other.getName())
-                && Objects.equal(this.desc, other.getDesc());
+        return this.compareMatches(other) && this.forceField == otherForceField && Objects.equal(this.owner, other.getOwner()) && Objects.equal(this.name, other.getName()) && Objects.equal(this.desc, other.getDesc());
     }
 
     /**
@@ -599,7 +627,7 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
      */
     private boolean compareMatches(ITargetSelectorByName other) {
         if (other instanceof HandlerInfo) {
-            return ((HandlerInfo)other).matches.equals(this.matches);
+            return ((HandlerInfo) other).matches.equals(this.matches);
         }
         return this.getMinMatchCount() == other.getMinMatchCount() && this.getMaxMatchCount() == other.getMaxMatchCount();
     }
@@ -689,123 +717,11 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
      * Create a remapped version of this member using the supplied method data
      *
      * @param srgMethod SRG method data to use
-     * @param setOwner True to set the owner as well as the name
+     * @param setOwner  True to set the owner as well as the name
      * @return New MethodInfo with remapped values
      */
     @Override
     public ITargetSelectorRemappable remapUsing(MappingMethod srgMethod, boolean setOwner) {
         return new HandlerInfo(this, srgMethod, setOwner);
     }
-
-    public static void parse(Iterable<?> selectors, ISelectorContext context, Set<ITargetSelector> parsed) {
-        for (Object selector : selectors) {
-            if (selector instanceof String) {
-                String string = (String)selector;
-                if(string.endsWith("/")) {
-                    // TODO: HandlerMemberMatcher
-                    MemberMatcher regexMatcher = MemberMatcher.parse(string, context);
-                    parsed.add(regexMatcher);
-                    continue;
-                }
-                if(!string.startsWith("@")) {
-                    parsed.add(HandlerInfo.parse((String)selector, context));
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse a HandlerInfo from a string
-     *
-     * @param input String to parse HandlerInfo from
-     * @param context Selector context for this parse request
-     * @return parsed HandlerInfo
-     */
-    public static HandlerInfo parse(final String input, final ISelectorContext context) {
-        String desc = null;
-        String owner = null;
-        String name = Strings.nullToEmpty(input).replaceAll("\\s", "");
-        String tail = null;
-
-        int arrowPos = name.indexOf(HandlerInfo.ARROW);
-        if (arrowPos > -1) {
-            tail = name.substring(arrowPos + 2);
-            name = name.substring(0, arrowPos);
-        }
-
-        if (context != null) {
-            name = context.remap(name);
-        }
-
-        int lastDotPos = name.lastIndexOf('.');
-        int semiColonPos = name.indexOf(';');
-        if (lastDotPos > -1) {
-            owner = name.substring(0, lastDotPos).replace('.', '/');
-            name = name.substring(lastDotPos + 1);
-        } else if (semiColonPos > -1 && name.startsWith("L")) {
-            owner = name.substring(1, semiColonPos).replace('.', '/');
-            name = name.substring(semiColonPos + 1);
-        }
-
-        int parenPos = name.indexOf('(');
-        int colonPos = name.indexOf(':');
-        if (parenPos > -1) {
-            desc = name.substring(parenPos);
-            name = name.substring(0, parenPos);
-        } else if (colonPos > -1) {
-            desc = name.substring(colonPos + 1);
-            name = name.substring(0, colonPos);
-        }
-
-        if ((name.indexOf('/') > -1 || name.indexOf('.') > -1) && owner == null) {
-            owner = name;
-            name = "";
-        }
-
-        // Use default quantifier with negative max value. Used to indicate that
-        // an explicit quantifier was not parsed from the selector string, this
-        // allows us to provide backward-compatible behaviour for injection
-        // points vs. selecting target members which have different default
-        // semantics when omitting the quantifier. This is handled by consumers
-        // calling configure() with SELECT_MEMBER or SELECT_INSTRUCTION to
-        // promote the default case to a concrete case.
-        Quantifier quantifier = Quantifier.DEFAULT;
-        if (name.endsWith("*")) {
-            quantifier = Quantifier.ANY;
-            name = name.substring(0, name.length() - 1);
-        } else if (name.endsWith("+")) {
-            quantifier = Quantifier.PLUS;
-            name = name.substring(0, name.length() - 1);
-        } else if (name.endsWith("}")) {
-            quantifier = Quantifier.NONE; // Assume invalid until quantifier is parsed
-            int bracePos = name.indexOf("{");
-            if (bracePos >= 0) {
-                try {
-                    quantifier = Quantifier.parse(name.substring(bracePos));
-                    name = name.substring(0, bracePos);
-                } catch (Exception ex) {
-                    // Handled later in validate since matchCount will be 0
-                }
-            }
-        } else if (name.contains("{")) {
-            quantifier = Quantifier.NONE; // Probably incomplete quantifier
-        }
-
-        if (name.isEmpty()) {
-            name = null;
-        }
-
-        return new HandlerInfo(name, owner, desc, quantifier, tail, input);
-    }
-
-    /**
-     * Return the supplied mapping parsed as a HandlerInfo
-     *
-     * @param mapping mapping to parse
-     * @return new HandlerInfo
-     */
-    public static HandlerInfo fromMapping(IMapping<?> mapping) {
-        return new HandlerInfo(mapping);
-    }
-
 }

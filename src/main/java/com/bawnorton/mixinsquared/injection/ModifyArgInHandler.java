@@ -30,7 +30,7 @@ public @interface ModifyArgInHandler {
     int require() default -1;
 
     int expect() default 1;
-    
+
     int allow() default -1;
 
     String constraints() default "";

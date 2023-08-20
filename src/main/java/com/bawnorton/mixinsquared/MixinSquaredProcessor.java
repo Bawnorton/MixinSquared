@@ -23,7 +23,8 @@ public class MixinSquaredProcessor extends AbstractProcessor {
         try {
             MessageRouter.setMessager(processingEnv.getMessager());
             MixinSquaredBootstrap.init();
-        } catch (NoClassDefFoundError ignored) {}
+        } catch (NoClassDefFoundError ignored) {
+        }
     }
 
     @Override

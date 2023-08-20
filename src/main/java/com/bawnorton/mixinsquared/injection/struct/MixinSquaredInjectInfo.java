@@ -39,9 +39,12 @@ public interface MixinSquaredInjectInfo extends ISelectorContext {
             }
         }
     }
-    
+
     Set<ITargetSelector> getSelectors();
+
     String getAnnotationType();
+
     String getMethodName();
+
     AnnotationNode getAnnotationNode();
 }
