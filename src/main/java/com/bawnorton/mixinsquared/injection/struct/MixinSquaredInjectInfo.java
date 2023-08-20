@@ -2,29 +2,46 @@ package com.bawnorton.mixinsquared.injection.struct;
 
 import com.bawnorton.mixinsquared.injection.selectors.HandlerInfo;
 import org.objectweb.asm.tree.AnnotationNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.spongepowered.asm.mixin.injection.struct.InjectionInfo;
+import org.spongepowered.asm.mixin.injection.selectors.ISelectorContext;
+import org.spongepowered.asm.mixin.injection.selectors.ITargetSelector;
+import org.spongepowered.asm.mixin.injection.selectors.InvalidSelectorException;
+import org.spongepowered.asm.mixin.injection.struct.InvalidMemberDescriptorException;
+import org.spongepowered.asm.mixin.injection.struct.TargetNotSupportedException;
 import org.spongepowered.asm.mixin.injection.throwables.InvalidInjectionException;
-import org.spongepowered.asm.mixin.transformer.MixinTargetContext;
 import org.spongepowered.asm.util.Annotations;
 
-public abstract class MixinSquaredInjectInfo extends InjectionInfo {
-    protected MixinSquaredInjectInfo(MixinTargetContext mixin, MethodNode method, AnnotationNode annotation) {
-        super(mixin, method, annotation);
-    }
+import java.util.Set;
 
-    protected MixinSquaredInjectInfo(MixinTargetContext mixin, MethodNode method, AnnotationNode annotation, String atKey) {
-        super(mixin, method, annotation, atKey);
-    }
+public interface MixinSquaredInjectInfo extends ISelectorContext {
+    default void parseSelectors() {
+        HandlerInfo.parse(Annotations.getValue(getAnnotationNode(), "method", false), this, getSelectors());
+        HandlerInfo.parse(Annotations.getValue(getAnnotationNode(), "target", false), this, getSelectors());
 
-    @Override
-    protected void parseSelectors() {
-        try {
-            super.parseSelectors();
-        } catch (InvalidInjectionException ignored) {
-            // we allow for more lenient parsing of selectors, notably to catch cases
-            // where modids previously contain invalid method characters such as fabric api's modules
+        if (getSelectors().isEmpty()) {
+            throw new InvalidInjectionException(this, String.format("%s annotation on %s is missing 'method' or 'target' to specify targets",
+                    getAnnotationType(), getMethodName()));
         }
-        HandlerInfo.parse(Annotations.getValue(this.annotation, "method", false), this, this.selectors);
+
+        for (ITargetSelector selector : getSelectors()) {
+            try {
+                getSelectors().add(selector.validate().attach(this));
+            } catch (InvalidMemberDescriptorException ex) {
+                throw new InvalidInjectionException(this, String.format("%s annotation on %s, has invalid target descriptor: %s. %s",
+                        getAnnotationType(), getMethodName(), ex.getMessage(), getMixin().getReferenceMapper().getStatus()));
+            } catch (TargetNotSupportedException ex) {
+                throw new InvalidInjectionException(this,
+                        String.format("%s annotation on %s specifies a target class '%s', which is not supported",
+                                getAnnotationType(), getMethodName(), ex.getMessage()));
+            } catch (InvalidSelectorException ex) {
+                throw new InvalidInjectionException(this,
+                        String.format("%s annotation on %s is decorated with an invalid selector: %s", getAnnotationType(), getMethodName(),
+                                ex.getMessage()));
+            }
+        }
     }
+    
+    Set<ITargetSelector> getSelectors();
+    String getAnnotationType();
+    String getMethodName();
+    AnnotationNode getAnnotationNode();
 }

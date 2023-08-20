@@ -1,21 +1,22 @@
-package com.bawnorton.mixinsquared.injection.struct;
+package com.bawnorton.mixinsquared.mixinextras.injection.struct;
 
-import com.bawnorton.mixinsquared.injection.ModifyArgInHandler;
+import com.bawnorton.mixinsquared.injection.struct.MixinSquaredInjectInfo;
+import com.bawnorton.mixinsquared.mixinextras.injection.ModifyReturnValueInHandler;
+import com.llamalad7.mixinextras.injector.ModifyReturnValueInjectionInfo;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.mixin.injection.selectors.ITargetSelector;
 import org.spongepowered.asm.mixin.injection.struct.InjectionInfo.AnnotationType;
 import org.spongepowered.asm.mixin.injection.struct.InjectionInfo.HandlerPrefix;
-import org.spongepowered.asm.mixin.injection.struct.ModifyArgInjectionInfo;
 import org.spongepowered.asm.mixin.transformer.MixinTargetContext;
 
 import java.util.Set;
 
-@AnnotationType(ModifyArgInHandler.class)
-@HandlerPrefix("modifyInHandler")
+@AnnotationType(ModifyReturnValueInHandler.class)
+@HandlerPrefix("modifyReturnValueInHandler")
 @SuppressWarnings("unused")
-public class ModifyArgInHandlerInjectionInfo extends ModifyArgInjectionInfo implements MixinSquaredInjectInfo {
-    public ModifyArgInHandlerInjectionInfo(MixinTargetContext mixin, MethodNode method, AnnotationNode annotation) {
+public class ModifyReturnValueInHandlerInfo extends ModifyReturnValueInjectionInfo implements MixinSquaredInjectInfo {
+    public ModifyReturnValueInHandlerInfo(MixinTargetContext mixin, MethodNode method, AnnotationNode annotation) {
         super(mixin, method, annotation);
     }
 

@@ -20,5 +20,13 @@ public class MixinSquaredBootstrap {
 		InjectionInfo.register(ModifyConstantInHandlerInjectionInfo.class);
 		InjectionInfo.register(ModifyVariableInHandlerInjectionInfo.class);
 		InjectionInfo.register(RedirectInHandlerInjectionInfo.class);
+
+		try {
+			Class.forName("com.llamalad7.mixinextras.MixinExtrasBootstrap");
+		} catch (ClassNotFoundException e) {
+			return;
+		}
+
+		MixinExtrasSquaredBootstrap.init();
 	}
 }

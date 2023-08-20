@@ -12,6 +12,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://repo.spongepowered.org/maven")
+        maven("https://jitpack.io")
     }
 
     dependencies {
@@ -19,6 +20,7 @@ allprojects {
         compileOnly("org.apache.commons:commons-lang3:3.3.2")
         compileOnly("org.ow2.asm:asm-debug-all:5.2")
         compileOnly("com.google.guava:guava:31.1-jre")
+        compileOnly("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9")
     }
 
     java {

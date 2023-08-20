@@ -32,7 +32,6 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.spongepowered.asm.mixin.injection.selectors.*;
 import org.spongepowered.asm.mixin.injection.struct.InvalidMemberDescriptorException;
-import org.spongepowered.asm.mixin.injection.struct.MemberInfo;
 import org.spongepowered.asm.mixin.injection.struct.TargetNotSupportedException;
 import org.spongepowered.asm.mixin.throwables.MixinException;
 import org.spongepowered.asm.obfuscation.mapping.IMapping;
@@ -560,19 +559,18 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
             return MatchResult.NONE;
         }
         if (this.name != null && name != null) {
-            if (this.name.equals(name)) {
-                return MatchResult.EXACT_MATCH;
+            boolean caseMatch = true;
+            int start = name.indexOf(this.name);
+            if(start == -1) {
+                start = name.toLowerCase().indexOf(this.name.toLowerCase());
+                caseMatch = false;
             }
-            if (this.name.equalsIgnoreCase(name)) {
-                return MatchResult.MATCH;
-            }
-            if (name.endsWith(this.name)) {
-                return MatchResult.EXACT_MATCH;
-            }
-            if (name.toLowerCase().endsWith(this.name.toLowerCase())) {
-                return MatchResult.MATCH;
-            }
-            return MatchResult.NONE;
+            if (start == -1) return MatchResult.NONE;
+
+            String uid = name.substring(start - 8, start);
+            if(!uid.matches("\\$[a-z]{3}[0-9]{3}\\$")) return MatchResult.NONE;
+
+            return caseMatch ? MatchResult.EXACT_MATCH : MatchResult.MATCH;
         }
         return MatchResult.EXACT_MATCH;
     }
@@ -624,12 +622,12 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
         switch (request) {
             case SELECT_MEMBER:
                 if (this.matches.isDefault()) {
-                    return new MemberInfo(this.name, this.owner, this.desc, Quantifier.SINGLE, this.tail);
+                    return new HandlerInfo(this.name, this.owner, this.desc, Quantifier.SINGLE, this.tail);
                 }
                 break;
             case SELECT_INSTRUCTION:
                 if (this.matches.isDefault()) {
-                    return new MemberInfo(this.name, this.owner, this.desc, Quantifier.ANY, this.tail);
+                    return new HandlerInfo(this.name, this.owner, this.desc, Quantifier.ANY, this.tail);
                 }
                 break;
             case MOVE:
@@ -642,7 +640,7 @@ public final class HandlerInfo implements ITargetSelectorRemappable, ITargetSele
                 return this.transform(null);
             case CLEAR_LIMITS:
                 if (this.matches.getMin() != 0 || this.matches.getMax() < Integer.MAX_VALUE) {
-                    return new MemberInfo(this.name, this.owner, this.desc, Quantifier.ANY, this.tail);
+                    return new HandlerInfo(this.name, this.owner, this.desc, Quantifier.ANY, this.tail);
                 }
                 break;
         }
