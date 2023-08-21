@@ -1,7 +1,6 @@
 package com.bawnorton.mixinsquared;
 
-import com.bawnorton.mixinsquared.injection.struct.*;
-import org.spongepowered.asm.mixin.injection.struct.InjectionInfo;
+import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
 
 public class MixinSquaredBootstrap {
     public static final String NAME = "mixinsquared";
@@ -14,19 +13,6 @@ public class MixinSquaredBootstrap {
 
         initialized = true;
 
-        InjectionInfo.register(InjectInHandlerInjectionInfo.class);
-        InjectionInfo.register(ModifyArgInHandlerInjectionInfo.class);
-        InjectionInfo.register(ModifyArgsInHandlerInjectionInfo.class);
-        InjectionInfo.register(ModifyConstantInHandlerInjectionInfo.class);
-        InjectionInfo.register(ModifyVariableInHandlerInjectionInfo.class);
-        InjectionInfo.register(RedirectInHandlerInjectionInfo.class);
-
-        try {
-            Class.forName("com.llamalad7.mixinextras.MixinExtrasBootstrap");
-        } catch (ClassNotFoundException e) {
-            return;
-        }
-
-        MixinExtrasSquaredBootstrap.init();
+        TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
     }
 }
