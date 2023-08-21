@@ -26,10 +26,12 @@ package com.bawnorton.mixinsquared;
 
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.mixin.injection.selectors.*;
 import org.spongepowered.asm.mixin.transformer.meta.MixinMerged;
 import org.spongepowered.asm.util.Annotations;
 import org.spongepowered.asm.util.asm.IAnnotatedElement;
+import org.spongepowered.asm.util.asm.MethodNodeEx;
 
 @ITargetSelectorDynamic.SelectorId("Handler")
 public class DynamicSelectorHandler implements ITargetSelectorDynamic {
@@ -101,18 +103,15 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
         if (annotation == null) return MatchResult.NONE;
         if (!mixinName.equals(Annotations.getValue(annotation, "mixin"))) return MatchResult.NONE;
         if (!prefix.isEmpty() && !method.name.startsWith(prefix)) return MatchResult.NONE;
-
-        boolean caseMatch = true;
-        int start = method.name.indexOf(this.name);
-        if (start == -1) {
-            start = method.name.toLowerCase().indexOf(this.name.toLowerCase());
-            caseMatch = false;
+        if (method instanceof MethodNodeEx) {
+            MethodNodeEx methodNodeEx = (MethodNodeEx) method;
+            if(methodNodeEx.getOriginalName().equals(name)) {
+                return MatchResult.EXACT_MATCH;
+            }
+            if(methodNodeEx.getOriginalName().equalsIgnoreCase(name)) {
+                return MatchResult.MATCH;
+            }
         }
-        if (start == -1) return MatchResult.NONE;
-
-        String uid = method.name.substring(start - 8, start);
-        if (!uid.matches("\\$[a-z]{3}[0-9]{3}\\$")) return MatchResult.NONE;
-
-        return caseMatch ? MatchResult.EXACT_MATCH : MatchResult.MATCH;
+        return MatchResult.NONE;
     }
 }
