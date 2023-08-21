@@ -29,6 +29,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.mixin.injection.selectors.*;
 import org.spongepowered.asm.mixin.transformer.meta.MixinMerged;
 import org.spongepowered.asm.util.Annotations;
+import org.spongepowered.asm.util.asm.IAnnotatedElement;
 
 @ITargetSelectorDynamic.SelectorId("Handler")
 public class DynamicSelectorHandler implements ITargetSelectorDynamic {
@@ -75,16 +76,15 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
     }
 
     public static DynamicSelectorHandler parse(String input, ISelectorContext context) {
-        if (context.getMethod() instanceof MethodNode) {
-            MethodNode method = (MethodNode) context.getMethod();
-            AnnotationNode annotationNode = Annotations.getVisible(method, TargetHandler.class);
-            return new DynamicSelectorHandler(
-                    Annotations.getValue(annotationNode, "mixin"),
-                    Annotations.getValue(annotationNode, "name"),
-                    Annotations.getValue(annotationNode, "prefix", "")
-            );
-        }
-        throw new AssertionError();
+        if(!(context.getMethod() instanceof IAnnotatedElement)) throw new AssertionError("Method must be an instance of IAnnotatedElement");
+
+        IAnnotatedElement element = (IAnnotatedElement) context.getMethod();
+        AnnotationNode annotationNode = element.getAnnotation(TargetHandler.class).getValue();
+        return new DynamicSelectorHandler(
+                Annotations.getValue(annotationNode, "mixin"),
+                Annotations.getValue(annotationNode, "name"),
+                Annotations.getValue(annotationNode, "prefix", "")
+        );
     }
 
     @Override
