@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared;
+package com.bawnorton.mixinsquared.platform.forge;
 
+import com.bawnorton.mixinsquared.MixinSquaredBootstrap;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(MixinSquaredBootstrap.NAME)
