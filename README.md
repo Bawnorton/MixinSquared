@@ -1,4 +1,4 @@
-![MixinSquared Logo](https://github.com/Bawnorton/MixinSquared/assets/18416784/12e15af8-de4e-4501-8ee7-69fc3b4e7b6e)
+![MixinSquared Logo T](https://github.com/Bawnorton/MixinSquared/assets/18416784/9cce7871-aa11-4256-b6b6-701f7c72783a)
 
 A [Mixin](https://github.com/SpongePowered/Mixin/) library for mixin'ing into other mod's mixins.
 
