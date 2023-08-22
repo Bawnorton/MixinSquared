@@ -12,12 +12,11 @@ repositories {
 }
 ```
 For each platform:<br>
-The latest version can found in the releases.
 <details><summary>Fabric / Quilt</summary>
 
 ```gradle
 dependencies {
-    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:<latest-version>")))
+    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.0.2")))
 }
 ```
 
@@ -27,9 +26,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:<latest-version>"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:<latest-version>")) {
-        jarJar.ranged(it, "[<latest-version>,)")
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.0.2"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.0.2")) {
+        jarJar.ranged(it, "[0.0.2,)")
     }
 }
 ```
@@ -39,8 +38,8 @@ dependencies {
 
 ```gradle
 dependencies {
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:<latest-version>"))
-    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:<latest-version>"))
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.0.2"))
+    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.0.2"))
 }
 ```
 </details>
