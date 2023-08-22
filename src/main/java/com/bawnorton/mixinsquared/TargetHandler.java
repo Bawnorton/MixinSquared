@@ -37,4 +37,6 @@ public @interface TargetHandler {
     String mixin();
 
     String prefix() default "";
+
+    boolean print() default false;
 }

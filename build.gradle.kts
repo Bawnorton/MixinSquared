@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "com.bawnorton"
-    version = "0.0.1"
+    version = "0.0.2"
 
     repositories {
         mavenCentral()
@@ -18,7 +18,6 @@ allprojects {
         compileOnly("org.spongepowered:mixin:0.8.5")
         compileOnly("org.apache.commons:commons-lang3:3.3.2")
         compileOnly("org.ow2.asm:asm-debug-all:5.2")
-        compileOnly("com.google.guava:guava:31.1-jre")
     }
 
     java {

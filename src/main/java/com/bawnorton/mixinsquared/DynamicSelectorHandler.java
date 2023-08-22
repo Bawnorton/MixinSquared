@@ -27,10 +27,14 @@ package com.bawnorton.mixinsquared;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.mixin.injection.selectors.*;
+import org.spongepowered.asm.mixin.injection.struct.InjectionInfo;
 import org.spongepowered.asm.mixin.transformer.meta.MixinMerged;
 import org.spongepowered.asm.util.Annotations;
+import org.spongepowered.asm.util.PrettyPrinter;
 import org.spongepowered.asm.util.asm.IAnnotatedElement;
 import org.spongepowered.asm.util.asm.MethodNodeEx;
+
+import java.util.List;
 
 @ITargetSelectorDynamic.SelectorId("Handler")
 public class DynamicSelectorHandler implements ITargetSelectorDynamic {
@@ -40,10 +44,15 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
 
     private final String prefix;
 
-    public DynamicSelectorHandler(String mixinName, String name, String prefix) {
+    private final boolean print;
+
+    private final PrettyPrinter printer = new PrettyPrinter();
+
+    public DynamicSelectorHandler(String mixinName, String name, String prefix, boolean print) {
         this.mixinName = mixinName;
         this.name = name;
-        this.prefix = prefix;
+        this.prefix = prefix == null ? null : prefix.isEmpty() ? null : prefix;
+        this.print = print;
     }
 
     @Override
@@ -63,17 +72,28 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
 
     @Override
     public ITargetSelector attach(ISelectorContext context) throws InvalidSelectorException {
+        if(context.getMixin().getClassName().equals(mixinName)) {
+            throw new InvalidSelectorException("Dynamic selector targets self!");
+        }
+        if(print) {
+            printer.kvWidth(20)
+                    .kv("Mixin", mixinName)
+                    .kv("Name", name)
+                    .kv("Prefix", prefix)
+                    .add("%100s %-15s %-50s %s", "MIXIN", "PREFIX", "ORIGINAL NAME", "CANDIDATE")
+                    .print(System.err);
+        }
         return this;
-    }
-
-    @Override
-    public int getMinMatchCount() {
-        return 1;
     }
 
     @Override
     public int getMaxMatchCount() {
         return 1;
+    }
+
+    @Override
+    public int getMinMatchCount() {
+        return 0;
     }
 
     public static DynamicSelectorHandler parse(String input, ISelectorContext context) {
@@ -91,7 +111,8 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
         return new DynamicSelectorHandler(
                 Annotations.getValue(annotationNode, "mixin"),
                 Annotations.getValue(annotationNode, "name"),
-                Annotations.getValue(annotationNode, "prefix", "")
+                Annotations.getValue(annotationNode, "prefix", ""),
+                Annotations.getValue(annotationNode, "print", Boolean.FALSE)
         );
     }
 
@@ -100,17 +121,36 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
         MethodNode method = node.getMethod();
         AnnotationNode annotation = Annotations.getVisible(method, MixinMerged.class);
         if (annotation == null) return MatchResult.NONE;
-        if (!mixinName.equals(Annotations.getValue(annotation, "mixin"))) return MatchResult.NONE;
-        if (!prefix.isEmpty() && !method.name.startsWith(prefix)) return MatchResult.NONE;
-        if (method instanceof MethodNodeEx) {
-            MethodNodeEx methodNodeEx = (MethodNodeEx) method;
-            if(methodNodeEx.getOriginalName().equals(name)) {
-                return MatchResult.EXACT_MATCH;
-            }
-            if(methodNodeEx.getOriginalName().equalsIgnoreCase(name)) {
-                return MatchResult.MATCH;
-            }
+        if(!(method instanceof MethodNodeEx)) return MatchResult.NONE;
+
+        MethodNodeEx methodNodeEx = (MethodNodeEx) method;
+        String targetMixinName = Annotations.getValue(annotation, "mixin");
+        MatchResult result = matchInternal(targetMixinName, methodNodeEx);
+        if(print) System.err.printf("/* %100s %-15s %-50s %9s */\n", targetMixinName, method.name.split("\\$")[0], methodNodeEx.getOriginalName(), result.isExactMatch() ? "YES" : "-");
+        return result;
+    }
+
+    private MatchResult matchInternal(String targetMixinName, MethodNodeEx method) {
+        if (!mixinName.equals(targetMixinName)) return MatchResult.NONE;
+        if (prefix != null) {
+            String methodPrefix = method.name.split("\\$")[0];
+            if (!methodPrefix.equalsIgnoreCase(prefix)) return MatchResult.NONE;
+        }
+        if (method.getOriginalName().equals(name)) {
+            return MatchResult.EXACT_MATCH;
+        }
+        if (method.getOriginalName().equalsIgnoreCase(name)) {
+            return MatchResult.MATCH;
         }
         return MatchResult.NONE;
+    }
+
+    @Override
+    public String toString() {
+        return "@MixinSquared:Handler[" +
+                "mixin='" + mixinName + '\'' +
+                ", name='" + name + '\'' +
+                ", prefix='" + prefix + '\'' +
+                ']';
     }
 }
