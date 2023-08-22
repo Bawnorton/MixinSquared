@@ -1,5 +1,5 @@
 ---
-name: "[Feature Request] <summary>"
+name: "[Feature Request] <Summary>"
 about: Suggest an idea for this project
 title: ''
 labels: enhancement
