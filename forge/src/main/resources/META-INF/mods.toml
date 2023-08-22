@@ -1,0 +1,13 @@
+modLoader = "javafml"
+loaderVersion = "*"
+license = "MIT"
+
+[[mods]]
+modId = "mixinsquared"
+version = "${version}"
+displayName = "MixinSquared"
+description = '''
+Mixin library for mixin'ing into other mod's mixins
+'''
+authors = "Bawnorton"
+displayURL = "https://github.com/Bawnorton/MixinSquared"
