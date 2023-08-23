@@ -47,7 +47,7 @@ dependencies {
 
 ## Initialization
 
-If you are on Fabric, Quilt or Forge 1.18.2+ MixinSquared will automatically initiate, otherwise call:
+If you are on Fabric, Quilt or Forge 1.18.2+ MixinSquared will automatically initiate, otherwise you will need to call:
 ```java
 MixinSquaredBootstrap.init();
 ```
