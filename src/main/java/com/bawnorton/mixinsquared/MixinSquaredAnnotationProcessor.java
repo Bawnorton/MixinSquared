@@ -35,10 +35,10 @@ import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
 @SupportedAnnotationTypes({})
-public class MixinSquaredAnnotationProcessor extends AbstractProcessor {
+public final class MixinSquaredAnnotationProcessor extends AbstractProcessor {
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        return false;
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latestSupported();
     }
 
     @Override
@@ -46,13 +46,13 @@ public class MixinSquaredAnnotationProcessor extends AbstractProcessor {
         super.init(processingEnv);
         try {
             MessageRouter.setMessager(processingEnv.getMessager());
-            MixinSquaredBootstrap.init();
+            MixinSquaredBootstrap.init(false);
         } catch (NoClassDefFoundError ignored) {
         }
     }
 
     @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.latestSupported();
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        return false;
     }
 }

@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "com.bawnorton"
-    version = "0.0.2"
+    version = "0.1.0"
 
     repositories {
         mavenCentral()
@@ -63,8 +63,8 @@ subprojects {
 
 tasks.withType<Jar> {
     from("LICENSE") {
-        rename { "${it}_MixinSquared"}
+        rename { "${it}_MixinSquared" }
     }
 }
 
-val Project.moduleName get () = if (parent == null) "common" else name
+val Project.moduleName get() = if (parent == null) "common" else name

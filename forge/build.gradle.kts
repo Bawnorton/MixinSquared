@@ -1,10 +1,16 @@
 repositories {
-    maven("https://maven.minecraftforge.net/")
+    maven("https://maven.minecraftforge.net/") {
+        metadataSources {
+            ignoreGradleMetadataRedirection()
+            mavenPom()
+        }
+    }
 }
 
 dependencies {
     compileOnly(rootProject)
     compileOnly("net.minecraftforge:forge:1.16.4-35.1.37:universal")
+    compileOnly("net.minecraftforge:forgespi:3.2.0")
 }
 
 tasks.withType<Jar> {

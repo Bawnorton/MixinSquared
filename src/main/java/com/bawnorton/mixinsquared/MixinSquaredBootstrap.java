@@ -24,19 +24,30 @@
 
 package com.bawnorton.mixinsquared;
 
+import com.bawnorton.mixinsquared.canceller.ExtensionCancelApplication;
+import com.bawnorton.mixinsquared.canceller.ExtensionRegistrar;
+import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
 import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
 
-public class MixinSquaredBootstrap {
+public final class MixinSquaredBootstrap {
     public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.0.2";
+    public static final String VERSION = "0.1.0";
 
     private static boolean initialized = false;
 
     public static void init() {
+        init(true);
+    }
+
+    static void init(boolean runtime) {
         if (initialized) return;
 
         initialized = true;
 
         TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
+
+        if (runtime) {
+            ExtensionRegistrar.register(new ExtensionCancelApplication());
+        }
     }
 }

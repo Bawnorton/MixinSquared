@@ -7,11 +7,13 @@ See the [wiki](https://github.com/Bawnorton/MixinSquared/wiki) for usage
 Works with [MixinExtras](https://github.com/LlamaLad7/MixinExtras)
 
 ## Gradle
+
 ```gradle
 repositories {
     maven { url = "https://jitpack.io" }
 }
 ```
+
 For each platform:<br>
 <details><summary>Fabric / Quilt</summary>
 
@@ -43,15 +45,20 @@ dependencies {
     implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.0.2"))
 }
 ```
+
 </details>
 
 ## Initialization
 
 If you are on Fabric, Quilt or Forge 1.18.2+ MixinSquared will automatically initiate, otherwise you will need to call:
+
 ```java
 MixinSquaredBootstrap.init();
 ```
-In the `onLoad` method inside a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html)
+
+In the `onLoad` method inside
+a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html)
 
 ### Credits
+
 Massive thanks to [LlamaLad7](https://github.com/LlamaLad7) for providing insight and feedback on this library.

@@ -25,7 +25,11 @@
 package com.bawnorton.mixinsquared.platform.fabric;
 
 import com.bawnorton.mixinsquared.MixinSquaredBootstrap;
+import com.bawnorton.mixinsquared.api.MixinCanceller;
+import com.bawnorton.mixinsquared.canceller.MixinCancellerRegistrar;
+import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
+import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -33,17 +37,11 @@ import java.util.List;
 import java.util.Set;
 
 public class MixinSquaredMixinConfigPlugin implements IMixinConfigPlugin {
+
     @Override
     public void onLoad(String mixinPackage) {
         MixinSquaredBootstrap.init();
-    }
-
-    @Override
-    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-    }
-
-    @Override
-    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+        MixinCancellerLoader.load();
     }
 
     @Override
@@ -64,5 +62,13 @@ public class MixinSquaredMixinConfigPlugin implements IMixinConfigPlugin {
     @Override
     public List<String> getMixins() {
         return null;
+    }
+
+    @Override
+    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+    }
+
+    @Override
+    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
     }
 }

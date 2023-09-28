@@ -22,22 +22,20 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared;
+package com.bawnorton.mixinsquared.selector;
 
+import com.bawnorton.mixinsquared.TargetHandler;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.mixin.injection.selectors.*;
-import org.spongepowered.asm.mixin.injection.struct.InjectionInfo;
 import org.spongepowered.asm.mixin.transformer.meta.MixinMerged;
 import org.spongepowered.asm.util.Annotations;
 import org.spongepowered.asm.util.PrettyPrinter;
 import org.spongepowered.asm.util.asm.IAnnotatedElement;
 import org.spongepowered.asm.util.asm.MethodNodeEx;
 
-import java.util.List;
-
 @ITargetSelectorDynamic.SelectorId("Handler")
-public class DynamicSelectorHandler implements ITargetSelectorDynamic {
+public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
     private final String mixinName;
 
     private final String name;
@@ -53,6 +51,22 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
         this.name = name;
         this.prefix = prefix == null ? null : prefix.isEmpty() ? null : prefix;
         this.print = print;
+    }
+
+    @SuppressWarnings("unused") // invoked reflectively
+    public static DynamicSelectorHandler parse(String input, ISelectorContext context) {
+        AnnotationNode annotationNode;
+
+        if (context.getMethod() instanceof MethodNode) {
+            MethodNode method = (MethodNode) context.getMethod();
+            annotationNode = Annotations.getVisible(method, TargetHandler.class);
+        } else if (context.getMethod() instanceof IAnnotatedElement) {
+            IAnnotatedElement element = (IAnnotatedElement) context.getMethod();
+            annotationNode = element.getAnnotation(TargetHandler.class).getValue();
+        } else {
+            throw new AssertionError("Could not get annotation for method");
+        }
+        return new DynamicSelectorHandler(Annotations.getValue(annotationNode, "mixin"), Annotations.getValue(annotationNode, "name"), Annotations.getValue(annotationNode, "prefix", ""), Annotations.getValue(annotationNode, "print", Boolean.FALSE));
     }
 
     @Override
@@ -72,10 +86,10 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
 
     @Override
     public ITargetSelector attach(ISelectorContext context) throws InvalidSelectorException {
-        if(context.getMixin().getClassName().equals(mixinName)) {
+        if (context.getMixin().getClassName().equals(mixinName)) {
             throw new InvalidSelectorException("Dynamic selector targets self!");
         }
-        if(print) {
+        if (print) {
             printer.kvWidth(20)
                     .kv("Mixin", mixinName)
                     .kv("Name", name)
@@ -87,33 +101,13 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
     }
 
     @Override
-    public int getMaxMatchCount() {
-        return 1;
-    }
-
-    @Override
     public int getMinMatchCount() {
         return 0;
     }
 
-    public static DynamicSelectorHandler parse(String input, ISelectorContext context) {
-        AnnotationNode annotationNode;
-
-        if(context.getMethod() instanceof MethodNode) {
-            MethodNode method = (MethodNode) context.getMethod();
-            annotationNode = Annotations.getVisible(method, TargetHandler.class);
-        } else if (context.getMethod() instanceof IAnnotatedElement) {
-            IAnnotatedElement element = (IAnnotatedElement) context.getMethod();
-            annotationNode = element.getAnnotation(TargetHandler.class).getValue();
-        } else {
-            throw new AssertionError("Could not get annotation for method");
-        }
-        return new DynamicSelectorHandler(
-                Annotations.getValue(annotationNode, "mixin"),
-                Annotations.getValue(annotationNode, "name"),
-                Annotations.getValue(annotationNode, "prefix", ""),
-                Annotations.getValue(annotationNode, "print", Boolean.FALSE)
-        );
+    @Override
+    public int getMaxMatchCount() {
+        return 1;
     }
 
     @Override
@@ -121,12 +115,13 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
         MethodNode method = node.getMethod();
         AnnotationNode annotation = Annotations.getVisible(method, MixinMerged.class);
         if (annotation == null) return MatchResult.NONE;
-        if(!(method instanceof MethodNodeEx)) return MatchResult.NONE;
+        if (!(method instanceof MethodNodeEx)) return MatchResult.NONE;
 
         MethodNodeEx methodNodeEx = (MethodNodeEx) method;
         String targetMixinName = Annotations.getValue(annotation, "mixin");
         MatchResult result = matchInternal(targetMixinName, methodNodeEx);
-        if(print) System.err.printf("/* %100s %-15s %-50s %9s */\n", targetMixinName, method.name.split("\\$")[0], methodNodeEx.getOriginalName(), result.isExactMatch() ? "YES" : "-");
+        if (print)
+            System.err.printf("/* %100s %-15s %-50s %9s */\n", targetMixinName, method.name.split("\\$")[0], methodNodeEx.getOriginalName(), result.isExactMatch() ? "YES" : "-");
         return result;
     }
 
@@ -147,10 +142,6 @@ public class DynamicSelectorHandler implements ITargetSelectorDynamic {
 
     @Override
     public String toString() {
-        return "@MixinSquared:Handler[" +
-                "mixin='" + mixinName + '\'' +
-                ", name='" + name + '\'' +
-                ", prefix='" + prefix + '\'' +
-                ']';
+        return "@MixinSquared:Handler[" + "mixin='" + mixinName + '\'' + ", name='" + name + '\'' + ", prefix='" + prefix + '\'' + ']';
     }
 }
