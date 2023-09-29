@@ -19,7 +19,7 @@ For each platform:<br>
 
 ```gradle
 dependencies {
-    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.0.2")))
+    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.1.0")))
 }
 ```
 
@@ -29,9 +29,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.0.2"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.0.2")) {
-        jarJar.ranged(it, "[0.0.2,)")
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.1.0"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.1.0")) {
+        jarJar.ranged(it, "[0.1.0,)")
     }
 }
 ```
@@ -41,8 +41,8 @@ dependencies {
 
 ```gradle
 dependencies {
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.0.2"))
-    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.0.2"))
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.1.0"))
+    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.1.0"))
 }
 ```
 
