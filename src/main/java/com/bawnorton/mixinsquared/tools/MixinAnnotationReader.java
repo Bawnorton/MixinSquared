@@ -48,4 +48,36 @@ public final class MixinAnnotationReader {
     public boolean getRemap() {
         return Annotations.getValue(mixinAnnotation, "remap", Boolean.TRUE);
     }
+
+    public static List<Type> getValue(String mixinClassName) {
+        return new MixinAnnotationReader(mixinClassName).getValue();
+    }
+
+    public static List<String> getTargets(String mixinClassName) {
+        return new MixinAnnotationReader(mixinClassName).getTargets();
+    }
+
+    public static int getPriority(String mixinClassName) {
+        return new MixinAnnotationReader(mixinClassName).getPriority();
+    }
+
+    public static boolean getRemap(String mixinClassName) {
+        return new MixinAnnotationReader(mixinClassName).getRemap();
+    }
+
+    public static List<Type> getValue(ClassNode mixinClassNode) {
+        return new MixinAnnotationReader(mixinClassNode).getValue();
+    }
+
+    public static List<String> getTargets(ClassNode mixinClassNode) {
+        return new MixinAnnotationReader(mixinClassNode).getTargets();
+    }
+
+    public static int getPriority(ClassNode mixinClassNode) {
+        return new MixinAnnotationReader(mixinClassNode).getPriority();
+    }
+
+    public static boolean getRemap(ClassNode mixinClassNode) {
+        return new MixinAnnotationReader(mixinClassNode).getRemap();
+    }
 }
