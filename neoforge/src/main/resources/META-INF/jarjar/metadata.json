@@ -1,0 +1,15 @@
+{
+  "jars": [
+    {
+      "identifier": {
+        "group": "com.github.Bawnorton",
+        "artifact": "MixinSquared"
+      },
+      "version": {
+        "range": "[${version},)",
+        "artifactVersion": "${version}"
+      },
+      "path": "META-INF/jars/MixinSquared-${version}.jar"
+    }
+  ]
+}

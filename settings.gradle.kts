@@ -8,3 +8,4 @@ pluginManagement {
 rootProject.name = "MixinSquared"
 include("fabric")
 include("forge")
+include("neoforge")

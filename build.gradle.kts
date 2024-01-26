@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "com.bawnorton"
-    version = "0.1.1"
+    version = "0.1.2-beta.1"
 
     repositories {
         mavenCentral()
@@ -46,7 +46,7 @@ allprojects {
 subprojects {
     apply(plugin = "java")
 
-    if (project.name != "forge") {
+    if (project.name == "fabric") {
         dependencies {
             compileOnly(rootProject)
         }
