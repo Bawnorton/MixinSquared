@@ -8,8 +8,9 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 import org.spongepowered.asm.mixin.transformer.ext.ITargetClassContext;
 import org.spongepowered.asm.service.MixinService;
-
+import java.util.List;
 import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 public final class ExtensionCancelApplication implements IExtension {
     private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
@@ -23,8 +24,11 @@ public final class ExtensionCancelApplication implements IExtension {
     public void preApply(ITargetClassContext context) {
         SortedSet<IMixinInfo> mixins = TargetClassContextAccess.getMixins(context);
         mixins.removeIf(mixin -> {
-            boolean shouldCancel = MixinCancellerRegistrar.shouldCancel(mixin.getTargetClasses(), mixin.getClassName());
-            if (shouldCancel) LOGGER.debug("Cancelling mixin {}", mixin.getClassName());
+            List<String> targetClasses = mixin.getTargetClasses().stream().map(s -> s.replaceAll("/", ".")).collect(Collectors.toList());
+            boolean shouldCancel = MixinCancellerRegistrar.shouldCancel(targetClasses, mixin.getClassName());
+            if (shouldCancel) {
+                LOGGER.debug("Cancelling mixin {}", mixin.getClassName());
+            }
             return shouldCancel;
         });
     }
