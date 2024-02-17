@@ -19,19 +19,21 @@ For each platform:<br>
 
 ```gradle
 dependencies {
-    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.1.2-beta.3")))
+    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.1.2-beta.4")))
 }
 ```
 
 </details>
 <details><summary>Forge 1.18.2+ with ForgeGradle</summary>
 
+### This will not work for Forge 1.18.1 and below, See [Initialization](#initialization).
+
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.1.2-beta.3"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.1.2-beta.3")) {
-        jarJar.ranged(it, "[0.1.2-beta.3,)")
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.1.2-beta.4"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.1.2-beta.4")) {
+        jarJar.ranged(it, "[0.1.2-beta.4,)")
     }
 }
 ```
@@ -42,9 +44,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.1.2-beta.3"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.1.2-beta.3")) {
-        jarJar.ranged(it, "[0.1.2-beta.3,)")
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.1.2-beta.4"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.1.2-beta.4")) {
+        jarJar.ranged(it, "[0.1.2-beta.4,)")
     }
 }
 ```
@@ -52,10 +54,12 @@ dependencies {
 </details>
 <details><summary>Forge 1.18.2+ with Architectury Loom</summary>
 
+### This will not work for Forge 1.18.1 and below, See [Initialization](#initialization).
+
 ```gradle
 dependencies {
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.1.2-beta.3"))
-    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.1.2-beta.3"))
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.1.2-beta.4"))
+    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.1.2-beta.4"))
 }
 ```
 
@@ -67,10 +71,12 @@ If you are on Fabric, Quilt or Forge 1.18.2+ MixinSquared will automatically ini
 
 ```java
 MixinSquaredBootstrap.init();
+
+// If you also intend to use the MixinCanceller, you will need to call:
+MixinCancellerLoader.load();
 ```
 
-In the `onLoad` method inside
-a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html)
+In the `onLoad` method inside a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html)
 
 ### Credits
 
