@@ -72,8 +72,8 @@ If you are on Fabric, Quilt or Forge 1.18.2+ MixinSquared will automatically ini
 ```java
 MixinSquaredBootstrap.init();
 
-// If you also intend to use the MixinCanceller, you will need to call:
-MixinCancellerLoader.load();
+// If you intend to use a MixinCanceller, you will need to call:
+MixinCancellerRegistrar.register(new YourMixinCancellerImpl());
 ```
 
 In the `onLoad` method inside a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html)
