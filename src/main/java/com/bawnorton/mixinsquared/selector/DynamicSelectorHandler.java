@@ -26,13 +26,21 @@ package com.bawnorton.mixinsquared.selector;
 
 import com.bawnorton.mixinsquared.TargetHandler;
 import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.mixin.injection.selectors.*;
+import org.spongepowered.asm.mixin.injection.struct.MemberInfo;
+import org.spongepowered.asm.mixin.struct.SpecialMethodInfo;
+import org.spongepowered.asm.mixin.transformer.ClassInfo;
 import org.spongepowered.asm.mixin.transformer.meta.MixinMerged;
+import org.spongepowered.asm.service.MixinService;
 import org.spongepowered.asm.util.Annotations;
 import org.spongepowered.asm.util.PrettyPrinter;
 import org.spongepowered.asm.util.asm.IAnnotatedElement;
 import org.spongepowered.asm.util.asm.MethodNodeEx;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 @ITargetSelectorDynamic.SelectorId("Handler")
 public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
@@ -40,15 +48,16 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
 
     private final String name;
 
+    private final String desc;
+
     private final String prefix;
 
     private final boolean print;
 
-    private final PrettyPrinter printer = new PrettyPrinter();
-
-    public DynamicSelectorHandler(String mixinName, String name, String prefix, boolean print) {
+    public DynamicSelectorHandler(String mixinName, MemberInfo memberInfo, String prefix, boolean print) {
         this.mixinName = mixinName;
-        this.name = name;
+        this.name = memberInfo.getName();
+        this.desc = memberInfo.getDesc();
         this.prefix = prefix == null ? null : prefix.isEmpty() ? null : prefix;
         this.print = print;
     }
@@ -66,7 +75,15 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
         } else {
             throw new AssertionError("Could not get annotation for method");
         }
-        return new DynamicSelectorHandler(Annotations.getValue(annotationNode, "mixin"), Annotations.getValue(annotationNode, "name"), Annotations.getValue(annotationNode, "prefix", ""), Annotations.getValue(annotationNode, "print", Boolean.FALSE));
+
+        String name = Annotations.getValue(annotationNode, "name");
+        MemberInfo memberInfo = MemberInfo.parse(name, context);
+
+        String mixin = Annotations.getValue(annotationNode, "mixin");
+        String prefix = Annotations.getValue(annotationNode, "prefix", "");
+        boolean print = Annotations.getValue(annotationNode, "print", Boolean.FALSE);
+
+        return new DynamicSelectorHandler(mixin, memberInfo, prefix, print);
     }
 
     @Override
@@ -89,14 +106,42 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
         if (context.getMixin().getClassName().equals(mixinName)) {
             throw new InvalidSelectorException("Dynamic selector targets self!");
         }
-        if (print) {
-            printer.kvWidth(20)
-                    .kv("Mixin", mixinName)
-                    .kv("Name", name)
-                    .kv("Prefix", prefix)
-                    .add("%100s %-15s %-50s %s", "MIXIN", "PREFIX", "ORIGINAL NAME", "CANDIDATE")
-                    .print(System.err);
+        if(!print) return this;
+
+        PrettyPrinter printer = new PrettyPrinter();
+        printer.kvWidth(20);
+        printer.kv("Target Mixin", mixinName);
+        printer.kv("Target Method", name);
+        printer.kv("Target Desc", desc == null ? "None" : desc);
+        printer.kv("Target Prefix", prefix == null ? "None" : prefix);
+        printer.kv("Print", "Print is enabled, matching disabled!");
+        printer.hr();
+
+        if(!(context instanceof SpecialMethodInfo)) return this;
+        SpecialMethodInfo specialMethodInfo = (SpecialMethodInfo) context;
+
+        ClassNode classNode = specialMethodInfo.getClassNode();
+        List<MethodNode> methods = classNode.methods;
+        for(MethodNode method : methods) {
+            if(!(method instanceof MethodNodeEx)) continue;
+            MethodNodeEx methodNodeEx = (MethodNodeEx) method;
+
+            String originalName = methodNodeEx.getOriginalName();
+            String prefix = method.name.split("\\$")[0];
+            String originalDesc = method.desc;
+            printer.kv("Name", originalName + ";" + originalDesc);
+            printer.kv("Prefix", prefix);
+            String candidateType = "NO";
+            MatchResult matchResult = matchInternal(mixinName, originalName, originalDesc, prefix);
+            if(matchResult == MatchResult.EXACT_MATCH) {
+                candidateType = "YES";
+            } else if(matchResult == MatchResult.MATCH) {
+                candidateType = "PARTIAL";
+            }
+            printer.kv("Candidate", candidateType);
+            printer.hr('-');
         }
+        printer.print(System.err);
         return this;
     }
 
@@ -112,6 +157,8 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
 
     @Override
     public <TNode> MatchResult match(ElementNode<TNode> node) {
+        if(print) return MatchResult.NONE;
+
         MethodNode method = node.getMethod();
         AnnotationNode annotation = Annotations.getVisible(method, MixinMerged.class);
         if (annotation == null) return MatchResult.NONE;
@@ -119,24 +166,19 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
 
         MethodNodeEx methodNodeEx = (MethodNodeEx) method;
         String targetMixinName = Annotations.getValue(annotation, "mixin");
-        MatchResult result = matchInternal(targetMixinName, methodNodeEx);
-        if (print)
-            System.err.printf("/* %100s %-15s %-50s %9s */\n", targetMixinName, method.name.split("\\$")[0], methodNodeEx.getOriginalName(), result.isExactMatch() ? "YES" : "-");
-        return result;
+        String originalName = methodNodeEx.getOriginalName();
+        String desc = methodNodeEx.desc;
+        String prefix = methodNodeEx.name.split("\\$")[0];
+        return matchInternal(targetMixinName, originalName, desc, prefix);
     }
 
-    private MatchResult matchInternal(String targetMixinName, MethodNodeEx method) {
+    private MatchResult matchInternal(String targetMixinName, String name, String desc, String prefix) {
         if (!mixinName.equals(targetMixinName)) return MatchResult.NONE;
-        if (prefix != null) {
-            String methodPrefix = method.name.split("\\$")[0];
-            if (!methodPrefix.equalsIgnoreCase(prefix)) return MatchResult.NONE;
-        }
-        if (method.getOriginalName().equals(name)) {
-            return MatchResult.EXACT_MATCH;
-        }
-        if (method.getOriginalName().equalsIgnoreCase(name)) {
-            return MatchResult.MATCH;
-        }
+
+        if (this.desc != null && desc != null && !this.desc.equals(desc)) return MatchResult.NONE;
+        if (this.prefix != null && prefix != null && !this.prefix.equals(prefix)) return MatchResult.NONE;
+        if (this.name.equals(name)) return MatchResult.EXACT_MATCH;
+        if (this.name.equalsIgnoreCase(name)) return MatchResult.MATCH;
         return MatchResult.NONE;
     }
 
