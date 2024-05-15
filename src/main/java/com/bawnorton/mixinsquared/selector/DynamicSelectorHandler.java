@@ -25,22 +25,31 @@
 package com.bawnorton.mixinsquared.selector;
 
 import com.bawnorton.mixinsquared.TargetHandler;
+import com.bawnorton.mixinsquared.reflection.AnnotatedMixinExtension;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.spongepowered.asm.mixin.injection.selectors.*;
+import org.spongepowered.asm.mixin.injection.selectors.ElementNode;
+import org.spongepowered.asm.mixin.injection.selectors.ISelectorContext;
+import org.spongepowered.asm.mixin.injection.selectors.ITargetSelector;
+import org.spongepowered.asm.mixin.injection.selectors.ITargetSelectorDynamic;
+import org.spongepowered.asm.mixin.injection.selectors.InvalidSelectorException;
+import org.spongepowered.asm.mixin.injection.selectors.MatchResult;
 import org.spongepowered.asm.mixin.injection.struct.MemberInfo;
 import org.spongepowered.asm.mixin.struct.SpecialMethodInfo;
-import org.spongepowered.asm.mixin.transformer.ClassInfo;
 import org.spongepowered.asm.mixin.transformer.meta.MixinMerged;
-import org.spongepowered.asm.service.MixinService;
+import org.spongepowered.asm.obfuscation.mapping.common.MappingMethod;
 import org.spongepowered.asm.util.Annotations;
 import org.spongepowered.asm.util.PrettyPrinter;
 import org.spongepowered.asm.util.asm.IAnnotatedElement;
+import org.spongepowered.asm.util.asm.IAnnotationHandle;
 import org.spongepowered.asm.util.asm.MethodNodeEx;
-import java.io.IOException;
+import org.spongepowered.tools.obfuscation.ObfuscationData;
+import org.spongepowered.tools.obfuscation.interfaces.IObfuscationManager;
+import org.spongepowered.tools.obfuscation.interfaces.IReferenceManager;
+import org.spongepowered.tools.obfuscation.interfaces.ITypeHandleProvider;
+import org.spongepowered.tools.obfuscation.mirror.TypeHandle;
 import java.util.List;
-import java.util.Set;
 
 @ITargetSelectorDynamic.SelectorId("Handler")
 public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
@@ -69,20 +78,44 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
         if (context.getMethod() instanceof MethodNode) {
             MethodNode method = (MethodNode) context.getMethod();
             annotationNode = Annotations.getVisible(method, TargetHandler.class);
+            return parseRuntime(annotationNode, context);
         } else if (context.getMethod() instanceof IAnnotatedElement) {
             IAnnotatedElement element = (IAnnotatedElement) context.getMethod();
-            annotationNode = element.getAnnotation(TargetHandler.class).getValue();
+            return parseCompileTime(element, context);
         } else {
             throw new AssertionError("Could not get annotation for method");
         }
+    }
 
-        String name = Annotations.getValue(annotationNode, "name");
+    private static DynamicSelectorHandler parseCompileTime(IAnnotatedElement element, ISelectorContext context) {
+        IAnnotationHandle annotation = element.getAnnotation(TargetHandler.class);
+        String name = annotation.getValue("name");
         MemberInfo memberInfo = MemberInfo.parse(name, context);
+        String mixin = annotation.getValue("mixin");
 
-        String mixin = Annotations.getValue(annotationNode, "mixin");
-        String prefix = Annotations.getValue(annotationNode, "prefix", "");
-        boolean print = Annotations.getValue(annotationNode, "print", Boolean.FALSE);
+        if(memberInfo.getDesc() != null) {
+            AnnotatedMixinExtension.tryAs(context.getMixin()).ifPresent(extension -> {
+                IObfuscationManager obfManager = extension.getObfuscationManager();
+                ITypeHandleProvider typeProvider = extension.getTypeProvider();
+                TypeHandle typeHandle = typeProvider.getTypeHandle(mixin);
+                MappingMethod targetMethod = typeHandle.getMappingMethod(memberInfo.getName(), memberInfo.getDesc());
+                ObfuscationData<MappingMethod> obfData = obfManager.getDataProvider().getObfMethod(targetMethod);
+                IReferenceManager refManager = obfManager.getReferenceManager();
+                refManager.addMethodMapping(context.getMixin().getClassRef(), name, obfData);
+            });
+        }
 
+        String prefix = annotation.getValue("prefix", "");
+        boolean print = annotation.getValue("print", Boolean.FALSE);
+        return new DynamicSelectorHandler(mixin, memberInfo, prefix, print);
+    }
+
+    private static DynamicSelectorHandler parseRuntime(AnnotationNode node, ISelectorContext context) {
+        String name = Annotations.getValue(node, "name");
+        MemberInfo memberInfo = MemberInfo.parse(name, context);
+        String mixin = Annotations.getValue(node, "mixin");
+        String prefix = Annotations.getValue(node, "prefix", "");
+        boolean print = Annotations.getValue(node, "print", Boolean.FALSE);
         return new DynamicSelectorHandler(mixin, memberInfo, prefix, print);
     }
 
@@ -184,6 +217,6 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
 
     @Override
     public String toString() {
-        return "@MixinSquared:Handler[" + "mixin='" + mixinName + '\'' + ", name='" + name + '\'' + ", prefix='" + prefix + '\'' + ']';
+        return "@MixinSquared:Handler[" + "mixin='" + mixinName + '\'' + ", name='" + name + '\'' + ", desc='" + desc + '\'' + ", prefix='" + prefix + '\'' + ']';
     }
 }
