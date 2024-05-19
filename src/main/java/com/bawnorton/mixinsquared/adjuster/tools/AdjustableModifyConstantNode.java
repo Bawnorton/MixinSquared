@@ -46,4 +46,39 @@ public class AdjustableModifyConstantNode extends AdjustableInjectorNode {
         this.setConstant(constant.apply(this.getConstant()));
         return this;
     }
+
+    @Override
+    public AdjustableModifyConstantNode withMethod(UnaryOperator<List<String>> method) {
+        return (AdjustableModifyConstantNode) super.withMethod(method);
+    }
+
+    @Override
+    public AdjustableModifyConstantNode withTarget(UnaryOperator<List<AdjustableDescNode>> target) {
+        return (AdjustableModifyConstantNode) super.withTarget(target);
+    }
+
+    @Override
+    public AdjustableModifyConstantNode withRemap(UnaryOperator<Boolean> remap) {
+        return (AdjustableModifyConstantNode) super.withRemap(remap);
+    }
+
+    @Override
+    public AdjustableModifyConstantNode withRequire(UnaryOperator<Integer> require) {
+        return (AdjustableModifyConstantNode) super.withRequire(require);
+    }
+
+    @Override
+    public AdjustableModifyConstantNode withExpect(UnaryOperator<Integer> expect) {
+        return (AdjustableModifyConstantNode) super.withExpect(expect);
+    }
+
+    @Override
+    public AdjustableModifyConstantNode withAllow(UnaryOperator<Integer> allow) {
+        return (AdjustableModifyConstantNode) super.withAllow(allow);
+    }
+
+    @Override
+    public AdjustableModifyConstantNode withConstraints(UnaryOperator<String> constraints) {
+        return (AdjustableModifyConstantNode) super.withConstraints(constraints);
+    }
 }

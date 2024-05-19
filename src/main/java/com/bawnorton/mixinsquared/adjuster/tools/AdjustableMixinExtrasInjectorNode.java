@@ -10,16 +10,16 @@ public abstract class AdjustableMixinExtrasInjectorNode extends AdjustableAnnota
         super(node);
     }
 
-    public String[] getMethod() {
-        return this.<String[]>get("method").orElse(null);
+    public List<String> getMethod() {
+        return this.<List<String>>get("method").orElse(null);
     }
 
-    public void setMethod(String... method) {
+    public void setMethod(List<String> method) {
         if (method == null) throw new IllegalArgumentException("Method cannot be null");
         this.set("method", method);
     }
 
-    public AdjustableMixinExtrasInjectorNode withMethod(UnaryOperator<String[]> method) {
+    public AdjustableMixinExtrasInjectorNode withMethod(UnaryOperator<List<String>> method) {
         this.setMethod(method.apply(this.getMethod()));
         return this;
     }

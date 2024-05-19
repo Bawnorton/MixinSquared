@@ -43,4 +43,39 @@ public class AdjustableWrapOperationNode extends AdjustableMixinExtrasInjectorNo
         this.setConstants(constants.apply(this.getConstants()));
         return this;
     }
+
+    @Override
+    public AdjustableWrapOperationNode withMethod(UnaryOperator<List<String>> method) {
+        return (AdjustableWrapOperationNode) super.withMethod(method);
+    }
+
+    @Override
+    public AdjustableWrapOperationNode withAt(UnaryOperator<List<AdjustableAtNode>> at) {
+        return (AdjustableWrapOperationNode) super.withAt(at);
+    }
+
+    @Override
+    public AdjustableWrapOperationNode withSlice(UnaryOperator<List<AdjustableSliceNode>> slice) {
+        return (AdjustableWrapOperationNode) super.withSlice(slice);
+    }
+
+    @Override
+    public AdjustableWrapOperationNode withRemap(UnaryOperator<Boolean> remap) {
+        return (AdjustableWrapOperationNode) super.withRemap(remap);
+    }
+
+    @Override
+    public AdjustableWrapOperationNode withRequire(UnaryOperator<Integer> require) {
+        return (AdjustableWrapOperationNode) super.withRequire(require);
+    }
+
+    @Override
+    public AdjustableWrapOperationNode withExpect(UnaryOperator<Integer> expect) {
+        return (AdjustableWrapOperationNode) super.withExpect(expect);
+    }
+
+    @Override
+    public AdjustableWrapOperationNode withAllow(UnaryOperator<Integer> allow) {
+        return (AdjustableWrapOperationNode) super.withAllow(allow);
+    }
 }

@@ -86,4 +86,39 @@ public class AdjustableInjectNode extends AdjustableInjectorNode {
         this.setLocals(locals.apply(this.getLocals()));
         return this;
     }
+
+    @Override
+    public AdjustableInjectNode withMethod(UnaryOperator<List<String>> method) {
+        return (AdjustableInjectNode) super.withMethod(method);
+    }
+
+    @Override
+    public AdjustableInjectNode withTarget(UnaryOperator<List<AdjustableDescNode>> target) {
+        return (AdjustableInjectNode) super.withTarget(target);
+    }
+
+    @Override
+    public AdjustableInjectNode withRemap(UnaryOperator<Boolean> remap) {
+        return (AdjustableInjectNode) super.withRemap(remap);
+    }
+
+    @Override
+    public AdjustableInjectNode withRequire(UnaryOperator<Integer> require) {
+        return (AdjustableInjectNode) super.withRequire(require);
+    }
+
+    @Override
+    public AdjustableInjectNode withExpect(UnaryOperator<Integer> expect) {
+        return (AdjustableInjectNode) super.withExpect(expect);
+    }
+
+    @Override
+    public AdjustableInjectNode withAllow(UnaryOperator<Integer> allow) {
+        return (AdjustableInjectNode) super.withAllow(allow);
+    }
+
+    @Override
+    public AdjustableInjectNode withConstraints(UnaryOperator<String> constraints) {
+        return (AdjustableInjectNode) super.withConstraints(constraints);
+    }
 }

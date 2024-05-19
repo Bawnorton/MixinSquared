@@ -112,4 +112,39 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
         this.setArgsOnly(argsOnly.apply(this.getArgsOnly()));
         return this;
     }
+
+    @Override
+    public AdjustableModifyVariableNode withMethod(UnaryOperator<List<String>> method) {
+        return (AdjustableModifyVariableNode) super.withMethod(method);
+    }
+
+    @Override
+    public AdjustableModifyVariableNode withTarget(UnaryOperator<List<AdjustableDescNode>> target) {
+        return (AdjustableModifyVariableNode) super.withTarget(target);
+    }
+
+    @Override
+    public AdjustableModifyVariableNode withRemap(UnaryOperator<Boolean> remap) {
+        return (AdjustableModifyVariableNode) super.withRemap(remap);
+    }
+
+    @Override
+    public AdjustableModifyVariableNode withRequire(UnaryOperator<Integer> require) {
+        return (AdjustableModifyVariableNode) super.withRequire(require);
+    }
+
+    @Override
+    public AdjustableModifyVariableNode withExpect(UnaryOperator<Integer> expect) {
+        return (AdjustableModifyVariableNode) super.withExpect(expect);
+    }
+
+    @Override
+    public AdjustableModifyVariableNode withAllow(UnaryOperator<Integer> allow) {
+        return (AdjustableModifyVariableNode) super.withAllow(allow);
+    }
+
+    @Override
+    public AdjustableModifyVariableNode withConstraints(UnaryOperator<String> constraints) {
+        return (AdjustableModifyVariableNode) super.withConstraints(constraints);
+    }
 }
