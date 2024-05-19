@@ -16,6 +16,11 @@ public class AdjustableConstantNode extends AdjustableAnnotationNode {
         return Constant.class;
     }
 
+    public static AdjustableConstantNode defaultNode() {
+        AnnotationNode node = new AnnotationNode(Type.getDescriptor(Constant.class));
+        return new AdjustableConstantNode(node);
+    }
+
     public boolean getNullValue() {
         return this.<Boolean>get("nullValue").orElse(false);
     }

@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class AdjustableDescNode extends AdjustableAnnotationNode {
-    public static final AdjustableDescNode DEFAULT;
-
     public AdjustableDescNode(AnnotationNode node) {
         super(node);
     }
@@ -20,10 +18,11 @@ public class AdjustableDescNode extends AdjustableAnnotationNode {
         return Desc.class;
     }
 
-    static {
+    public static AdjustableDescNode defaultNode(String value) {
         AnnotationNode node = new AnnotationNode(Type.getDescriptor(Desc.class));
-        node.visit("value", "");
-        DEFAULT = new AdjustableDescNode(node);
+        AdjustableDescNode defaultNode = new AdjustableDescNode(node);
+        defaultNode.setValue(value);
+        return defaultNode;
     }
 
     public String getId() {

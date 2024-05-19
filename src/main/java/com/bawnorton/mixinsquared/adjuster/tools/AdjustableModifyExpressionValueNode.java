@@ -1,6 +1,7 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -14,6 +15,14 @@ public class AdjustableModifyExpressionValueNode extends AdjustableMixinExtrasIn
     @Override
     protected Class<? extends Annotation> getAnnotationClass() {
         return ModifyExpressionValue.class;
+    }
+
+    public static AdjustableModifyExpressionValueNode defaultNode(List<String> methods, List<AdjustableAtNode> atNodes) {
+        AnnotationNode node = new AnnotationNode(Type.getDescriptor(ModifyExpressionValue.class));
+        AdjustableModifyExpressionValueNode defaultNode = new AdjustableModifyExpressionValueNode(node);
+        defaultNode.setMethod(methods);
+        defaultNode.setAt(atNodes);
+        return defaultNode;
     }
 
     @Override

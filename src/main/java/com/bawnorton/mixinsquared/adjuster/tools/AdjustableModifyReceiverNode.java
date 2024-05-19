@@ -1,6 +1,8 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -14,6 +16,14 @@ public class AdjustableModifyReceiverNode extends AdjustableMixinExtrasInjectorN
     @Override
     protected Class<? extends Annotation> getAnnotationClass() {
         return ModifyReceiver.class;
+    }
+
+    public static AdjustableModifyReceiverNode defaultNode(List<String> methods, List<AdjustableAtNode> atNodes) {
+        AnnotationNode node = new AnnotationNode(Type.getDescriptor(ModifyReceiver.class));
+        AdjustableModifyReceiverNode defaultNode = new AdjustableModifyReceiverNode(node);
+        defaultNode.setMethod(methods);
+        defaultNode.setAt(atNodes);
+        return defaultNode;
     }
 
     @Override

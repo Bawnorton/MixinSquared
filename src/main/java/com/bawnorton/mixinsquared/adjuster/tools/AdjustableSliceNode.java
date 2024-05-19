@@ -7,8 +7,6 @@ import java.lang.annotation.Annotation;
 import java.util.function.UnaryOperator;
 
 public class AdjustableSliceNode extends AdjustableAnnotationNode {
-    public static final AdjustableSliceNode DEFAULT;
-
     public AdjustableSliceNode(AnnotationNode node) {
         super(node);
     }
@@ -18,17 +16,9 @@ public class AdjustableSliceNode extends AdjustableAnnotationNode {
         return Slice.class;
     }
 
-    static {
+    public static AdjustableSliceNode defaultNode() {
         AnnotationNode node = new AnnotationNode(Type.getDescriptor(Slice.class));
-        DEFAULT = new AdjustableSliceNode(node);
-    }
-
-    public static AdjustableSliceNode[] fromArray(AnnotationNode[] nodes) {
-        AdjustableSliceNode[] slices = new AdjustableSliceNode[nodes.length];
-        for (int i = 0; i < nodes.length; i++) {
-            slices[i] = new AdjustableSliceNode(nodes[i]);
-        }
-        return slices;
+        return new AdjustableSliceNode(node);
     }
 
     public String getId() {

@@ -16,10 +16,17 @@ public class AdjustableRedirectNode extends AdjustableInjectorNode {
         return Redirect.class;
     }
 
+    public AdjustableRedirectNode defaultNode(AdjustableAtNode atNode) {
+        AnnotationNode node = new AnnotationNode(Redirect.class.getCanonicalName());
+        AdjustableRedirectNode defaultNode = new AdjustableRedirectNode(node);
+        defaultNode.setAt(atNode);
+        return defaultNode;
+    }
+
     public AdjustableSliceNode getSlice() {
         return this.<AnnotationNode>get("slice")
                 .map(AdjustableSliceNode::new)
-                .orElse(AdjustableSliceNode.DEFAULT);
+                .orElse(AdjustableSliceNode.defaultNode());
     }
 
     public void setSlice(AdjustableSliceNode slice) {

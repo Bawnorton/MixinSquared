@@ -1,6 +1,7 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -14,6 +15,11 @@ public class AdjustableWrapWithConditionNode extends AdjustableMixinExtrasInject
     @Override
     protected Class<? extends Annotation> getAnnotationClass() {
         return WrapWithCondition.class;
+    }
+
+    public static AdjustableWrapWithConditionNode defaultNode() {
+        AnnotationNode node = new AnnotationNode(Type.getDescriptor(WrapWithCondition.class));
+        return new AdjustableWrapWithConditionNode(node);
     }
 
     @Override

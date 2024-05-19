@@ -18,6 +18,11 @@ public class AdjustableNextNode extends AdjustableAnnotationNode {
         return Next.class;
     }
 
+    public static AdjustableNextNode defaultNode() {
+        AnnotationNode node = new AnnotationNode(Type.getDescriptor(Next.class));
+        return new AdjustableNextNode(node);
+    }
+
     public String getName() {
         return this.<String>get("name").orElse("");
     }

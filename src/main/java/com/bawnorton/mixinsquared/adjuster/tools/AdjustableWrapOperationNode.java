@@ -1,6 +1,7 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -17,6 +18,13 @@ public class AdjustableWrapOperationNode extends AdjustableMixinExtrasInjectorNo
         return WrapOperation.class;
     }
 
+    public static AdjustableWrapOperationNode defaultNode(List<String> methods) {
+        AnnotationNode node = new AnnotationNode(Type.getDescriptor(WrapOperation.class));
+        AdjustableWrapOperationNode defaultNode = new AdjustableWrapOperationNode(node);
+        defaultNode.setMethod(methods);
+        return defaultNode;
+    }
+
     @Override
     public List<AdjustableAtNode> getAt() {
         List<AdjustableAtNode> ats = super.getAt();
@@ -29,18 +37,18 @@ public class AdjustableWrapOperationNode extends AdjustableMixinExtrasInjectorNo
         this.set("at", at);
     }
 
-    public List<AdjustableConstantNode> getConstants() {
+    public List<AdjustableConstantNode> getConstant() {
         return this.<List<AnnotationNode>>get("constants")
                 .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableConstantNode::new))
                 .orElse(new ArrayList<>());
     }
 
-    public void setConstants(List<AdjustableConstantNode> constants) {
-        this.set("constants", constants);
+    public void setConstant(List<AdjustableConstantNode> constants) {
+        this.set("constant", constants);
     }
 
-    public AdjustableWrapOperationNode withConstants(UnaryOperator<List<AdjustableConstantNode>> constants) {
-        this.setConstants(constants.apply(this.getConstants()));
+    public AdjustableWrapOperationNode withConstant(UnaryOperator<List<AdjustableConstantNode>> constants) {
+        this.setConstant(constants.apply(this.getConstant()));
         return this;
     }
 

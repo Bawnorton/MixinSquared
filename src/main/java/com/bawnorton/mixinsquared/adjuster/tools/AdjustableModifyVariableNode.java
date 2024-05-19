@@ -17,10 +17,17 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
         return ModifyVariable.class;
     }
 
+    public static AdjustableModifyVariableNode defaultNode(AdjustableAtNode atNode) {
+        AnnotationNode node = new AnnotationNode(ModifyVariable.class.getCanonicalName());
+        AdjustableModifyVariableNode defaultNode = new AdjustableModifyVariableNode(node);
+        defaultNode.setAt(atNode);
+        return defaultNode;
+    }
+
     public AdjustableSliceNode getSlice() {
         return this.<AnnotationNode>get("slice")
                 .map(AdjustableSliceNode::new)
-                .orElse(AdjustableSliceNode.DEFAULT);
+                .orElse(AdjustableSliceNode.defaultNode());
     }
 
     public void setSlice(AdjustableSliceNode slice) {

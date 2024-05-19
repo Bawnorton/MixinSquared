@@ -18,6 +18,12 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
         return At.class;
     }
 
+    public static AdjustableAtNode defaultNode(InjectionPoint point) {
+        AnnotationNode node = new AnnotationNode(Type.getDescriptor(At.class));
+        node.visit("value", point.name().toUpperCase());
+        return new AdjustableAtNode(node);
+    }
+
     public String getId() {
         return this.<String>get("id").orElse("");
     }
@@ -113,7 +119,7 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
     public AdjustableDescNode getDesc() {
         return this.<AnnotationNode>get("desc")
                 .map(AdjustableDescNode::new)
-                .orElse(AdjustableDescNode.DEFAULT);
+                .orElse(AdjustableDescNode.defaultNode(""));
     }
 
     public void setDesc(AdjustableDescNode desc) {
@@ -177,7 +183,7 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
         return this;
     }
 
-    enum InjectionPoint {
+    public enum InjectionPoint {
         HEAD,
         TAIL,
         INVOKE,
@@ -189,9 +195,7 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
         JUMP;
 
         public AdjustableAtNode toNode() {
-            AnnotationNode node = new AnnotationNode(Type.getDescriptor(At.class));
-            node.visit("value", this.name().toUpperCase());
-            return new AdjustableAtNode(node);
+            return AdjustableAtNode.defaultNode(this);
         }
     }
 }
