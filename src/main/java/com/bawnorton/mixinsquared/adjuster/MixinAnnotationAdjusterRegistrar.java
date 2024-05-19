@@ -22,27 +22,31 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.canceller;
+package com.bawnorton.mixinsquared.adjuster;
 
-import com.bawnorton.mixinsquared.api.MixinCanceller;
+import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
+import com.bawnorton.mixinsquared.api.MixinAnnotationAdjuster;
+import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.service.MixinService;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public final class MixinCancellerRegistrar {
-    private static final Set<MixinCanceller> cancellers = new HashSet<>();
+public final class MixinAnnotationAdjusterRegistrar {
+    private static final Set<MixinAnnotationAdjuster> adjusters = new HashSet<>();
     private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
 
-    public static boolean shouldCancel(List<String> targetClassNames, String mixinClassName) {
-        return cancellers.stream().anyMatch(canceller -> canceller.shouldCancel(targetClassNames, mixinClassName));
+    public static AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode) {
+        for (MixinAnnotationAdjuster adjuster : adjusters) {
+            annotationNode = adjuster.adjust(targetClassNames, mixinClassName, handlerNode, annotationNode);
+        }
+        return annotationNode;
     }
 
-    public static void register(MixinCanceller canceller) {
-        cancellers.add(canceller);
-        LOGGER.debug("Registered canceller {}", canceller.getClass().getName());
+    public static void register(MixinAnnotationAdjuster adjuster) {
+        adjusters.add(adjuster);
+        LOGGER.debug("Registered annotation adjuster {}", adjuster.getClass().getName());
     }
 }

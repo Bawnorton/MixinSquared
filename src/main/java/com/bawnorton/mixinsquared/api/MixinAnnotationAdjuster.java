@@ -22,35 +22,20 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared;
+package com.bawnorton.mixinsquared.api;
 
-import com.bawnorton.mixinsquared.adjuster.ExtensionAnnotationAdjust;
-import com.bawnorton.mixinsquared.canceller.ExtensionCancelApplication;
-import com.bawnorton.mixinsquared.ext.ExtensionRegistrar;
-import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
-import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
+import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
+import org.objectweb.asm.tree.MethodNode;
+import java.util.List;
 
-@SuppressWarnings("unused")
-public final class MixinSquaredBootstrap {
-    public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.2.0";
-
-    private static boolean initialized = false;
-
-    public static void init() {
-        init(true);
-    }
-
-    static void init(boolean runtime) {
-        if (initialized) return;
-
-        initialized = true;
-
-        TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
-
-        if (runtime) {
-            ExtensionRegistrar.register(new ExtensionCancelApplication());
-            ExtensionRegistrar.register(new ExtensionAnnotationAdjust());
-        }
-    }
+public interface MixinAnnotationAdjuster {
+    /**
+     * Adjusts the annotation node for the given handler method node.
+     * @param targetClassNames List of target class names in "com.example.Example" format. These are unmapped class names.
+     * @param mixinClassName Mixin class name in "com.example.ExampleMixin" format.
+     * @param handlerNode Method node of the handler method. Read/Write.
+     * @param annotationNode Annotation node to adjust. Read/Write.
+     * @return Adjusted annotation node. Return null to remove the annotation.
+     */
+    AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode);
 }
