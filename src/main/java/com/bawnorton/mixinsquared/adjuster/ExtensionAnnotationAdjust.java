@@ -28,6 +28,7 @@ import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
 import com.bawnorton.mixinsquared.reflection.MixinInfoExtension;
 import com.bawnorton.mixinsquared.reflection.StateExtension;
 import com.bawnorton.mixinsquared.reflection.TargetClassContextExtension;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -65,6 +66,7 @@ public final class ExtensionAnnotationAdjust implements IExtension {
                     if (visibleAnnotations == null) return;
 
                     List<AnnotationNode> postAdjust = new ArrayList<>();
+                    boolean adjusted = false;
                     for (AnnotationNode annotationNode : visibleAnnotations) {
                         AdjustableAnnotationNode preAdjusted = AdjustableAnnotationNode.fromNode(annotationNode);
                         AdjustableAnnotationNode postAdjusted = MixinAnnotationAdjusterRegistrar.adjust(targetClassNames, mixinClassName, methodNode, preAdjusted, (adjuster, node) -> {
@@ -77,7 +79,11 @@ public final class ExtensionAnnotationAdjust implements IExtension {
                         }
                         if(!equal(preAdjusted, postAdjusted)) {
                             LOGGER.warn("Modified mixinInfo \"{}\". Check debug logs for more information.", mixinClassName);
+                            adjusted = true;
                         }
+                    }
+                    if(adjusted) {
+                        methodNode.name += String.format("$%s$m2-adjusted", RandomStringUtils.randomAlphanumeric(6));
                     }
                     visibleAnnotations.clear();
                     visibleAnnotations.addAll(postAdjust);
