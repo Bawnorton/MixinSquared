@@ -53,11 +53,11 @@ public final class ExtensionAnnotationAdjust implements IExtension {
     @Override
     public void preApply(ITargetClassContext context) {
         TargetClassContextExtension.tryAs(context).ifPresent(contextExtension -> {
-            SortedSet<IMixinInfo> mixins = contextExtension.getMixins();
-            mixins.forEach(mixin -> {
-                ClassNode mixinClassNode = mixin.getClassNode(0);
-                List<String> targetClassNames = mixin.getTargetClasses().stream().map(s -> s.replaceAll("/", ".")).collect(Collectors.toList());
-                String mixinClassName = mixin.getClassName();
+            SortedSet<IMixinInfo> mixinInfos = contextExtension.getMixins();
+            mixinInfos.forEach(mixinInfo -> {
+                ClassNode mixinClassNode = mixinInfo.getClassNode(0);
+                List<String> targetClassNames = mixinInfo.getTargetClasses().stream().map(s -> s.replaceAll("/", ".")).collect(Collectors.toList());
+                String mixinClassName = mixinInfo.getClassName();
 
                 List<MethodNode> methodNodes = mixinClassNode.methods;
                 methodNodes.forEach(methodNode -> {
@@ -68,7 +68,7 @@ public final class ExtensionAnnotationAdjust implements IExtension {
                     for (AnnotationNode annotationNode : visibleAnnotations) {
                         AdjustableAnnotationNode preAdjusted = AdjustableAnnotationNode.fromNode(annotationNode);
                         AdjustableAnnotationNode postAdjusted = MixinAnnotationAdjusterRegistrar.adjust(targetClassNames, mixinClassName, methodNode, preAdjusted, (adjuster, node) -> {
-                            LOGGER.debug("Adjuster \"{}\" modified annotation on method \"{}\" in mixin \"{}\"", adjuster, methodNode.name + methodNode.desc, mixinClassName);
+                            LOGGER.debug("Adjuster \"{}\" modified annotation on method \"{}\" in mixinInfo \"{}\"", adjuster, methodNode.name + methodNode.desc, mixinClassName);
                             LOGGER.debug("Pre-adjustment: {}", preAdjusted == null ? "null" : preAdjusted);
                             LOGGER.debug("Post-adjustment: {}", node == null ? "null" : node);
                         });
@@ -76,14 +76,14 @@ public final class ExtensionAnnotationAdjust implements IExtension {
                             postAdjust.add(postAdjusted);
                         }
                         if(!equal(preAdjusted, postAdjusted)) {
-                            LOGGER.warn("Modified mixin \"{}\". Check debug logs for more information.", mixinClassName);
+                            LOGGER.warn("Modified mixinInfo \"{}\". Check debug logs for more information.", mixinClassName);
                         }
                     }
                     visibleAnnotations.clear();
                     visibleAnnotations.addAll(postAdjust);
                 });
 
-                MixinInfoExtension.tryAs(mixin)
+                MixinInfoExtension.tryAs(mixinInfo)
                         .flatMap(mixinExtension -> StateExtension.tryAs(mixinExtension.getState()))
                         .ifPresent(stateExtension -> stateExtension.setClassNode(mixinClassNode));
             });
@@ -100,7 +100,6 @@ public final class ExtensionAnnotationAdjust implements IExtension {
         if(an1.values.size() != an2.values.size()) return false;
         return an1.values.equals(an2.values);
     }
-
 
     @Override
     public void postApply(ITargetClassContext context) {

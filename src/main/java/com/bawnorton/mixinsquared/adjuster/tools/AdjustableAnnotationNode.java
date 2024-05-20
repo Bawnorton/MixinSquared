@@ -95,6 +95,7 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode {
 
     public <T extends Enum<T>> Optional<T> getEnum(String key, Class<T> enumType) {
         return this.<String[]>get(key).map(value -> {
+            if(value.length < 2) return null;
             if(enumType.getName().equals(Type.getType(value[0]).getClassName())) {
                 return Enum.valueOf(enumType, value[1]);
             }
