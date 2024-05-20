@@ -22,17 +22,16 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.platform.forge;
+package com.bawnorton.mixinsquared.platform.neoforge;
 
-import com.bawnorton.mixinsquared.api.MixinCanceller;
-import com.bawnorton.mixinsquared.canceller.MixinCancellerRegistrar;
-
+import com.bawnorton.mixinsquared.adjuster.MixinAnnotationAdjusterRegistrar;
+import com.bawnorton.mixinsquared.api.MixinAnnotationAdjuster;
 import java.util.ServiceLoader;
 
-public final class MixinCancellerLoader {
-    private static final ServiceLoader<MixinCanceller> ENTRYPOINTS = ServiceLoader.load(MixinCanceller.class);
+public final class MixinAnnotationAdjusterLoader {
+    private static final ServiceLoader<MixinAnnotationAdjuster> ENTRYPOINTS = ServiceLoader.load(MixinAnnotationAdjuster.class);
 
     public static void load() {
-        ENTRYPOINTS.forEach(MixinCancellerRegistrar::register);
+        ENTRYPOINTS.forEach(MixinAnnotationAdjusterRegistrar::register);
     }
 }
