@@ -28,7 +28,6 @@ import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
 import com.bawnorton.mixinsquared.reflection.MixinInfoExtension;
 import com.bawnorton.mixinsquared.reflection.StateExtension;
 import com.bawnorton.mixinsquared.reflection.TargetClassContextExtension;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -68,15 +67,16 @@ public final class ExtensionAnnotationAdjust implements IExtension {
                     List<AnnotationNode> postAdjust = new ArrayList<>();
                     for (AnnotationNode annotationNode : visibleAnnotations) {
                         AdjustableAnnotationNode preAdjusted = AdjustableAnnotationNode.fromNode(annotationNode);
-                        AdjustableAnnotationNode postAdjusted = MixinAnnotationAdjusterRegistrar.adjust(targetClassNames, mixinClassName, methodNode, preAdjusted);
+                        AdjustableAnnotationNode postAdjusted = MixinAnnotationAdjusterRegistrar.adjust(targetClassNames, mixinClassName, methodNode, preAdjusted, (adjuster, node) -> {
+                            LOGGER.debug("Adjuster \"{}\" modified annotation on method \"{}\" in mixin \"{}\"", adjuster, methodNode.name + methodNode.desc, mixinClassName);
+                            LOGGER.debug("Pre-adjustment: {}", preAdjusted == null ? "null" : preAdjusted);
+                            LOGGER.debug("Post-adjustment: {}", node == null ? "null" : node);
+                        });
                         if (postAdjusted != null) {
                             postAdjust.add(postAdjusted);
-                        } else if (!methodNode.name.endsWith("m2_annotation_removed")) {
-                            //noinspection StringConcatenationInLoop
-                            methodNode.name += String.format("$%s$m2_annotation_removed", RandomStringUtils.randomAlphanumeric(6));
                         }
                         if(!equal(preAdjusted, postAdjusted)) {
-                            LOGGER.debug("{} -> {}", annotationNode, postAdjusted);
+                            LOGGER.warn("Modified mixin \"{}\". Check debug logs for more information.", mixinClassName);
                         }
                     }
                     visibleAnnotations.clear();

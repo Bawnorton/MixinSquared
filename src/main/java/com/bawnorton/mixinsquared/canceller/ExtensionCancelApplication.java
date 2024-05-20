@@ -50,9 +50,9 @@ public final class ExtensionCancelApplication implements IExtension {
             SortedSet<IMixinInfo> mixins = contextExtension.getMixins();
             mixins.removeIf(mixin -> {
                 List<String> targetClassNames = mixin.getTargetClasses().stream().map(s -> s.replaceAll("/", ".")).collect(Collectors.toList());
-                boolean shouldCancel = MixinCancellerRegistrar.shouldCancel(targetClassNames, mixin.getClassName());
+                boolean shouldCancel = MixinCancellerRegistrar.shouldCancel(targetClassNames, mixin.getClassName(), canceller -> LOGGER.debug("Canceller {} cancelled mixin {}", canceller, mixin.getClassName()));
                 if (shouldCancel) {
-                    LOGGER.debug("Cancelling mixin {}", mixin.getClassName());
+                    LOGGER.warn("Cancelled mixin {}. Check debug logs for more information.", mixin.getClassName());
                 }
                 return shouldCancel;
             });

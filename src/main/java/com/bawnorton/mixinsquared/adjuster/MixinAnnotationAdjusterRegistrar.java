@@ -26,21 +26,26 @@ package com.bawnorton.mixinsquared.adjuster;
 
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
 import com.bawnorton.mixinsquared.api.MixinAnnotationAdjuster;
-import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.service.MixinService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 public final class MixinAnnotationAdjusterRegistrar {
     private static final Set<MixinAnnotationAdjuster> adjusters = new HashSet<>();
     private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
 
-    public static AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode) {
+    public static AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode, BiConsumer<String, AdjustableAnnotationNode> postAdjustmentConsumer) {
         for (MixinAnnotationAdjuster adjuster : adjusters) {
+            String preAdjustment = annotationNode == null ? "null" : annotationNode.toString();
             annotationNode = adjuster.adjust(targetClassNames, mixinClassName, handlerNode, annotationNode);
+            String postAdjustment = annotationNode == null ? "null" : annotationNode.toString();
+            if (!preAdjustment.equals(postAdjustment)) {
+                postAdjustmentConsumer.accept(adjuster.getClass().getName(), annotationNode);
+            }
         }
         return annotationNode;
     }

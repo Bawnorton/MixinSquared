@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2023-present Bawnorton
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -18,7 +42,9 @@ import org.spongepowered.asm.util.Annotations;
 import org.spongepowered.asm.util.asm.ASM;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class AdjustableAnnotationNode extends AnnotationNode {
@@ -127,5 +153,64 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode {
 
     protected interface AdjustableAnnotationNodeFactory<T extends AdjustableAnnotationNode> {
         T create(AnnotationNode node);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('@').append(getAnnotationClass().getSimpleName());
+        sb.append('(');
+        if(values == null) {
+            sb.append(')');
+            return sb.toString();
+        }
+        Map<String, Object> valueMap = new HashMap<>();
+        for(int i = 0; i < values.size(); i += 2) {
+            String key = (String) values.get(i);
+            Object value = values.get(i + 1);
+            if (value instanceof String) {
+                valueMap.put(key, '"' + value.toString() + '"');
+            } else if (value instanceof Type) {
+                valueMap.put(key, ((Type) value).getClassName() + ".class");
+            } else if (value instanceof AnnotationNode) {
+                valueMap.put(key, AdjustableAnnotationNode.fromNode((AnnotationNode) value).toString());
+            } else if (value instanceof List) {
+                List<?> list = (List<?>) value;
+                if (list.isEmpty()) {
+                    valueMap.put(key, "{}");
+                } else {
+                    StringBuilder listBuilder = new StringBuilder();
+                    listBuilder.append('{');
+                    for (int j = 0; j < list.size(); j++) {
+                        Object element = list.get(j);
+                        if (element instanceof String) {
+                            listBuilder.append('"').append(element).append('"');
+                        } else if (element instanceof Type) {
+                            listBuilder.append(((Type) element).getClassName()).append(".class");
+                        } else if (element instanceof AnnotationNode) {
+                            listBuilder.append(AdjustableAnnotationNode.fromNode((AnnotationNode) element).toString());
+                        } else {
+                            listBuilder.append(element);
+                        }
+                        if (j < list.size() - 1) {
+                            listBuilder.append(", ");
+                        }
+                    }
+                    listBuilder.append('}');
+                    valueMap.put(key, listBuilder.toString());
+                }
+            } else {
+                valueMap.put(key, value);
+            }
+        }
+        for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
+            sb.append(entry.getKey()).append('=').append(entry.getValue());
+            sb.append(", ");
+        }
+        if(!valueMap.isEmpty()) {
+            sb.delete(sb.length() - 2, sb.length());
+        }
+        sb.append(')');
+        return sb.toString();
     }
 }
