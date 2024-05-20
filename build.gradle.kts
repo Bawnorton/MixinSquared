@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "com.bawnorton"
-    version = "0.1.2-beta.6"
+    version = "0.2.0-beta.1"
 
     repositories {
         mavenCentral()
@@ -18,6 +18,7 @@ allprojects {
         compileOnly("org.spongepowered:mixin:0.8.6")
         compileOnly("org.apache.commons:commons-lang3:3.3.2")
         compileOnly("org.ow2.asm:asm-debug-all:5.2")
+        compileOnly("io.github.llamalad7:mixinextras-common:0.3.6")
     }
 
     java {
@@ -25,6 +26,7 @@ allprojects {
         targetCompatibility = JavaVersion.VERSION_1_8
 
         withSourcesJar()
+        withJavadocJar()
     }
 
     tasks.withType<Jar> {
@@ -38,6 +40,8 @@ allprojects {
                 artifactId = "mixinsquared-$moduleName"
 
                 from(components["java"])
+                artifact(tasks.named("sourcesJar"))
+                artifact(tasks.named("javadocJar"))
             }
         }
     }
@@ -57,6 +61,11 @@ subprojects {
 
         tasks.named<Jar>("sourcesJar") {
             from(rootProject.sourceSets.main.get().allSource)
+        }
+
+        tasks.named<Jar>("javadocJar") {
+            dependsOn("javadoc")
+            from(tasks.named("javadoc"))
         }
     }
 }

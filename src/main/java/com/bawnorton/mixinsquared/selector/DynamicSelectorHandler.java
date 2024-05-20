@@ -153,7 +153,7 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
         if(!(context instanceof SpecialMethodInfo)) return this;
         SpecialMethodInfo specialMethodInfo = (SpecialMethodInfo) context;
 
-        ClassNode classNode = specialMethodInfo.getClassNode();
+        ClassNode classNode = specialMethodInfo.getTargetClassNode();
         List<MethodNode> methods = classNode.methods;
         for(MethodNode method : methods) {
             if(!(method instanceof MethodNodeEx)) continue;

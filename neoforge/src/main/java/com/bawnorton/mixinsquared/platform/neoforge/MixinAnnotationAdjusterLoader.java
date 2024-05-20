@@ -22,35 +22,16 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared;
+package com.bawnorton.mixinsquared.platform.neoforge;
 
-import com.bawnorton.mixinsquared.adjuster.ExtensionAnnotationAdjust;
-import com.bawnorton.mixinsquared.canceller.ExtensionCancelApplication;
-import com.bawnorton.mixinsquared.ext.ExtensionRegistrar;
-import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
-import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
+import com.bawnorton.mixinsquared.adjuster.MixinAnnotationAdjusterRegistrar;
+import com.bawnorton.mixinsquared.api.MixinAnnotationAdjuster;
+import java.util.ServiceLoader;
 
-@SuppressWarnings("unused")
-public final class MixinSquaredBootstrap {
-    public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.2.0";
+public final class MixinAnnotationAdjusterLoader {
+    private static final ServiceLoader<MixinAnnotationAdjuster> ENTRYPOINTS = ServiceLoader.load(MixinAnnotationAdjuster.class);
 
-    private static boolean initialized = false;
-
-    public static void init() {
-        init(true);
-    }
-
-    static void init(boolean runtime) {
-        if (initialized) return;
-
-        initialized = true;
-
-        TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
-
-        if (runtime) {
-            ExtensionRegistrar.register(new ExtensionCancelApplication());
-            ExtensionRegistrar.register(new ExtensionAnnotationAdjust());
-        }
+    public static void load() {
+        ENTRYPOINTS.forEach(MixinAnnotationAdjusterRegistrar::register);
     }
 }

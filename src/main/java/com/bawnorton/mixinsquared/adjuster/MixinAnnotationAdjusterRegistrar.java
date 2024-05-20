@@ -22,33 +22,36 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.canceller;
+package com.bawnorton.mixinsquared.adjuster;
 
-import com.bawnorton.mixinsquared.api.MixinCanceller;
+import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
+import com.bawnorton.mixinsquared.api.MixinAnnotationAdjuster;
+import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.service.MixinService;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
-public final class MixinCancellerRegistrar {
-    private static final Set<MixinCanceller> cancellers = new HashSet<>();
+public final class MixinAnnotationAdjusterRegistrar {
+    private static final Set<MixinAnnotationAdjuster> adjusters = new HashSet<>();
     private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
 
-    public static boolean shouldCancel(List<String> targetClassNames, String mixinClassName, Consumer<String> cancelConsumer) {
-        return cancellers.stream().anyMatch(canceller -> {
-            boolean shouldCancel = canceller.shouldCancel(targetClassNames, mixinClassName);
-            if (shouldCancel) {
-                cancelConsumer.accept(canceller.getClass().getName());
+    public static AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode, BiConsumer<String, AdjustableAnnotationNode> postAdjustmentConsumer) {
+        for (MixinAnnotationAdjuster adjuster : adjusters) {
+            String preAdjustment = annotationNode == null ? "null" : annotationNode.toString();
+            annotationNode = adjuster.adjust(targetClassNames, mixinClassName, handlerNode, annotationNode);
+            String postAdjustment = annotationNode == null ? "null" : annotationNode.toString();
+            if (!preAdjustment.equals(postAdjustment)) {
+                postAdjustmentConsumer.accept(adjuster.getClass().getName(), annotationNode);
             }
-            return shouldCancel;
-        });
+        }
+        return annotationNode;
     }
 
-    public static void register(MixinCanceller canceller) {
-        cancellers.add(canceller);
-        LOGGER.debug("Registered canceller {}", canceller.getClass().getName());
+    public static void register(MixinAnnotationAdjuster adjuster) {
+        adjusters.add(adjuster);
+        LOGGER.debug("Registered annotation adjuster {}", adjuster.getClass().getName());
     }
 }

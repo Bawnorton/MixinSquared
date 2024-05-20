@@ -22,35 +22,32 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared;
+package com.bawnorton.mixinsquared.reflection;
 
-import com.bawnorton.mixinsquared.adjuster.ExtensionAnnotationAdjust;
-import com.bawnorton.mixinsquared.canceller.ExtensionCancelApplication;
-import com.bawnorton.mixinsquared.ext.ExtensionRegistrar;
-import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
-import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
+import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
+import org.spongepowered.asm.mixin.transformer.ext.ITargetClassContext;
+import java.util.Optional;
+import java.util.SortedSet;
 
-@SuppressWarnings("unused")
-public final class MixinSquaredBootstrap {
-    public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.2.0";
+public final class TargetClassContextExtension {
+    private final ITargetClassContext reference;
 
-    private static boolean initialized = false;
+    private final FieldReference<SortedSet<?>> mixinsField;
 
-    public static void init() {
-        init(true);
+    public TargetClassContextExtension(ITargetClassContext reference) {
+        this.reference = reference;
+        mixinsField = new FieldReference<>(reference.getClass(), "mixins");
     }
 
-    static void init(boolean runtime) {
-        if (initialized) return;
-
-        initialized = true;
-
-        TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
-
-        if (runtime) {
-            ExtensionRegistrar.register(new ExtensionCancelApplication());
-            ExtensionRegistrar.register(new ExtensionAnnotationAdjust());
+    public static Optional<TargetClassContextExtension> tryAs(ITargetClassContext reference) {
+        if (reference.getClass().getName().equals("org.spongepowered.asm.mixin.transformer.TargetClassContext")) {
+            return Optional.of(new TargetClassContextExtension(reference));
         }
+        return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
+    public SortedSet<IMixinInfo> getMixins() {
+        return (SortedSet<IMixinInfo>) mixinsField.get(this.reference);
     }
 }

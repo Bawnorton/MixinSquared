@@ -37,6 +37,7 @@ public class MixinSquaredMixinConfigPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
         MixinSquaredBootstrap.init();
         MixinCancellerLoader.load();
+        MixinAnnotationAdjusterLoader.load();
     }
 
     @Override

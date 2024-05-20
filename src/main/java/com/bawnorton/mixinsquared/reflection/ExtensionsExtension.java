@@ -24,35 +24,38 @@
 
 package com.bawnorton.mixinsquared.reflection;
 
-import org.spongepowered.asm.mixin.refmap.IMixinContext;
-import org.spongepowered.tools.obfuscation.interfaces.IObfuscationManager;
-import org.spongepowered.tools.obfuscation.interfaces.ITypeHandleProvider;
+import org.spongepowered.asm.mixin.transformer.ext.Extensions;
+import org.spongepowered.asm.mixin.transformer.ext.IExtension;
+import org.spongepowered.asm.mixin.transformer.ext.IExtensionRegistry;
+
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public final class AnnotatedMixinExtension {
-    private final Object reference;
+public final class ExtensionsExtension {
+    private final Extensions reference;
 
-    private final FieldReference<IObfuscationManager> obfField;
-    private final FieldReference<ITypeHandleProvider> typeProviderField;
+    private final FieldReference<List<IExtension>> extensionsField;
+    private final FieldReference<Map<Class<? extends IExtension>, IExtension>> extensionMapField;
 
-    public AnnotatedMixinExtension(IMixinContext reference) {
+    public ExtensionsExtension(Extensions reference) {
         this.reference = reference;
-        obfField = new FieldReference<>(reference.getClass(), "obf");
-        typeProviderField = new FieldReference<>(reference.getClass(), "typeProvider");
+        extensionsField = new FieldReference<>(reference.getClass(), "extensions");
+        extensionMapField = new FieldReference<>(reference.getClass(), "extensionMap");
     }
 
-    public static Optional<AnnotatedMixinExtension> tryAs(IMixinContext reference) {
-        if(reference.getClass().getName().equals("org.spongepowered.tools.obfuscation.AnnotatedMixin")) {
-            return Optional.of(new AnnotatedMixinExtension(reference));
+    public static Optional<ExtensionsExtension> tryAs(IExtensionRegistry reference) {
+        if (reference instanceof Extensions) {
+            return Optional.of(new ExtensionsExtension((Extensions) reference));
         }
         return Optional.empty();
     }
 
-    public IObfuscationManager getObfuscationManager() {
-        return obfField.get(this.reference);
+    public List<IExtension> getExtensions() {
+        return extensionsField.get(this.reference);
     }
 
-    public ITypeHandleProvider getTypeProvider() {
-        return typeProviderField.get(this.reference);
+    public Map<Class<? extends IExtension>, IExtension> getExtensionMap() {
+        return extensionMapField.get(this.reference);
     }
 }

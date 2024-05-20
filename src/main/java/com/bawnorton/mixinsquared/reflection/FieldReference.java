@@ -22,35 +22,38 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared;
+package com.bawnorton.mixinsquared.reflection;
 
-import com.bawnorton.mixinsquared.adjuster.ExtensionAnnotationAdjust;
-import com.bawnorton.mixinsquared.canceller.ExtensionCancelApplication;
-import com.bawnorton.mixinsquared.ext.ExtensionRegistrar;
-import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
-import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
+import java.lang.reflect.Field;
 
-@SuppressWarnings("unused")
-public final class MixinSquaredBootstrap {
-    public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.2.0";
+public final class FieldReference<T> {
+    private final Field field;
 
-    private static boolean initialized = false;
-
-    public static void init() {
-        init(true);
+    public FieldReference(Class<?> clazz, String fieldName) {
+        Field field;
+        try {
+            field = clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+        field.setAccessible(true);
+        this.field = field;
     }
 
-    static void init(boolean runtime) {
-        if (initialized) return;
+    @SuppressWarnings("unchecked")
+    public T get(Object instance) {
+        try {
+            return (T) field.get(instance);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        initialized = true;
-
-        TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
-
-        if (runtime) {
-            ExtensionRegistrar.register(new ExtensionCancelApplication());
-            ExtensionRegistrar.register(new ExtensionAnnotationAdjust());
+    public void set(Object instance, T value) {
+        try {
+            field.set(instance, value);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }
