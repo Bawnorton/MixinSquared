@@ -26,7 +26,6 @@ allprojects {
         targetCompatibility = JavaVersion.VERSION_1_8
 
         withSourcesJar()
-        withJavadocJar()
     }
 
     tasks.withType<Jar> {
@@ -41,7 +40,6 @@ allprojects {
 
                 from(components["java"])
                 artifact(tasks.named("sourcesJar"))
-                artifact(tasks.named("javadocJar"))
             }
         }
     }
@@ -61,11 +59,6 @@ subprojects {
 
         tasks.named<Jar>("sourcesJar") {
             from(rootProject.sourceSets.main.get().allSource)
-        }
-
-        tasks.named<Jar>("javadocJar") {
-            dependsOn("javadoc")
-            from(tasks.named("javadoc"))
         }
     }
 }
