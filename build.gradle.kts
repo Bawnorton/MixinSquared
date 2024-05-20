@@ -39,7 +39,6 @@ allprojects {
                 artifactId = "mixinsquared-$moduleName"
 
                 from(components["java"])
-                artifact(tasks.named("sourcesJar"))
             }
         }
     }
