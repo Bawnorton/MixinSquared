@@ -1,5 +1,6 @@
 {
   "minVersion": "0.8",
   "plugin": "com.bawnorton.mixinsquared.platform.forge.MixinSquaredMixinConfigPlugin",
-  "package": "com.bawnorton.mixinsquared.platform.forge.mixins"
+  "package": "com.bawnorton.mixinsquared.platform.forge.mixins",
+  "priority": -1000
 }

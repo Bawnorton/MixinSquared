@@ -27,7 +27,6 @@ package com.bawnorton.mixinsquared.ext;
 import com.bawnorton.mixinsquared.reflection.ExtensionsExtension;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
-import org.spongepowered.asm.mixin.transformer.ext.Extensions;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 
 public final class ExtensionRegistrar {

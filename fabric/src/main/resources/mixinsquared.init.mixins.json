@@ -1,5 +1,6 @@
 {
   "minVersion": "0.8",
   "plugin": "com.bawnorton.mixinsquared.platform.fabric.MixinSquaredMixinConfigPlugin",
-  "package": "com.bawnorton.mixinsquared.platform.fabric.mixin"
+  "package": "com.bawnorton.mixinsquared.platform.fabric.mixin",
+  "priority": -1000
 }
