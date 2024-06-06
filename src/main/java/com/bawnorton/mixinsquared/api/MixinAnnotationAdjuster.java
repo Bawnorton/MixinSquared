@@ -34,7 +34,7 @@ public interface MixinAnnotationAdjuster {
      * @param targetClassNames List of target class names in "com.example.Example" format. These are unmapped class names.
      * @param mixinClassName Mixin class name in "com.example.ExampleMixin" format.
      * @param handlerNode Method node of the handler method. Read/Write.
-     * @param annotationNode Annotation node to adjust. Read/Write.
+     * @param annotationNode Annotation node to adjust. Read/Write. Node will always be present but the annotation class may not exist at runtime.
      * @return Adjusted annotation node. Return null to remove the annotation.
      */
     AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode);
