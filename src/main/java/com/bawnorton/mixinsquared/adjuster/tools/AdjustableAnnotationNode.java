@@ -50,7 +50,8 @@ import java.util.Optional;
 public abstract class AdjustableAnnotationNode extends AnnotationNode {
     protected AdjustableAnnotationNode(AnnotationNode node) {
         super(ASM.API_VERSION, node.desc);
-        if (!is(getAnnotationClass())) {
+        Class<? extends Annotation> annotationClass = getAnnotationClass();
+        if (annotationClass != null && !is(annotationClass)) {
             throw new IllegalArgumentException(String.format(
                     "%s requires an %s annotation node",
                     this.getClass().getSimpleName(),
@@ -159,7 +160,8 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append('@').append(getAnnotationClass().getSimpleName());
+        Class<? extends Annotation> annotationClass = getAnnotationClass();
+        sb.append('@').append(annotationClass == null ? desc : annotationClass.getSimpleName());
         sb.append('(');
         if(values == null) {
             sb.append(')');
