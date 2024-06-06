@@ -145,7 +145,7 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode {
                     try {
                         return Class.forName(Type.getType(node.desc).getClassName()).asSubclass(Annotation.class);
                     } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
+                        return null;
                     }
                 }
             };

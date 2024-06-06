@@ -153,16 +153,24 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
         if(!(context instanceof SpecialMethodInfo)) return this;
         SpecialMethodInfo specialMethodInfo = (SpecialMethodInfo) context;
 
-        ClassNode classNode = specialMethodInfo.getTargetClassNode();
+        ClassNode classNode;
+        try {
+            classNode = specialMethodInfo.getTargetClassNode();
+        } catch (NoSuchMethodError ignored) {
+            //noinspection deprecation
+            classNode = specialMethodInfo.getClassNode();
+        }
+
         List<MethodNode> methods = classNode.methods;
         for(MethodNode method : methods) {
             if(!(method instanceof MethodNodeEx)) continue;
             MethodNodeEx methodNodeEx = (MethodNodeEx) method;
 
+            String mixinName = methodNodeEx.getOwner().getClassName();
             String originalName = methodNodeEx.getOriginalName();
             String prefix = method.name.split("\\$")[0];
             String originalDesc = method.desc;
-            printer.kv("Name", originalName + ";" + originalDesc);
+            printer.kv("Name", originalName + originalDesc);
             printer.kv("Prefix", prefix);
             String candidateType = "NO";
             MatchResult matchResult = matchInternal(mixinName, originalName, originalDesc, prefix);
