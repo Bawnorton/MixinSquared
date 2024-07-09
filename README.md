@@ -1,4 +1,4 @@
-![MixinSquared Logo 2](https://github.com/Bawnorton/MixinSquared/assets/18416784/95078218-907e-4280-b5dc-5dda6b771b5f)
+![MixinSquared Logo](https://github.com/Bawnorton/MixinSquared/assets/18416784/95078218-907e-4280-b5dc-5dda6b771b5f)
 
 A [Mixin](https://github.com/SpongePowered/Mixin/) library for mixin'ing into other mod's mixins.
 
@@ -10,7 +10,7 @@ Works with [MixinExtras](https://github.com/LlamaLad7/MixinExtras)
 
 ```gradle
 repositories {
-    maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.bawnorton.com" }
 }
 ```
 
@@ -19,7 +19,7 @@ For each platform:<br>
 
 ```gradle
 dependencies {
-    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.2.0-beta.5")))
+    include(implementation(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-fabric:0.2.0-beta.6")))
 }
 ```
 
@@ -31,9 +31,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.5"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.5")) {
-        jarJar.ranged(it, "[0.2.0-beta.5,)")
+    implementation(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
+    implementation(jarJar("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.6")) {
+        jarJar.ranged(it, "[0.2.0-beta.6,)")
     }
 }
 ```
@@ -44,9 +44,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.5"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.2.0-beta.5")) {
-        jarJar.ranged(it, "[0.2.0-beta.5,)")
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.2.0-beta.6")) {
+        jarJar.ranged(it, "[0.2.0-beta.6,)")
     }
 }
 ```
@@ -58,14 +58,13 @@ dependencies {
 
 ```gradle
 dependencies {
-    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.5"))
-    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.5"))
+    compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
+    implementation(include("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.6"))
 }
 ```
 
 </details>
 
-</details>
 <details><summary>Any Other Platform</summary>
 
 This is only a rough guide. You will need to look into the specifics of setting up ShadowJar for your platform.
@@ -80,16 +79,16 @@ configurations {
 }
 
 repositories {
-    maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.bawnorton.com" }
 }
 
 dependencies {
-    shadow(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.5"))
+    shadow(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
 }
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    relocate("com.github.bawnorton.mixinsquared", "your.package.goes.here.mixinsquared")
+    relocate("com.bawnorton.mixinsquared", "your.package.goes.here.mixinsquared")
     mergeServiceFiles()
 }
 ```
