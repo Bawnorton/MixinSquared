@@ -15,7 +15,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.spongepowered:mixin:0.8.5")
+        compileOnly("org.spongepowered:mixin:0.8.6")
         compileOnly("org.apache.commons:commons-lang3:3.3.2")
         compileOnly("org.ow2.asm:asm-debug-all:5.2")
         compileOnly("io.github.llamalad7:mixinextras-common:0.3.6")
