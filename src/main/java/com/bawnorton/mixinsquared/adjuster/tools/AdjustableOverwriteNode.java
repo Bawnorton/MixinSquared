@@ -24,10 +24,7 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
-import org.spongepowered.asm.mixin.Overwrite;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -37,13 +34,8 @@ public class AdjustableOverwriteNode extends AdjustableAnnotationNode {
         super(node);
     }
 
-    @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return Overwrite.class;
-    }
-
     public static AdjustableOverwriteNode defaultNode() {
-        AnnotationNode node = new AnnotationNode(Type.getDescriptor(Overwrite.class));
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.OVERWRITE.desc());
         return new AdjustableOverwriteNode(node);
     }
 

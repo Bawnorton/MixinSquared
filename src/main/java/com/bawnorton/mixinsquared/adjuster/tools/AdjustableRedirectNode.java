@@ -25,8 +25,6 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import org.objectweb.asm.tree.AnnotationNode;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -35,13 +33,8 @@ public class AdjustableRedirectNode extends AdjustableInjectorNode {
         super(node);
     }
 
-    @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return Redirect.class;
-    }
-
     public AdjustableRedirectNode defaultNode(AdjustableAtNode atNode) {
-        AnnotationNode node = new AnnotationNode(Redirect.class.getCanonicalName());
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.REDIRECT.desc());
         AdjustableRedirectNode defaultNode = new AdjustableRedirectNode(node);
         defaultNode.setAt(atNode);
         return defaultNode;

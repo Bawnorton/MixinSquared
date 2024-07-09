@@ -24,10 +24,7 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -36,13 +33,8 @@ public class AdjustableModifyReturnValueNode extends AdjustableMixinExtrasInject
         super(node);
     }
 
-    @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return ModifyReturnValue.class;
-    }
-
     public static AdjustableModifyReturnValueNode defaultNode(List<String> methods, List<AdjustableAtNode> atNodes) {
-        AnnotationNode node = new AnnotationNode(Type.getDescriptor(ModifyReturnValue.class));
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.MODIFY_RETURN_VALUE.desc());
         AdjustableModifyReturnValueNode defaultNode = new AdjustableModifyReturnValueNode(node);
         defaultNode.setMethod(methods);
         defaultNode.setAt(atNodes);

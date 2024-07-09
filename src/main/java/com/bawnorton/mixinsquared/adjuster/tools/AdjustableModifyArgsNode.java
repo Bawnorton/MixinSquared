@@ -24,10 +24,7 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -36,13 +33,8 @@ public class AdjustableModifyArgsNode extends AdjustableInjectorNode {
         super(node);
     }
 
-    @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return ModifyArgs.class;
-    }
-
     public static AdjustableModifyArgsNode defaultNode(AdjustableAtNode atNode) {
-        AnnotationNode node = new AnnotationNode(Type.getDescriptor(ModifyArgs.class));
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.MODIFY_ARGS.desc());
         AdjustableModifyArgsNode defaultNode = new AdjustableModifyArgsNode(node);
         defaultNode.setAt(atNode);
         return defaultNode;

@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "com.bawnorton"
-    version = "0.2.0-beta.4"
+    version = "0.2.0-beta.5"
 
     repositories {
         mavenCentral()
@@ -15,7 +15,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.spongepowered:mixin:0.8.6")
+        compileOnly("org.spongepowered:mixin:0.8.5")
         compileOnly("org.apache.commons:commons-lang3:3.3.2")
         compileOnly("org.ow2.asm:asm-debug-all:5.2")
         compileOnly("io.github.llamalad7:mixinextras-common:0.3.6")
@@ -32,7 +32,26 @@ allprojects {
         archiveBaseName.set("mixinsquared-$moduleName")
     }
 
+    tasks.register<Copy>("buildAndCollect") {
+        group = "build"
+        val mainJar = tasks.jar.get().archiveFile
+        val sourceJar = tasks.named<Jar>("sourcesJar").get().archiveFile
+        from(mainJar, sourceJar)
+        into(rootProject.layout.buildDirectory.dir("libs/${version}"))
+        dependsOn("build", "sourcesJar")
+    }
+
     extensions.configure<PublishingExtension> {
+        repositories {
+            maven {
+                name = "bawnorton"
+                url = uri("https://maven.bawnorton.com/releases")
+                credentials(PasswordCredentials::class)
+                authentication {
+                    create<BasicAuthentication>("basic")
+                }
+            }
+        }
         publications {
             create<MavenPublication>("maven") {
                 groupId = "com.bawnorton.mixinsquared"
@@ -55,10 +74,10 @@ subprojects {
         tasks.named<Jar>("jar") {
             from(rootProject.sourceSets.main.get().output)
         }
+    }
 
-        tasks.named<Jar>("sourcesJar") {
-            from(rootProject.sourceSets.main.get().allSource)
-        }
+    tasks.named<Jar>("sourcesJar") {
+        from(rootProject.sourceSets.main.get().allSource)
     }
 }
 

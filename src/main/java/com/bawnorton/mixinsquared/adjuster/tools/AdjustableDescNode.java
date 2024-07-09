@@ -26,8 +26,6 @@ package com.bawnorton.mixinsquared.adjuster.tools;
 
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
-import org.spongepowered.asm.mixin.injection.Desc;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -37,13 +35,8 @@ public class AdjustableDescNode extends AdjustableAnnotationNode {
         super(node);
     }
 
-    @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return Desc.class;
-    }
-
     public static AdjustableDescNode defaultNode(String value) {
-        AnnotationNode node = new AnnotationNode(Type.getDescriptor(Desc.class));
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.DESC.desc());
         AdjustableDescNode defaultNode = new AdjustableDescNode(node);
         defaultNode.setValue(value);
         return defaultNode;

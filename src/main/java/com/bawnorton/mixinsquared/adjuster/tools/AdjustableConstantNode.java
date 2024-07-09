@@ -27,7 +27,6 @@ package com.bawnorton.mixinsquared.adjuster.tools;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.spongepowered.asm.mixin.injection.Constant;
-import java.lang.annotation.Annotation;
 import java.util.function.UnaryOperator;
 
 public class AdjustableConstantNode extends AdjustableAnnotationNode {
@@ -35,13 +34,8 @@ public class AdjustableConstantNode extends AdjustableAnnotationNode {
         super(node);
     }
 
-    @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return Constant.class;
-    }
-
     public static AdjustableConstantNode defaultNode() {
-        AnnotationNode node = new AnnotationNode(Type.getDescriptor(Constant.class));
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.CONSTANT.desc());
         return new AdjustableConstantNode(node);
     }
 

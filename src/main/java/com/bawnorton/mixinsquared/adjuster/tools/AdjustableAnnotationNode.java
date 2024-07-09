@@ -24,20 +24,10 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.ModifyReceiver;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.util.Annotations;
 import org.spongepowered.asm.util.asm.ASM;
 import java.lang.annotation.Annotation;
@@ -50,14 +40,6 @@ import java.util.Optional;
 public abstract class AdjustableAnnotationNode extends AnnotationNode {
     protected AdjustableAnnotationNode(AnnotationNode node) {
         super(ASM.API_VERSION, node.desc);
-        Class<? extends Annotation> annotationClass = getAnnotationClass();
-        if (annotationClass != null && !is(annotationClass)) {
-            throw new IllegalArgumentException(String.format(
-                    "%s requires an %s annotation node",
-                    this.getClass().getSimpleName(),
-                    getAnnotationClass().getSimpleName()
-            ));
-        }
         node.accept(this);
     }
 
@@ -72,8 +54,6 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode {
         }
         return list;
     }
-
-    protected abstract Class<? extends Annotation> getAnnotationClass();
 
     public boolean is(Class<? extends Annotation> annotation) {
         return desc.equals(Type.getDescriptor(annotation));
@@ -108,48 +88,52 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode {
         Annotations.setValue(this, key, value);
     }
 
-    private enum KnownAnnotations {
+    protected enum KnownAnnotations {
+        AT(AdjustableAtNode::new, At.class),
+        CONSTANT(AdjustableConstantNode::new, Constant.class),
+        DESC(AdjustableDescNode::new, Desc.class),
+        NEXT(AdjustableNextNode::new, "Lorg/spongepowered/asm.mixin/injection/Next"),
+        SLICE(AdjustableSliceNode::new, Slice.class),
         INJECT(AdjustableInjectNode::new, Inject.class),
         MODIFY_ARG(AdjustableModifyArgNode::new, ModifyArg.class),
         MODIFY_ARGS(AdjustableModifyArgsNode::new, ModifyArgs.class),
         MODIFY_CONSTANT(AdjustableModifyConstantNode::new, ModifyConstant.class),
-        MODIFY_EXPRESSION_VALUE(AdjustableModifyExpressionValueNode::new, ModifyExpressionValue.class),
-        MODIFY_RECIEVER(AdjustableModifyReceiverNode::new, ModifyReceiver.class),
-        MODIFU_RETURN_VALUE(AdjustableModifyReturnValueNode::new, ModifyReturnValue.class),
+        MODIFY_EXPRESSION_VALUE(AdjustableModifyExpressionValueNode::new, "Lcom/llamalad7/mixinextras/injector/ModifyExpressionValue;"),
+        MODIFY_RECIEVER(AdjustableModifyReceiverNode::new, "Lcom/llamalad7/mixinextras/injector/ModifyReceiver;"),
+        MODIFY_RETURN_VALUE(AdjustableModifyReturnValueNode::new, "Lcom/llamalad7/mixinextras/injector/ModifyReturnValue;"),
         MODIFY_VARIABLE(AdjustableModifyVariableNode::new, ModifyVariable.class),
         OVERWRITE(AdjustableOverwriteNode::new, Overwrite.class),
         REDIRECT(AdjustableRedirectNode::new, Redirect.class),
-        WRAP_OPERATION(AdjustableWrapOperationNode::new, WrapOperation.class),
-        WRAP_WITH_CONDITION(AdjustableWrapWithConditionNode::new, WrapWithCondition.class);
+        WRAP_OPERATION(AdjustableWrapOperationNode::new, "Lcom/llamalad7/mixinextras/injector/wrapoperation/WrapOperation;"),
+        WRAP_WITH_CONDITION(AdjustableWrapWithConditionNode::new, "Lcom/llamalad7/mixinextras/injector/v2/WrapWithCondition;");
 
         private final AdjustableAnnotationNodeFactory<?> factory;
-        private final Class<? extends Annotation> annotationClass;
+        private final String annotationClassDesc;
 
         KnownAnnotations(AdjustableAnnotationNodeFactory<?> factory, Class<? extends Annotation> annotationClass) {
+            this(factory, Type.getDescriptor(annotationClass));
+        }
+
+        KnownAnnotations(AdjustableAnnotationNodeFactory<?> factory, String annotationClassDesc) {
             this.factory = factory;
-            this.annotationClass = annotationClass;
+            this.annotationClassDesc = annotationClassDesc;
         }
 
         public AdjustableAnnotationNode create(AnnotationNode node) {
             return factory.create(node);
         }
 
+        public String desc() {
+            return annotationClassDesc;
+        }
+
         public static AdjustableAnnotationNode fromNode(AnnotationNode node) {
             for(KnownAnnotations annotation : values()) {
-                if(node.desc.equals(Type.getDescriptor(annotation.annotationClass))) {
+                if(node.desc.equals(annotation.annotationClassDesc)) {
                     return annotation.create(node);
                 }
             }
-            return new AdjustableAnnotationNode(node) {
-                @Override
-                protected Class<? extends Annotation> getAnnotationClass() {
-                    try {
-                        return Class.forName(Type.getType(node.desc).getClassName()).asSubclass(Annotation.class);
-                    } catch (ClassNotFoundException e) {
-                        return null;
-                    }
-                }
-            };
+            return new AdjustableAnnotationNode(node) {};
         }
     }
 
@@ -160,8 +144,7 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        Class<? extends Annotation> annotationClass = getAnnotationClass();
-        sb.append('@').append(annotationClass == null ? desc : annotationClass.getSimpleName());
+        sb.append('@').append(desc);
         sb.append('(');
         if(values == null) {
             sb.append(')');

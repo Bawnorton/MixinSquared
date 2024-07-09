@@ -24,10 +24,7 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
-import org.spongepowered.asm.mixin.injection.Slice;
-import java.lang.annotation.Annotation;
 import java.util.function.UnaryOperator;
 
 public class AdjustableSliceNode extends AdjustableAnnotationNode {
@@ -35,13 +32,8 @@ public class AdjustableSliceNode extends AdjustableAnnotationNode {
         super(node);
     }
 
-    @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return Slice.class;
-    }
-
     public static AdjustableSliceNode defaultNode() {
-        AnnotationNode node = new AnnotationNode(Type.getDescriptor(Slice.class));
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.SLICE.desc());
         return new AdjustableSliceNode(node);
     }
 

@@ -24,10 +24,7 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -37,13 +34,8 @@ public class AdjustableWrapOperationNode extends AdjustableMixinExtrasInjectorNo
         super(node);
     }
 
-    @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return WrapOperation.class;
-    }
-
     public static AdjustableWrapOperationNode defaultNode(List<String> methods) {
-        AnnotationNode node = new AnnotationNode(Type.getDescriptor(WrapOperation.class));
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.WRAP_OPERATION.desc());
         AdjustableWrapOperationNode defaultNode = new AdjustableWrapOperationNode(node);
         defaultNode.setMethod(methods);
         return defaultNode;
