@@ -10,7 +10,7 @@ Works with [MixinExtras](https://github.com/LlamaLad7/MixinExtras)
 
 ```gradle
 repositories {
-    maven { url = "https://maven.bawnorton.com" }
+    maven { url = "https://maven.bawnorton.com/releases" }
 }
 ```
 
