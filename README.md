@@ -19,7 +19,7 @@ For each platform:<br>
 
 ```gradle
 dependencies {
-    include(implementation(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-fabric:0.2.0-beta.6")))
+    include(implementation(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-fabric:0.2.0")))
 }
 ```
 
@@ -31,9 +31,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
-    implementation(jarJar("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.6")) {
-        jarJar.ranged(it, "[0.2.0-beta.6,)")
+    compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0"))
+    implementation(jarJar("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0")) {
+        jarJar.ranged(it, "[0.2.0,)")
     }
 }
 ```
@@ -44,9 +44,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.2.0-beta.6")) {
-        jarJar.ranged(it, "[0.2.0-beta.6,)")
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.2.0"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.2.0")) {
+        jarJar.ranged(it, "[0.2.0,)")
     }
 }
 ```
@@ -58,8 +58,8 @@ dependencies {
 
 ```gradle
 dependencies {
-    compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
-    implementation(include("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.6"))
+    compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0"))
+    implementation(include("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0"))
 }
 ```
 
@@ -83,7 +83,7 @@ repositories {
 }
 
 dependencies {
-    shadow(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
+    shadow(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0"))
 }
 
 shadowJar {
