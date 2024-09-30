@@ -8,7 +8,6 @@ Works with [MixinExtras](https://github.com/LlamaLad7/MixinExtras)
 
 ## Gradle
 
-:warning: domain currently being transferred, may not be up :warning:
 ```gradle
 repositories {
     maven { url = "https://maven.bawnorton.com/releases" }
