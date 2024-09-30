@@ -54,7 +54,7 @@ allprojects {
         }
         publications {
             create<MavenPublication>("maven") {
-                groupId = "com.bawnorton.mixinsquared"
+                groupId = "com.github.bawnorton.mixinsquared"
                 artifactId = "mixinsquared-$moduleName"
 
                 from(components["java"])
