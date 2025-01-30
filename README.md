@@ -88,7 +88,7 @@ dependencies {
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    relocate("com.github.bawnorton.mixinsquared", "your.package.goes.here.mixinsquared")
+    relocate("com.bawnorton.mixinsquared", "your.package.goes.here.mixinsquared")
     mergeServiceFiles()
 }
 ```
