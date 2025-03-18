@@ -6,6 +6,10 @@ See the [wiki](https://github.com/Bawnorton/MixinSquared/wiki) for usage
 
 Works with [MixinExtras](https://github.com/LlamaLad7/MixinExtras)
 
+## Plugin
+
+An MCDev Addon IntellJ Plugin can be installed from [here](https://plugins.jetbrains.com/plugin/26828-mixinsquared) which provides syntax highlighting and suggestions when using MixinSquared
+
 ## Gradle
 
 ```gradle
