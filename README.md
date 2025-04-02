@@ -15,6 +15,9 @@ An MCDev Addon IntellJ Plugin can be installed from [here](https://plugins.jetbr
 ```gradle
 repositories {
     maven { url = "https://maven.bawnorton.com/releases" }
+
+    # Mirror
+    maven { url = "https://maven.enjarai.dev/mirrors" }
 }
 ```
 
