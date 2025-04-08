@@ -46,7 +46,7 @@ public final class ExtensionCancelApplication implements IExtension {
 
     @Override
     public void preApply(ITargetClassContext context) {
-        TargetClassContextExtension.tryAs(context).ifPresent(contextExtension -> {
+        TargetClassContextExtension.tryAs(context, contextExtension -> {
             SortedSet<IMixinInfo> mixins = contextExtension.getMixins();
             mixins.removeIf(mixin -> {
                 List<String> targetClassNames = mixin.getTargetClasses().stream().map(s -> s.replaceAll("/", ".")).collect(Collectors.toList());

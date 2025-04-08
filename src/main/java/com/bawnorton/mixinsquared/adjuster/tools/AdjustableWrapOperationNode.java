@@ -43,20 +43,14 @@ public class AdjustableWrapOperationNode extends AdjustableMixinExtrasInjectorNo
 
     @Override
     public List<AdjustableAtNode> getAt() {
-        List<AdjustableAtNode> ats = super.getAt();
-        if (ats == null) return new ArrayList<>();
-        return ats;
-    }
-
-    @Override
-    public void setAt(List<AdjustableAtNode> at) {
-        this.set("at", at);
+        List<AdjustableAtNode> at = super.getAt();
+        return at == null ? new ArrayList<>() : at;
     }
 
     public List<AdjustableConstantNode> getConstant() {
         return this.<List<AnnotationNode>>get("constants")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableConstantNode::new))
-                .orElse(new ArrayList<>());
+                   .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableConstantNode::new))
+                   .orElse(new ArrayList<>());
     }
 
     public void setConstant(List<AdjustableConstantNode> constants) {

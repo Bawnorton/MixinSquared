@@ -94,7 +94,7 @@ public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
         String mixin = annotation.getValue("mixin");
 
         if(memberInfo.getDesc() != null) {
-            AnnotatedMixinExtension.tryAs(context.getMixin()).ifPresent(extension -> {
+            AnnotatedMixinExtension.tryAs(context.getMixin(), extension -> {
                 IObfuscationManager obfManager = extension.getObfuscationManager();
                 ITypeHandleProvider typeProvider = extension.getTypeProvider();
                 TypeHandle typeHandle = typeProvider.getTypeHandle(mixin);

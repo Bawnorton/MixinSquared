@@ -24,72 +24,34 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.AtListAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.MethodListAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.SliceListAnnotationNode;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public abstract class AdjustableMixinExtrasInjectorNode extends AdjustableAnnotationNode {
+public abstract class AdjustableMixinExtrasInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode, SliceListAnnotationNode, AtListAnnotationNode {
     protected AdjustableMixinExtrasInjectorNode(AnnotationNode node) {
         super(node);
     }
 
-    public List<String> getMethod() {
-        return this.<List<String>>get("method").orElse(null);
-    }
-
-    public void setMethod(List<String> method) {
-        if (method == null) throw new IllegalArgumentException("Method cannot be null");
-        this.set("method", method);
-    }
-
+    @Override
     public AdjustableMixinExtrasInjectorNode withMethod(UnaryOperator<List<String>> method) {
-        this.setMethod(method.apply(this.getMethod()));
-        return this;
+        return (AdjustableMixinExtrasInjectorNode) MethodListAnnotationNode.super.withMethod(method);
     }
 
-    public List<AdjustableAtNode> getAt() {
-        return this.<List<AnnotationNode>>get("at")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableAtNode::new))
-                .orElse(null);
-    }
-
-    public void setAt(List<AdjustableAtNode> at) {
-        if (at == null) throw new IllegalArgumentException("At cannot be null");
-        this.set("at", at);
-    }
-
+    @Override
     public AdjustableMixinExtrasInjectorNode withAt(UnaryOperator<List<AdjustableAtNode>> at) {
-        this.setAt(at.apply(this.getAt()));
-        return this;
+        return (AdjustableMixinExtrasInjectorNode) AtListAnnotationNode.super.withAt(at);
     }
 
-    public List<AdjustableSliceNode> getSlice() {
-        return this.<List<AnnotationNode>>get("slice")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableSliceNode::new))
-                .orElse(new ArrayList<>());
-    }
-
-    public void setSlice(List<AdjustableSliceNode> slice) {
-        this.set("slice", slice);
-    }
-
+    @Override
     public AdjustableMixinExtrasInjectorNode withSlice(UnaryOperator<List<AdjustableSliceNode>> slice) {
-        this.setSlice(slice.apply(this.getSlice()));
-        return this;
-    }
-
-    public boolean getRemap() {
-        return this.<Boolean>get("remap").orElse(false);
-    }
-
-    public void setRemap(boolean remap) {
-        this.set("remap", remap);
-    }
-
-    public AdjustableMixinExtrasInjectorNode withRemap(UnaryOperator<Boolean> remap) {
-        this.setRemap(remap.apply(this.getRemap()));
-        return this;
+        return (AdjustableMixinExtrasInjectorNode) SliceListAnnotationNode.super.withSlice(slice);
     }
 
     public int getRequire() {
@@ -129,5 +91,13 @@ public abstract class AdjustableMixinExtrasInjectorNode extends AdjustableAnnota
     public AdjustableMixinExtrasInjectorNode withAllow(UnaryOperator<Integer> allow) {
         this.setAllow(allow.apply(this.getAllow()));
         return this;
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        MethodListAnnotationNode.super.applyRefmap(refmapApplicator);
+        SliceListAnnotationNode.super.applyRefmap(refmapApplicator);
+        AtListAnnotationNode.super.applyRefmap(refmapApplicator);
     }
 }

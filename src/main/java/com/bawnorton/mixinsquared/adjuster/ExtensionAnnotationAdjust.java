@@ -25,9 +25,11 @@
 package com.bawnorton.mixinsquared.adjuster;
 
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import com.bawnorton.mixinsquared.reflection.MixinInfoExtension;
 import com.bawnorton.mixinsquared.reflection.StateExtension;
 import com.bawnorton.mixinsquared.reflection.TargetClassContextExtension;
+import com.bawnorton.mixinsquared.util.AnnotationEqualityVisitor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -53,9 +55,9 @@ public final class ExtensionAnnotationAdjust implements IExtension {
 
     @Override
     public void preApply(ITargetClassContext context) {
-        TargetClassContextExtension.tryAs(context).ifPresent(contextExtension -> {
+        TargetClassContextExtension.tryAs(context, contextExtension -> {
             SortedSet<IMixinInfo> mixinInfos = contextExtension.getMixins();
-            mixinInfos.forEach(mixinInfo -> {
+            mixinInfos.forEach(mixinInfo -> MixinInfoExtension.tryAs(mixinInfo, mixinInfoExtension -> {
                 ClassNode mixinClassNode = mixinInfo.getClassNode(0);
                 List<String> targetClassNames = mixinInfo.getTargetClasses().stream().map(s -> s.replaceAll("/", ".")).collect(Collectors.toList());
                 String mixinClassName = mixinInfo.getClassName();
@@ -65,46 +67,31 @@ public final class ExtensionAnnotationAdjust implements IExtension {
                     List<AnnotationNode> visibleAnnotations = methodNode.visibleAnnotations;
                     if (visibleAnnotations == null) return;
 
-                    List<AnnotationNode> postAdjust = new ArrayList<>();
-                    boolean adjusted = false;
+                    List<AdjustableAnnotationNode> postAdjust = new ArrayList<>();
                     for (AnnotationNode annotationNode : visibleAnnotations) {
                         AdjustableAnnotationNode preAdjusted = AdjustableAnnotationNode.fromNode(annotationNode);
+                        if(preAdjusted instanceof RemappableAnnotationNode) {
+                            RemappableAnnotationNode remappable = (RemappableAnnotationNode) preAdjusted;
+                            remappable.setRemapper(() -> remappable.applyRefmap(mixinInfoExtension::remapClassName));
+                        }
                         AdjustableAnnotationNode postAdjusted = MixinAnnotationAdjusterRegistrar.adjust(targetClassNames, mixinClassName, methodNode, preAdjusted, (adjuster, node) -> {
+                            LOGGER.warn("Modified mixin \"{}\". Check debug logs for more information.", mixinClassName);
                             LOGGER.debug("Adjuster \"{}\" modified annotation on method \"{}\" in mixinInfo \"{}\"", adjuster, methodNode.name + methodNode.desc, mixinClassName);
-                            LOGGER.debug("Pre-adjustment: {}", preAdjusted == null ? "null" : preAdjusted);
+                            LOGGER.debug("Pre-adjustment: {}", preAdjusted);
                             LOGGER.debug("Post-adjustment: {}", node == null ? "null" : node);
                         });
                         if (postAdjusted != null) {
                             postAdjust.add(postAdjusted);
                         }
-                        if(!equal(preAdjusted, postAdjusted)) {
-                            LOGGER.warn("Modified mixinInfo \"{}\". Check debug logs for more information.", mixinClassName);
-                            adjusted = true;
-                        }
-                    }
-                    if(adjusted) {
-                        methodNode.name += String.format("$%s$m2-adjusted", RandomStringUtils.randomAlphanumeric(6));
                     }
                     visibleAnnotations.clear();
                     visibleAnnotations.addAll(postAdjust);
                 });
 
-                MixinInfoExtension.tryAs(mixinInfo)
-                        .flatMap(mixinExtension -> StateExtension.tryAs(mixinExtension.getState()))
-                        .ifPresent(stateExtension -> stateExtension.setClassNode(mixinClassNode));
-            });
+                StateExtension.tryAs(mixinInfoExtension.getState(), stateExtension -> stateExtension.setClassNode(mixinClassNode));
+            }));
 
         });
-    }
-
-    private boolean equal(AnnotationNode an1, AnnotationNode an2) {
-        if(an1 == null) return an2 == null;
-        if(an2 == null) return false;
-        if(!an1.desc.equals(an2.desc)) return false;
-        if(an1.values == null) return an2.values == null;
-        if(an2.values == null) return false;
-        if(an1.values.size() != an2.values.size()) return false;
-        return an1.values.equals(an2.values);
     }
 
     @Override

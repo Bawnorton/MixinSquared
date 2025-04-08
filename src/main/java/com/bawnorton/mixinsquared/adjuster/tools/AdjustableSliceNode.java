@@ -52,8 +52,8 @@ public class AdjustableSliceNode extends AdjustableAnnotationNode {
 
     public AdjustableAtNode getFrom() {
         return this.<AnnotationNode>get("from")
-                .map(AdjustableAtNode::new)
-                .orElse(AdjustableAtNode.InjectionPoint.HEAD.toNode());
+                   .map(AdjustableAtNode::new)
+                   .orElse(AdjustableAtNode.InjectionPoint.HEAD.toNode());
     }
 
     public void setFrom(AdjustableAtNode from) {
@@ -67,8 +67,8 @@ public class AdjustableSliceNode extends AdjustableAnnotationNode {
 
     public AdjustableAtNode getTo() {
         return this.<AnnotationNode>get("to")
-                .map(AdjustableAtNode::new)
-                .orElse(AdjustableAtNode.InjectionPoint.TAIL.toNode());
+                   .map(AdjustableAtNode::new)
+                   .orElse(AdjustableAtNode.InjectionPoint.TAIL.toNode());
     }
 
     public void setTo(AdjustableAtNode to) {

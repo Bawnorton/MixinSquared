@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.mixin.transformer.ext.ITargetClassContext;
 import java.util.Optional;
 import java.util.SortedSet;
+import java.util.function.Consumer;
 
 public final class TargetClassContextExtension {
     private final ITargetClassContext reference;
@@ -39,11 +40,10 @@ public final class TargetClassContextExtension {
         mixinsField = new FieldReference<>(reference.getClass(), "mixins");
     }
 
-    public static Optional<TargetClassContextExtension> tryAs(ITargetClassContext reference) {
+    public static void tryAs(ITargetClassContext reference, Consumer<TargetClassContextExtension> consumer) {
         if (reference.getClass().getName().equals("org.spongepowered.asm.mixin.transformer.TargetClassContext")) {
-            return Optional.of(new TargetClassContextExtension(reference));
+            consumer.accept(new TargetClassContextExtension(reference));
         }
-        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")

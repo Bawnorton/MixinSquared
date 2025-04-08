@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-present Bawnorton
+ * Copyright (c) 2025-present Bawnorton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,36 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.canceller;
+package com.bawnorton.mixinsquared.adjuster.tools.type;
 
-import com.bawnorton.mixinsquared.api.MixinCanceller;
 import org.jetbrains.annotations.ApiStatus;
-import org.spongepowered.asm.logging.ILogger;
-import org.spongepowered.asm.service.MixinService;
-
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
-public final class MixinCancellerRegistrar {
-    private static final Set<MixinCanceller> cancellers = new HashSet<>();
-    private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
-
-    @ApiStatus.Internal
-    public static boolean shouldCancel(List<String> targetClassNames, String mixinClassName, Consumer<String> cancelConsumer) {
-        return cancellers.stream().anyMatch(canceller -> {
-            boolean shouldCancel = canceller.shouldCancel(targetClassNames, mixinClassName);
-            if (shouldCancel) {
-                cancelConsumer.accept(canceller.getClass().getName());
-            }
-            return shouldCancel;
-        });
+public interface MethodListAnnotationNode extends RemappableAnnotationNode {
+    default List<String> getMethod() {
+        return this.<List<String>>get("method").orElse(new ArrayList<>());
     }
 
-    public static void register(MixinCanceller canceller) {
-        cancellers.add(canceller);
-        LOGGER.debug("Registered canceller {}", canceller.getClass().getName());
+    default void setMethod(List<String> method) {
+        this.set("method", method);
+    }
+
+    default MethodListAnnotationNode withMethod(UnaryOperator<List<String>> method) {
+        this.setMethod(method.apply(this.getMethod()));
+        return this;
+    }
+
+    @Override
+    @ApiStatus.Internal
+    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        this.withMethod(methods -> {
+            List<String> newMethods = new ArrayList<>(methods.size());
+            for (String method : methods) {
+                newMethods.add(refmapApplicator.apply(method));
+            }
+            return newMethods;
+        });
     }
 }

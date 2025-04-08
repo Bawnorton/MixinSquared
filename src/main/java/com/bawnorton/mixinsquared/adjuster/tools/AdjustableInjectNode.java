@@ -24,6 +24,9 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.AtListAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.SliceListAnnotationNode;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableInjectNode extends AdjustableInjectorNode {
+public class AdjustableInjectNode extends AdjustableInjectorNode implements SliceListAnnotationNode, AtListAnnotationNode {
     public AdjustableInjectNode(AnnotationNode node) {
         super(node);
     }
@@ -39,9 +42,7 @@ public class AdjustableInjectNode extends AdjustableInjectorNode {
     public static AdjustableInjectNode defaultNode(AdjustableAtNode... atNodes) {
         AnnotationNode node = new AnnotationNode(KnownAnnotations.INJECT.desc());
         AdjustableInjectNode defaultNode = new AdjustableInjectNode(node);
-        defaultNode.setAt(new ArrayList<AdjustableAtNode>() {{
-            this.addAll(Arrays.asList(atNodes));
-        }});
+        defaultNode.setAt(new ArrayList<>(Arrays.asList(atNodes)));
         return defaultNode;
     }
 
@@ -58,34 +59,14 @@ public class AdjustableInjectNode extends AdjustableInjectorNode {
         return this;
     }
 
-    public List<AdjustableSliceNode> getSlice() {
-        return this.<List<AnnotationNode>>get("slice")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableSliceNode::new))
-                .orElse(new ArrayList<>());
-    }
-
-    public void setSlice(List<AdjustableSliceNode> slice) {
-        this.set("slice", slice);
-    }
-
+    @Override
     public AdjustableInjectNode withSlice(UnaryOperator<List<AdjustableSliceNode>> slice) {
-        this.setSlice(slice.apply(this.getSlice()));
-        return this;
+        return (AdjustableInjectNode) SliceListAnnotationNode.super.withSlice(slice);
     }
 
-    public List<AdjustableAtNode> getAt() {
-        return this.<List<AnnotationNode>>get("at")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableAtNode::new))
-                .orElse(new ArrayList<>());
-    }
-
-    public void setAt(List<AdjustableAtNode> at) {
-        this.set("at", at);
-    }
-
+    @Override
     public AdjustableInjectNode withAt(UnaryOperator<List<AdjustableAtNode>> at) {
-        this.setAt(at.apply(this.getAt()));
-        return this;
+        return (AdjustableInjectNode) AtListAnnotationNode.super.withAt(at);
     }
 
     public boolean getCancellable() {
@@ -147,5 +128,13 @@ public class AdjustableInjectNode extends AdjustableInjectorNode {
     @Override
     public AdjustableInjectNode withConstraints(UnaryOperator<String> constraints) {
         return (AdjustableInjectNode) super.withConstraints(constraints);
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        super.applyRefmap(refmapApplicator);
+        SliceListAnnotationNode.super.applyRefmap(refmapApplicator);
+        AtListAnnotationNode.super.applyRefmap(refmapApplicator);
     }
 }

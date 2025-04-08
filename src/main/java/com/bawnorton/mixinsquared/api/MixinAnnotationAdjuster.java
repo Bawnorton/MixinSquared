@@ -25,6 +25,7 @@
 package com.bawnorton.mixinsquared.api;
 
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import org.objectweb.asm.tree.MethodNode;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public interface MixinAnnotationAdjuster {
      * @param handlerNode Method node of the handler method. Read/Write.
      * @param annotationNode Annotation node to adjust. Read/Write. Node will always be present but the annotation class may not exist at runtime.
      * @return Adjusted annotation node. Return null to remove the annotation.
+     * @see RemappableAnnotationNode#applyRefmap()
      */
     AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode);
 }

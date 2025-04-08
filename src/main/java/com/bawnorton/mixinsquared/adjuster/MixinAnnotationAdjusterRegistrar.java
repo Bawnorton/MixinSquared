@@ -25,7 +25,10 @@
 package com.bawnorton.mixinsquared.adjuster;
 
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAtNode;
 import com.bawnorton.mixinsquared.api.MixinAnnotationAdjuster;
+import com.bawnorton.mixinsquared.util.AnnotationEqualityVisitor;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.service.MixinService;
@@ -38,12 +41,13 @@ public final class MixinAnnotationAdjusterRegistrar {
     private static final Set<MixinAnnotationAdjuster> adjusters = new HashSet<>();
     private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
 
+    @ApiStatus.Internal
     public static AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode, BiConsumer<String, AdjustableAnnotationNode> postAdjustmentConsumer) {
         for (MixinAnnotationAdjuster adjuster : adjusters) {
-            String preAdjustment = annotationNode == null ? "null" : annotationNode.toString();
+            AnnotationEqualityVisitor equalityVisitor = new AnnotationEqualityVisitor(annotationNode.copy());
             annotationNode = adjuster.adjust(targetClassNames, mixinClassName, handlerNode, annotationNode);
-            String postAdjustment = annotationNode == null ? "null" : annotationNode.toString();
-            if (!preAdjustment.equals(postAdjustment)) {
+            annotationNode.accept(equalityVisitor);
+            if (!equalityVisitor.isEqual()) {
                 postAdjustmentConsumer.accept(adjuster.getClass().getName(), annotationNode);
             }
         }

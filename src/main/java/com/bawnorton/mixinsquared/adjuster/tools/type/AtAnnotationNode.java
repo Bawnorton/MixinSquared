@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-present Bawnorton
+ * Copyright (c) 2025-present Bawnorton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,35 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.ext;
+package com.bawnorton.mixinsquared.adjuster.tools.type;
 
-import com.bawnorton.mixinsquared.reflection.ExtensionsExtension;
+import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAtNode;
 import org.jetbrains.annotations.ApiStatus;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
-import org.spongepowered.asm.mixin.transformer.ext.IExtension;
+import org.objectweb.asm.tree.AnnotationNode;
+import java.util.function.UnaryOperator;
 
-@ApiStatus.Internal
-public final class ExtensionRegistrar {
-    public static void register(IExtension extension) {
-        IMixinTransformer transformer = (IMixinTransformer) MixinEnvironment.getDefaultEnvironment().getActiveTransformer();
-        ExtensionsExtension.tryAs(transformer.getExtensions(), extensionsExtension -> {
-            extensionsExtension.getExtensions().add(0, extension);
-            extensionsExtension.getExtensionMap().put(extension.getClass(), extension);
+public interface AtAnnotationNode extends RemappableAnnotationNode {
+    default AdjustableAtNode getAt() {
+        return this.<AnnotationNode>get("at")
+                   .map(AdjustableAtNode::new)
+                   .orElse(null);
+    }
+
+    default void setAt(AdjustableAtNode at) {
+        this.set("at", at);
+    }
+
+    default AtAnnotationNode withAt(UnaryOperator<AdjustableAtNode> at) {
+        this.setAt(at.apply(this.getAt()));
+        return this;
+    }
+
+    @Override
+    @ApiStatus.Internal
+    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        this.withAt(at -> {
+            at.applyRefmap(refmapApplicator);
+            return at;
         });
     }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-present Bawnorton
+ * Copyright (c) 2025-present Bawnorton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,40 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.canceller;
+package com.bawnorton.mixinsquared.adjuster.tools.type;
 
-import com.bawnorton.mixinsquared.api.MixinCanceller;
+import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAtNode;
 import org.jetbrains.annotations.ApiStatus;
-import org.spongepowered.asm.logging.ILogger;
-import org.spongepowered.asm.service.MixinService;
-
-import java.util.HashSet;
+import org.objectweb.asm.tree.AnnotationNode;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
-public final class MixinCancellerRegistrar {
-    private static final Set<MixinCanceller> cancellers = new HashSet<>();
-    private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
-
-    @ApiStatus.Internal
-    public static boolean shouldCancel(List<String> targetClassNames, String mixinClassName, Consumer<String> cancelConsumer) {
-        return cancellers.stream().anyMatch(canceller -> {
-            boolean shouldCancel = canceller.shouldCancel(targetClassNames, mixinClassName);
-            if (shouldCancel) {
-                cancelConsumer.accept(canceller.getClass().getName());
-            }
-            return shouldCancel;
-        });
+public interface AtListAnnotationNode extends RemappableAnnotationNode {
+    default List<AdjustableAtNode> getAt() {
+        return this.<List<AnnotationNode>>get("at")
+                   .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableAtNode::new))
+                   .orElse(new ArrayList<>());
     }
 
-    public static void register(MixinCanceller canceller) {
-        cancellers.add(canceller);
-        LOGGER.debug("Registered canceller {}", canceller.getClass().getName());
+    default void setAt(List<AdjustableAtNode> at) {
+        this.set("at", at);
+    }
+
+    default AtListAnnotationNode withAt(UnaryOperator<List<AdjustableAtNode>> at) {
+        this.setAt(at.apply(this.getAt()));
+        return this;
+    }
+
+    @Override
+    @ApiStatus.Internal
+    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        this.withAt(ats -> {
+            for (AdjustableAtNode at : ats) {
+                at.applyRefmap(refmapApplicator);
+            }
+            return ats;
+        });
     }
 }

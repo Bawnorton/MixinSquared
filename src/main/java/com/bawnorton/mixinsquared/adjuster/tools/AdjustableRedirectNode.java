@@ -24,11 +24,14 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.AtAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.SliceAnnotationNode;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableRedirectNode extends AdjustableInjectorNode {
+public class AdjustableRedirectNode extends AdjustableInjectorNode implements SliceAnnotationNode, AtAnnotationNode {
     public AdjustableRedirectNode(AnnotationNode node) {
         super(node);
     }
@@ -40,35 +43,13 @@ public class AdjustableRedirectNode extends AdjustableInjectorNode {
         return defaultNode;
     }
 
-    public AdjustableSliceNode getSlice() {
-        return this.<AnnotationNode>get("slice")
-                .map(AdjustableSliceNode::new)
-                .orElse(AdjustableSliceNode.defaultNode());
-    }
-
-    public void setSlice(AdjustableSliceNode slice) {
-        this.set("slice", slice);
-    }
-
+    @Override
     public AdjustableRedirectNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
-        this.setSlice(slice.apply(this.getSlice()));
-        return this;
-    }
-
-    public AdjustableAtNode getAt() {
-        return this.<AnnotationNode>get("at")
-                .map(AdjustableAtNode::new)
-                .orElse(null);
-    }
-
-    public void setAt(AdjustableAtNode at) {
-        if (at == null) throw new IllegalArgumentException("At cannot be null");
-        this.set("at", at);
+        return (AdjustableRedirectNode) SliceAnnotationNode.super.withSlice(slice);
     }
 
     public AdjustableRedirectNode withAt(UnaryOperator<AdjustableAtNode> at) {
-        this.setAt(at.apply(this.getAt()));
-        return this;
+        return (AdjustableRedirectNode) AtAnnotationNode.super.withAt(at);
     }
 
     @Override
@@ -104,5 +85,13 @@ public class AdjustableRedirectNode extends AdjustableInjectorNode {
     @Override
     public AdjustableRedirectNode withConstraints(UnaryOperator<String> constraints) {
         return (AdjustableRedirectNode) super.withConstraints(constraints);
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        super.applyRefmap(refmapApplicator);
+        SliceAnnotationNode.super.applyRefmap(refmapApplicator);
+        AtAnnotationNode.super.applyRefmap(refmapApplicator);
     }
 }

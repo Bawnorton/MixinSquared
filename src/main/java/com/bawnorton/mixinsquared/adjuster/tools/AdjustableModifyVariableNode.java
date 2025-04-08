@@ -24,12 +24,15 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.AtAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.SliceAnnotationNode;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
+public class AdjustableModifyVariableNode extends AdjustableInjectorNode implements SliceAnnotationNode, AtAnnotationNode {
     public AdjustableModifyVariableNode(AnnotationNode node) {
         super(node);
     }
@@ -41,45 +44,22 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
         return defaultNode;
     }
 
-    public AdjustableSliceNode getSlice() {
-        return this.<AnnotationNode>get("slice")
-                .map(AdjustableSliceNode::new)
-                .orElse(AdjustableSliceNode.defaultNode());
-    }
-
-    public void setSlice(AdjustableSliceNode slice) {
-        this.set("slice", slice);
-    }
-
     public AdjustableModifyVariableNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
-        this.setSlice(slice.apply(this.getSlice()));
-        return this;
-    }
-
-    public AdjustableAtNode getAt() {
-        return this.<AnnotationNode>get("at")
-                .map(AdjustableAtNode::new)
-                .orElse(null);
-    }
-
-    public void setAt(AdjustableAtNode at) {
-        if (at == null) throw new IllegalArgumentException("At cannot be null");
-        this.set("at", at);
+        return (AdjustableModifyVariableNode) SliceAnnotationNode.super.withSlice(slice);
     }
 
     public AdjustableModifyVariableNode withAt(UnaryOperator<AdjustableAtNode> at) {
-        this.setAt(at.apply(this.getAt()));
-        return this;
+        return (AdjustableModifyVariableNode) AtAnnotationNode.super.withAt(at);
     }
 
     public boolean getPrint() {
         return this.<Boolean>get("print").orElse(false);
     }
-    
+
     public void setPrint(boolean print) {
         this.set("print", print);
     }
-    
+
     public AdjustableModifyVariableNode withPrint(UnaryOperator<Boolean> print) {
         this.setPrint(print.apply(this.getPrint()));
         return this;
@@ -88,11 +68,11 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
     public int getOrdinal() {
         return this.<Integer>get("ordinal").orElse(-1);
     }
-    
+
     public void setOrdinal(int ordinal) {
         this.set("ordinal", ordinal);
     }
-    
+
     public AdjustableModifyVariableNode withOrdinal(UnaryOperator<Integer> ordinal) {
         this.setOrdinal(ordinal.apply(this.getOrdinal()));
         return this;
@@ -101,11 +81,11 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
     public int getIndex() {
         return this.<Integer>get("index").orElse(-1);
     }
-    
+
     public void setIndex(int index) {
         this.set("index", index);
     }
-    
+
     public AdjustableModifyVariableNode withIndex(UnaryOperator<Integer> index) {
         this.setIndex(index.apply(this.getIndex()));
         return this;
@@ -114,11 +94,11 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
     public List<String> getName() {
         return this.<List<String>>get("name").orElse(new ArrayList<>());
     }
-    
+
     public void setName(List<String> name) {
         this.set("name", name);
     }
-    
+
     public AdjustableModifyVariableNode withName(UnaryOperator<List<String>> name) {
         this.setName(name.apply(this.getName()));
         return this;
@@ -127,11 +107,11 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
     public boolean getArgsOnly() {
         return this.<Boolean>get("argsOnly").orElse(false);
     }
-    
+
     public void setArgsOnly(boolean argsOnly) {
         this.set("argsOnly", argsOnly);
     }
-    
+
     public AdjustableModifyVariableNode withArgsOnly(UnaryOperator<Boolean> argsOnly) {
         this.setArgsOnly(argsOnly.apply(this.getArgsOnly()));
         return this;
@@ -170,5 +150,13 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode {
     @Override
     public AdjustableModifyVariableNode withConstraints(UnaryOperator<String> constraints) {
         return (AdjustableModifyVariableNode) super.withConstraints(constraints);
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        super.applyRefmap(refmapApplicator);
+        SliceAnnotationNode.super.applyRefmap(refmapApplicator);
+        AtAnnotationNode.super.applyRefmap(refmapApplicator);
     }
 }

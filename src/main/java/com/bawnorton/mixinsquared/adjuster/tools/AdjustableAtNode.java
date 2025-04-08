@@ -24,6 +24,8 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableAtNode extends AdjustableAnnotationNode {
+public class AdjustableAtNode extends RemapperHolderAnnotationNode implements RemappableAnnotationNode {
     public AdjustableAtNode(AnnotationNode node) {
         super(node);
     }
@@ -60,7 +62,7 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
     }
 
     public void setValue(String value) {
-        if(value == null) throw new IllegalArgumentException("Value cannot be null");
+        if (value == null) throw new IllegalArgumentException("Value cannot be null");
         this.set("value", value);
     }
 
@@ -87,7 +89,7 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
     }
 
     public void setShift(At.Shift shift) {
-        this.set("shift", new String[] {Type.getDescriptor(At.Shift.class), shift.name()});
+        this.set("shift", new String[]{Type.getDescriptor(At.Shift.class), shift.name()});
     }
 
     public AdjustableAtNode withShift(UnaryOperator<At.Shift> shift) {
@@ -136,8 +138,8 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
 
     public AdjustableDescNode getDesc() {
         return this.<AnnotationNode>get("desc")
-                .map(AdjustableDescNode::new)
-                .orElse(AdjustableDescNode.defaultNode(""));
+                   .map(AdjustableDescNode::new)
+                   .orElse(AdjustableDescNode.defaultNode(""));
     }
 
     public void setDesc(AdjustableDescNode desc) {
@@ -175,19 +177,6 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
         return this;
     }
 
-    public boolean getRemap() {
-        return this.<Boolean>get("remap").orElse(true);
-    }
-
-    public void setRemap(boolean remap) {
-        this.set("remap", remap);
-    }
-
-    public AdjustableAtNode withRemap(UnaryOperator<Boolean> remap) {
-        this.setRemap(remap.apply(this.getRemap()));
-        return this;
-    }
-
     public boolean getUnsafe() {
         return this.<Boolean>get("unsafe").orElse(false);
     }
@@ -199,6 +188,19 @@ public class AdjustableAtNode extends AdjustableAnnotationNode {
     public AdjustableAtNode withUnsafe(UnaryOperator<Boolean> unsafe) {
         this.setUnsafe(unsafe.apply(this.getUnsafe()));
         return this;
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        this.withTarget(refmapApplicator);
+        this.withArgs(args -> {
+            List<String> remappedArgs = new ArrayList<>();
+            for (String arg : args) {
+                remappedArgs.add(refmapApplicator.apply(arg));
+            }
+            return remappedArgs;
+        });
     }
 
     public enum InjectionPoint {

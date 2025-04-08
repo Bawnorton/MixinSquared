@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-present Bawnorton
+ * Copyright (c) 2025-present Bawnorton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,23 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.ext;
+package com.bawnorton.mixinsquared.adjuster.tools.type;
 
-import com.bawnorton.mixinsquared.reflection.ExtensionsExtension;
-import org.jetbrains.annotations.ApiStatus;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
-import org.spongepowered.asm.mixin.transformer.ext.IExtension;
+import org.objectweb.asm.Type;
+import java.util.Optional;
 
-@ApiStatus.Internal
-public final class ExtensionRegistrar {
-    public static void register(IExtension extension) {
-        IMixinTransformer transformer = (IMixinTransformer) MixinEnvironment.getDefaultEnvironment().getActiveTransformer();
-        ExtensionsExtension.tryAs(transformer.getExtensions(), extensionsExtension -> {
-            extensionsExtension.getExtensions().add(0, extension);
-            extensionsExtension.getExtensionMap().put(extension.getClass(), extension);
+public interface MutableAnnotationNode {
+    <T> Optional<T> get(String key);
+
+    <T> void set(String key, T value);
+
+    default <T extends Enum<T>> Optional<T> getEnum(String key, Class<T> enumType) {
+        return this.<String[]>get(key).map(value -> {
+            if (value.length < 2) return null;
+            if (enumType.getName().equals(Type.getType(value[0]).getClassName())) {
+                return Enum.valueOf(enumType, value[1]);
+            }
+            return null;
         });
     }
 }

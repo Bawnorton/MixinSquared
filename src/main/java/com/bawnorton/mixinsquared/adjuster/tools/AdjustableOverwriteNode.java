@@ -24,12 +24,14 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableOverwriteNode extends AdjustableAnnotationNode {
+public class AdjustableOverwriteNode extends RemapperHolderAnnotationNode implements RemappableAnnotationNode {
     public AdjustableOverwriteNode(AnnotationNode node) {
         super(node);
     }
@@ -65,16 +67,9 @@ public class AdjustableOverwriteNode extends AdjustableAnnotationNode {
         return this;
     }
 
-    public boolean getRemap() {
-        return this.<Boolean>get("remap").orElse(true);
-    }
-
-    public void setRemap(boolean remap) {
-        this.set("remap", remap);
-    }
-
-    public AdjustableOverwriteNode withRemap(UnaryOperator<Boolean> remap) {
-        this.setRemap(remap.apply(this.getRemap()));
-        return this;
+    @Override
+    @ApiStatus.Internal
+    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        // no-op - Overwrite does not use the refmap currently
     }
 }

@@ -31,6 +31,7 @@ import org.spongepowered.asm.mixin.transformer.ext.IExtensionRegistry;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public final class ExtensionsExtension {
     private final Extensions reference;
@@ -44,11 +45,10 @@ public final class ExtensionsExtension {
         extensionMapField = new FieldReference<>(reference.getClass(), "extensionMap");
     }
 
-    public static Optional<ExtensionsExtension> tryAs(IExtensionRegistry reference) {
+    public static void tryAs(IExtensionRegistry reference, Consumer<ExtensionsExtension> consumer) {
         if (reference instanceof Extensions) {
-            return Optional.of(new ExtensionsExtension((Extensions) reference));
+            consumer.accept(new ExtensionsExtension((Extensions) reference));
         }
-        return Optional.empty();
     }
 
     public List<IExtension> getExtensions() {

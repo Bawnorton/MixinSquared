@@ -73,7 +73,7 @@ public class AdjustableDescNode extends AdjustableAnnotationNode {
     }
 
     public void setValue(String value) {
-        if(value == null) throw new IllegalArgumentException("Value cannot be null");
+        if (value == null) throw new IllegalArgumentException("Value cannot be null");
         this.set("value", value);
     }
 
@@ -110,8 +110,8 @@ public class AdjustableDescNode extends AdjustableAnnotationNode {
 
     public List<AdjustableNextNode> getNext() {
         return this.<List<AnnotationNode>>get("next")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableNextNode::new))
-                .orElse(new ArrayList<>());
+                   .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableNextNode::new))
+                   .orElse(new ArrayList<>());
     }
 
     public void setNext(List<AdjustableNextNode> next) {

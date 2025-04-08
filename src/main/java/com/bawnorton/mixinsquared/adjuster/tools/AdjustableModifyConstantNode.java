@@ -24,12 +24,14 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.SliceListAnnotationNode;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableModifyConstantNode extends AdjustableInjectorNode {
+public class AdjustableModifyConstantNode extends AdjustableInjectorNode implements SliceListAnnotationNode {
     public AdjustableModifyConstantNode(AnnotationNode node) {
         super(node);
     }
@@ -39,25 +41,15 @@ public class AdjustableModifyConstantNode extends AdjustableInjectorNode {
         return new AdjustableModifyConstantNode(node);
     }
 
-    public List<AdjustableSliceNode> getSlice() {
-        return this.<List<AnnotationNode>>get("slice")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableSliceNode::new))
-                .orElse(new ArrayList<>());
-    }
-
-    public void setSlice(List<AdjustableSliceNode> slice) {
-        this.set("slice", slice);
-    }
-
+    @Override
     public AdjustableModifyConstantNode withSlice(UnaryOperator<List<AdjustableSliceNode>> slice) {
-        this.setSlice(slice.apply(this.getSlice()));
-        return this;
+        return (AdjustableModifyConstantNode) SliceListAnnotationNode.super.withSlice(slice);
     }
 
     public List<AdjustableConstantNode> getConstant() {
         return this.<List<AnnotationNode>>get("constant")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableConstantNode::new))
-                .orElse(new ArrayList<>());
+                   .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableConstantNode::new))
+                   .orElse(new ArrayList<>());
     }
 
     public void setConstant(List<AdjustableConstantNode> constant) {
@@ -102,5 +94,12 @@ public class AdjustableModifyConstantNode extends AdjustableInjectorNode {
     @Override
     public AdjustableModifyConstantNode withConstraints(UnaryOperator<String> constraints) {
         return (AdjustableModifyConstantNode) super.withConstraints(constraints);
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        super.applyRefmap(refmapApplicator);
+        SliceListAnnotationNode.super.applyRefmap(refmapApplicator);
     }
 }

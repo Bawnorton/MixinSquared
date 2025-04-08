@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.refmap.IMixinContext;
 import org.spongepowered.tools.obfuscation.interfaces.IObfuscationManager;
 import org.spongepowered.tools.obfuscation.interfaces.ITypeHandleProvider;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public final class AnnotatedMixinExtension {
     private final Object reference;
@@ -41,11 +42,10 @@ public final class AnnotatedMixinExtension {
         typeProviderField = new FieldReference<>(reference.getClass(), "typeProvider");
     }
 
-    public static Optional<AnnotatedMixinExtension> tryAs(IMixinContext reference) {
+    public static void tryAs(IMixinContext reference, Consumer<AnnotatedMixinExtension> consumer) {
         if(reference.getClass().getName().equals("org.spongepowered.tools.obfuscation.AnnotatedMixin")) {
-            return Optional.of(new AnnotatedMixinExtension(reference));
+            consumer.accept(new AnnotatedMixinExtension(reference));
         }
-        return Optional.empty();
     }
 
     public IObfuscationManager getObfuscationManager() {

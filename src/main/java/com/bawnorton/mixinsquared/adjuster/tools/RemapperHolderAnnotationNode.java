@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-present Bawnorton
+ * Copyright (c) 2025-present Bawnorton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,26 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.canceller;
+package com.bawnorton.mixinsquared.adjuster.tools;
 
-import com.bawnorton.mixinsquared.api.MixinCanceller;
+import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
-import org.spongepowered.asm.logging.ILogger;
-import org.spongepowered.asm.service.MixinService;
+import org.objectweb.asm.tree.AnnotationNode;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
+abstract class RemapperHolderAnnotationNode extends AdjustableAnnotationNode implements RemappableAnnotationNode {
+    private Runnable remapper;
 
-public final class MixinCancellerRegistrar {
-    private static final Set<MixinCanceller> cancellers = new HashSet<>();
-    private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
-
-    @ApiStatus.Internal
-    public static boolean shouldCancel(List<String> targetClassNames, String mixinClassName, Consumer<String> cancelConsumer) {
-        return cancellers.stream().anyMatch(canceller -> {
-            boolean shouldCancel = canceller.shouldCancel(targetClassNames, mixinClassName);
-            if (shouldCancel) {
-                cancelConsumer.accept(canceller.getClass().getName());
-            }
-            return shouldCancel;
-        });
+    protected RemapperHolderAnnotationNode(AnnotationNode node) {
+        super(node);
     }
 
-    public static void register(MixinCanceller canceller) {
-        cancellers.add(canceller);
-        LOGGER.debug("Registered canceller {}", canceller.getClass().getName());
+    @ApiStatus.Internal
+    public Runnable getRemapper() {
+        return remapper;
+    }
+
+    @ApiStatus.Internal
+    public void setRemapper(Runnable remapper) {
+        this.remapper = remapper;
     }
 }

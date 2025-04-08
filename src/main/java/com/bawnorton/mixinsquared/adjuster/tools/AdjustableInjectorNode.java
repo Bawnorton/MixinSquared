@@ -24,33 +24,27 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.MethodListAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public abstract class AdjustableInjectorNode extends AdjustableAnnotationNode {
+public abstract class AdjustableInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode {
     protected AdjustableInjectorNode(AnnotationNode node) {
         super(node);
     }
 
-    public List<String> getMethod() {
-        return this.<List<String>>get("method").orElse(new ArrayList<>());
-    }
-
-    public void setMethod(List<String> method) {
-        this.set("method", method);
-    }
-
+    @Override
     public AdjustableInjectorNode withMethod(UnaryOperator<List<String>> method) {
-        this.setMethod(method.apply(this.getMethod()));
-        return this;
+        return (AdjustableInjectorNode) MethodListAnnotationNode.super.withMethod(method);
     }
 
     public List<AdjustableDescNode> getTarget() {
         return this.<List<AnnotationNode>>get("target")
-                .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableDescNode::new))
-                .orElse(new ArrayList<>());
+                   .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableDescNode::new))
+                   .orElse(new ArrayList<>());
     }
 
     public void setTarget(List<AdjustableDescNode> target) {
@@ -59,19 +53,6 @@ public abstract class AdjustableInjectorNode extends AdjustableAnnotationNode {
 
     public AdjustableInjectorNode withTarget(UnaryOperator<List<AdjustableDescNode>> target) {
         this.setTarget(target.apply(this.getTarget()));
-        return this;
-    }
-
-    public boolean getRemap() {
-        return this.<Boolean>get("remap").orElse(true);
-    }
-
-    public void setRemap(boolean remap) {
-        this.set("remap", remap);
-    }
-
-    public AdjustableInjectorNode withRemap(UnaryOperator<Boolean> remap) {
-        this.setRemap(remap.apply(this.getRemap()));
         return this;
     }
 
