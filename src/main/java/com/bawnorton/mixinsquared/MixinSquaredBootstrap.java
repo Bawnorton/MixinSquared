@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
 @SuppressWarnings("unused")
 public final class MixinSquaredBootstrap {
     public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.2.0";
+    public static final String VERSION = "0.3.1-beta.1";
 
     private static boolean initialized = false;
 
