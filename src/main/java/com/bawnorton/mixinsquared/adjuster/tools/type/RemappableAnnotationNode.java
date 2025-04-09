@@ -56,7 +56,7 @@ public interface RemappableAnnotationNode extends MutableAnnotationNode {
     Runnable getRemapper();
 
     /**
-     * Since the Annotation Adjuster interacts with what Mixin uses as keys for the refmap (i.e {@link At#target()} you may want to
+     * Since the Annotation Adjuster interacts with what Mixin uses as keys for the refmap (i.e {@link At#target()}) you may want to
      * remap the remappable parts of the annotation first before making your changes as once a change is made to a refmap key, the remapped
      * value will not be found, causing the mixin to fail to find its target.
      * <br/>
