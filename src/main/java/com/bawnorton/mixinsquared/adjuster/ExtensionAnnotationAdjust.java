@@ -26,6 +26,7 @@ package com.bawnorton.mixinsquared.adjuster;
 
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
+import com.bawnorton.mixinsquared.ext.MixinSquaredExtension;
 import com.bawnorton.mixinsquared.reflection.MixinInfoExtension;
 import com.bawnorton.mixinsquared.reflection.StateExtension;
 import com.bawnorton.mixinsquared.reflection.TargetClassContextExtension;
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-public final class ExtensionAnnotationAdjust implements IExtension {
+public final class ExtensionAnnotationAdjust implements IExtension, MixinSquaredExtension {
     private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared-annotation-adjuster");
 
     @Override

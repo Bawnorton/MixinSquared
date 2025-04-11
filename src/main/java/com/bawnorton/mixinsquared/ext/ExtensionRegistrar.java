@@ -24,19 +24,17 @@
 
 package com.bawnorton.mixinsquared.ext;
 
-import com.bawnorton.mixinsquared.reflection.ExtensionsExtension;
 import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
+import org.spongepowered.asm.mixin.transformer.ext.Extensions;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 
 @ApiStatus.Internal
 public final class ExtensionRegistrar {
     public static void register(IExtension extension) {
         IMixinTransformer transformer = (IMixinTransformer) MixinEnvironment.getDefaultEnvironment().getActiveTransformer();
-        ExtensionsExtension.tryAs(transformer.getExtensions(), extensionsExtension -> {
-            extensionsExtension.getExtensions().add(0, extension);
-            extensionsExtension.getExtensionMap().put(extension.getClass(), extension);
-        });
+        Extensions extensions = (Extensions) transformer.getExtensions();
+        extensions.add(extension);
     }
 }

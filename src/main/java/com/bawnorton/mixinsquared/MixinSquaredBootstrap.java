@@ -27,13 +27,21 @@ package com.bawnorton.mixinsquared;
 import com.bawnorton.mixinsquared.adjuster.ExtensionAnnotationAdjust;
 import com.bawnorton.mixinsquared.canceller.ExtensionCancelApplication;
 import com.bawnorton.mixinsquared.ext.ExtensionRegistrar;
+import com.bawnorton.mixinsquared.ext.MixinSquaredExtension;
+import com.bawnorton.mixinsquared.reflection.ExtensionsExtension;
 import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
+import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
+import org.spongepowered.asm.mixin.transformer.ext.IExtension;
+import org.spongepowered.asm.service.MixinService;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public final class MixinSquaredBootstrap {
     public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.3.1-beta.1";
+    public static final String VERSION = "0.3.1-beta.2";
 
     private static boolean initialized = false;
 
@@ -52,5 +60,18 @@ public final class MixinSquaredBootstrap {
             ExtensionRegistrar.register(new ExtensionCancelApplication());
             ExtensionRegistrar.register(new ExtensionAnnotationAdjust());
         }
+    }
+
+    public static void reOrderExtensions() {
+        IMixinTransformer transformer = (IMixinTransformer) MixinEnvironment.getDefaultEnvironment().getActiveTransformer();
+        ExtensionsExtension.tryAs(transformer.getExtensions(), extensionsExtension -> {
+            List<IExtension> extensions = extensionsExtension.getExtensions();
+            List<IExtension> mixinSquaredExtensions = extensions
+                    .stream()
+                    .filter(MixinSquaredExtension.class::isInstance)
+                    .collect(Collectors.toList());
+            extensions.removeAll(mixinSquaredExtensions);
+            extensions.addAll(0, mixinSquaredExtensions);
+        });
     }
 }

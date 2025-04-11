@@ -57,6 +57,7 @@ public class MixinSquaredMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public List<String> getMixins() {
+        MixinSquaredBootstrap.reOrderExtensions();
         return null;
     }
 
