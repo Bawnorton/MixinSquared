@@ -27,13 +27,22 @@ package com.bawnorton.mixinsquared.adjuster.tools.type;
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableSliceNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public interface SliceAnnotationNode extends RemappableAnnotationNode {
     default AdjustableSliceNode getSlice() {
         return this.<AnnotationNode>get("slice")
-                   .map(AdjustableSliceNode::new)
+                   .map(node -> {
+                       AdjustableSliceNode slice = new AdjustableSliceNode(node);
+                       slice.withFrom(from -> {
+                           from.setRemapper(this.getRemapper());
+                           return from;
+                       }).withTo(to -> {
+                           to.setRemapper(this.getRemapper());
+                           return to;
+                       });
+                       return slice;
+                   })
                    .orElse(AdjustableSliceNode.defaultNode());
     }
 
@@ -59,13 +68,5 @@ public interface SliceAnnotationNode extends RemappableAnnotationNode {
             });
             return slice;
         });
-    }
-
-    @Override
-    @ApiStatus.Internal
-    default void setRemapper(Consumer<RemappableAnnotationNode> remapper) {
-        AdjustableSliceNode slice = this.getSlice();
-        slice.getFrom().setRemapper(remapper);
-        slice.getTo().setRemapper(remapper);
     }
 }

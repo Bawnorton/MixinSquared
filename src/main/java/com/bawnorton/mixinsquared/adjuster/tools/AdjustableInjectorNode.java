@@ -25,7 +25,6 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.bawnorton.mixinsquared.adjuster.tools.type.MethodListAnnotationNode;
-import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;

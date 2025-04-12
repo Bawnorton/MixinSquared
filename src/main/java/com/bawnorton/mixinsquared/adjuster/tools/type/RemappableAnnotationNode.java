@@ -44,17 +44,17 @@ public interface RemappableAnnotationNode extends MutableAnnotationNode {
     }
 
     /**
-     * @see #applyRefmap()
      * @param refmapApplicator The function to apply to the refmap keys in the annotation.
+     * @see #applyRefmap()
      */
     @ApiStatus.Internal
     void applyRefmap(UnaryOperator<String> refmapApplicator);
 
     @ApiStatus.Internal
-    void setRemapper(Consumer<RemappableAnnotationNode> remapper);
+    Consumer<RemappableAnnotationNode> getRemapper();
 
     @ApiStatus.Internal
-    Consumer<RemappableAnnotationNode> getRemapper();
+    void setRemapper(Consumer<RemappableAnnotationNode> remapper);
 
     /**
      * Since the Annotation Adjuster interacts with what Mixin uses as keys for the refmap (i.e {@link At#target()}) you may want to
@@ -81,6 +81,7 @@ public interface RemappableAnnotationNode extends MutableAnnotationNode {
      * }
      * }
      * </pre>
+     *
      * @apiNote This will always remap regardless of whether you are in a dev environment or not,
      * as long as there is a refmap key value pair for the remappable elmenets they will be remapped
      */

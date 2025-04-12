@@ -27,13 +27,16 @@ package com.bawnorton.mixinsquared.adjuster.tools.type;
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAtNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public interface AtAnnotationNode extends RemappableAnnotationNode {
     default AdjustableAtNode getAt() {
         return this.<AnnotationNode>get("at")
-                   .map(AdjustableAtNode::new)
+                   .map(node -> {
+                       AdjustableAtNode at = new AdjustableAtNode(node);
+                       at.setRemapper(this.getRemapper());
+                       return at;
+                   })
                    .orElse(null);
     }
 
@@ -53,11 +56,5 @@ public interface AtAnnotationNode extends RemappableAnnotationNode {
             at.applyRefmap(refmapApplicator);
             return at;
         });
-    }
-
-    @Override
-    @ApiStatus.Internal
-    default void setRemapper(Consumer<RemappableAnnotationNode> remapper) {
-        getAt().setRemapper(remapper);
     }
 }
