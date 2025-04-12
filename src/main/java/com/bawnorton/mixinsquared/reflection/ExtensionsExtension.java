@@ -37,12 +37,12 @@ public final class ExtensionsExtension {
     private final Extensions reference;
 
     private final FieldReference<List<IExtension>> extensionsField;
-    private final FieldReference<Map<Class<? extends IExtension>, IExtension>> extensionMapField;
+    private final FieldReference<List<IExtension>> activeExtensionsField;
 
     public ExtensionsExtension(Extensions reference) {
         this.reference = reference;
         extensionsField = new FieldReference<>(reference.getClass(), "extensions");
-        extensionMapField = new FieldReference<>(reference.getClass(), "extensionMap");
+        activeExtensionsField = new FieldReference<>(reference.getClass(), "activeExtensions");
     }
 
     public static void tryAs(IExtensionRegistry reference, Consumer<ExtensionsExtension> consumer) {
@@ -55,7 +55,11 @@ public final class ExtensionsExtension {
         return extensionsField.get(this.reference);
     }
 
-    public Map<Class<? extends IExtension>, IExtension> getExtensionMap() {
-        return extensionMapField.get(this.reference);
+    public List<IExtension> getActiveExtensions() {
+        return reference.getActiveExtensions();
+    }
+
+    public void setActiveExtensions(List<IExtension> extensions) {
+        activeExtensionsField.set(this.reference, extensions);
     }
 }

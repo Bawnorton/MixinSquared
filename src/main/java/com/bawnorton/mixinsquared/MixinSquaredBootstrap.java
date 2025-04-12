@@ -30,18 +30,20 @@ import com.bawnorton.mixinsquared.ext.ExtensionRegistrar;
 import com.bawnorton.mixinsquared.ext.MixinSquaredExtension;
 import com.bawnorton.mixinsquared.reflection.ExtensionsExtension;
 import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
+import com.google.common.collect.ImmutableList;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 import org.spongepowered.asm.service.MixinService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public final class MixinSquaredBootstrap {
     public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.3.1-beta.2";
+    public static final String VERSION = "0.3.1-beta.3";
 
     private static boolean initialized = false;
 
@@ -72,6 +74,18 @@ public final class MixinSquaredBootstrap {
                     .collect(Collectors.toList());
             extensions.removeAll(mixinSquaredExtensions);
             extensions.addAll(0, mixinSquaredExtensions);
+
+            List<IExtension> activeExtensions = extensionsExtension.getActiveExtensions();
+            ImmutableList.Builder<IExtension> builder = ImmutableList.builder();
+
+            activeExtensions.stream()
+                            .filter(MixinSquaredExtension.class::isInstance)
+                            .forEach(builder::add);
+            activeExtensions.stream()
+                            .filter(extension -> !(extension instanceof MixinSquaredExtension))
+                            .forEach(builder::add);
+
+            extensionsExtension.setActiveExtensions(builder.build());
         });
     }
 }

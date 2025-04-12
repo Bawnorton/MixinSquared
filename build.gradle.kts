@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "com.bawnorton"
-    version = "0.3.1-beta.2"
+    version = "0.3.1-beta.3"
 
     repositories {
         mavenCentral()
@@ -20,6 +20,7 @@ allprojects {
         compileOnly("org.ow2.asm:asm-debug-all:5.2")
         compileOnly("io.github.llamalad7:mixinextras-common:0.3.6")
         compileOnly("org.jetbrains:annotations:26.0.2")
+        compileOnly("com.google.guava:guava:31.1-jre")
     }
 
     java {
