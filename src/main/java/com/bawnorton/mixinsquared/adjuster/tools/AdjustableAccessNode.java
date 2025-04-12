@@ -33,7 +33,7 @@ public abstract class AdjustableAccessNode extends RemapperHolderAnnotationNode 
     }
 
     public String getValue() {
-        return this.<String>get("value").orElse(null);
+        return this.<String>get("value").orElse("");
     }
 
     public void setValue(String value) {
