@@ -26,6 +26,7 @@ package com.bawnorton.mixinsquared.adjuster.tools.type;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.injection.At;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public interface RemappableAnnotationNode extends MutableAnnotationNode {
@@ -50,10 +51,10 @@ public interface RemappableAnnotationNode extends MutableAnnotationNode {
     void applyRefmap(UnaryOperator<String> refmapApplicator);
 
     @ApiStatus.Internal
-    void setRemapper(Runnable remapper);
+    void setRemapper(Consumer<RemappableAnnotationNode> remapper);
 
     @ApiStatus.Internal
-    Runnable getRemapper();
+    Consumer<RemappableAnnotationNode> getRemapper();
 
     /**
      * Since the Annotation Adjuster interacts with what Mixin uses as keys for the refmap (i.e {@link At#target()}) you may want to
@@ -85,9 +86,9 @@ public interface RemappableAnnotationNode extends MutableAnnotationNode {
      */
     @ApiStatus.AvailableSince("0.3.0-beta.1")
     default void applyRefmap() {
-        Runnable remapper = getRemapper();
+        Consumer<RemappableAnnotationNode> remapper = getRemapper();
         if (remapper != null) {
-            remapper.run();
+            remapper.accept(this);
         }
     }
 }

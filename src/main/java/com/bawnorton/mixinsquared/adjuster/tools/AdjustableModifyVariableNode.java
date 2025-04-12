@@ -25,11 +25,13 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.bawnorton.mixinsquared.adjuster.tools.type.AtAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.SliceAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public class AdjustableModifyVariableNode extends AdjustableInjectorNode implements SliceAnnotationNode, AtAnnotationNode {
@@ -158,5 +160,12 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode impleme
         super.applyRefmap(refmapApplicator);
         SliceAnnotationNode.super.applyRefmap(refmapApplicator);
         AtAnnotationNode.super.applyRefmap(refmapApplicator);
+    }
+
+    @Override
+    public void setRemapper(Consumer<RemappableAnnotationNode> remapper) {
+        super.setRemapper(remapper);
+        SliceAnnotationNode.super.setRemapper(remapper);
+        AtAnnotationNode.super.setRemapper(remapper);
     }
 }

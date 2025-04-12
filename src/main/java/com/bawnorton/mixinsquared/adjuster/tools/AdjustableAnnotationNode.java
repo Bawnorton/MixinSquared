@@ -28,6 +28,8 @@ import com.bawnorton.mixinsquared.adjuster.tools.type.MutableAnnotationNode;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.util.Annotations;
 import org.spongepowered.asm.util.asm.ASM;
@@ -161,7 +163,9 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode implements
         OVERWRITE(AdjustableOverwriteNode::new, Overwrite.class),
         REDIRECT(AdjustableRedirectNode::new, Redirect.class),
         WRAP_OPERATION(AdjustableWrapOperationNode::new, "Lcom/llamalad7/mixinextras/injector/wrapoperation/WrapOperation;"),
-        WRAP_WITH_CONDITION(AdjustableWrapWithConditionNode::new, "Lcom/llamalad7/mixinextras/injector/v2/WrapWithCondition;");
+        WRAP_WITH_CONDITION(AdjustableWrapWithConditionNode::new, "Lcom/llamalad7/mixinextras/injector/v2/WrapWithCondition;"),
+        INVOKER(AdjustableInvokerNode::new, Invoker.class),
+        ACCESSOR(AdjustableAccessorNode::new, Accessor.class);
 
         private final AdjustableAnnotationNodeFactory<?> factory;
         private final String annotationClassDesc;

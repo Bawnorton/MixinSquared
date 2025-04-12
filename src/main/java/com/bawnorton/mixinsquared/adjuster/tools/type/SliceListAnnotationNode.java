@@ -30,6 +30,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public interface SliceListAnnotationNode extends RemappableAnnotationNode {
@@ -62,6 +63,15 @@ public interface SliceListAnnotationNode extends RemappableAnnotationNode {
                 });
             }
             return slices;
+        });
+    }
+
+    @Override
+    @ApiStatus.Internal
+    default void setRemapper(Consumer<RemappableAnnotationNode> remapper) {
+        getSlice().forEach(slice -> {
+            slice.getFrom().setRemapper(remapper);
+            slice.getTo().setRemapper(remapper);
         });
     }
 }

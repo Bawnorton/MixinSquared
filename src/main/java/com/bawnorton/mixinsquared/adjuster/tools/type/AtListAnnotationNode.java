@@ -30,6 +30,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public interface AtListAnnotationNode extends RemappableAnnotationNode {
@@ -57,5 +58,11 @@ public interface AtListAnnotationNode extends RemappableAnnotationNode {
             }
             return ats;
         });
+    }
+
+    @Override
+    @ApiStatus.Internal
+    default void setRemapper(Consumer<RemappableAnnotationNode> remapper) {
+        getAt().forEach(at -> at.setRemapper(remapper));
     }
 }

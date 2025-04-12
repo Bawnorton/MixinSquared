@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025-present Bawnorton
+ * Copyright (c) 2023-present Bawnorton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,32 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.adjuster.tools.type;
+package com.bawnorton.mixinsquared.adjuster.tools;
 
-import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAtNode;
-import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public interface AtAnnotationNode extends RemappableAnnotationNode {
-    default AdjustableAtNode getAt() {
-        return this.<AnnotationNode>get("at")
-                   .map(AdjustableAtNode::new)
-                   .orElse(null);
+public abstract class AdjustableAccessNode extends RemapperHolderAnnotationNode {
+    protected AdjustableAccessNode(AnnotationNode node) {
+        super(node);
     }
 
-    default void setAt(AdjustableAtNode at) {
-        this.set("at", at);
+    public String getValue() {
+        return this.<String>get("value").orElse(null);
     }
 
-    default AtAnnotationNode withAt(UnaryOperator<AdjustableAtNode> at) {
-        this.setAt(at.apply(this.getAt()));
+    public void setValue(String value) {
+        if (value == null) throw new IllegalArgumentException("Value cannot be null");
+        this.set("value", value);
+    }
+
+    public AdjustableAccessNode withValue(UnaryOperator<String> value) {
+        this.setValue(value.apply(this.getValue()));
         return this;
     }
 
     @Override
-    @ApiStatus.Internal
-    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        this.withAt(at -> {
-            at.applyRefmap(refmapApplicator);
-            return at;
-        });
-    }
-
-    @Override
-    @ApiStatus.Internal
-    default void setRemapper(Consumer<RemappableAnnotationNode> remapper) {
-        getAt().setRemapper(remapper);
+    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+        this.withValue(refmapApplicator);
     }
 }

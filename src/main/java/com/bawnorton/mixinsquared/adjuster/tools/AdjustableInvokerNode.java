@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025-present Bawnorton
+ * Copyright (c) 2023-present Bawnorton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,22 @@
  * SOFTWARE.
  */
 
-package com.bawnorton.mixinsquared.adjuster.tools.type;
+package com.bawnorton.mixinsquared.adjuster.tools;
 
-import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAtNode;
-import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public interface AtAnnotationNode extends RemappableAnnotationNode {
-    default AdjustableAtNode getAt() {
-        return this.<AnnotationNode>get("at")
-                   .map(AdjustableAtNode::new)
-                   .orElse(null);
+public class AdjustableInvokerNode extends AdjustableAccessNode {
+    public AdjustableInvokerNode(AnnotationNode node) {
+        super(node);
     }
 
-    default void setAt(AdjustableAtNode at) {
-        this.set("at", at);
+    public static AdjustableInvokerNode defaultNode() {
+        AnnotationNode node = new AnnotationNode(KnownAnnotations.INVOKER.desc());
+        return new AdjustableInvokerNode(node);
     }
 
-    default AtAnnotationNode withAt(UnaryOperator<AdjustableAtNode> at) {
-        this.setAt(at.apply(this.getAt()));
-        return this;
-    }
-
-    @Override
-    @ApiStatus.Internal
-    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        this.withAt(at -> {
-            at.applyRefmap(refmapApplicator);
-            return at;
-        });
-    }
-
-    @Override
-    @ApiStatus.Internal
-    default void setRemapper(Consumer<RemappableAnnotationNode> remapper) {
-        getAt().setRemapper(remapper);
+    public AdjustableInvokerNode withValue(UnaryOperator<String> value) {
+        return (AdjustableInvokerNode) super.withValue(value);
     }
 }

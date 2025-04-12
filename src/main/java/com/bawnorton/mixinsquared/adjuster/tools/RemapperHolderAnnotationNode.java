@@ -27,21 +27,22 @@ package com.bawnorton.mixinsquared.adjuster.tools;
 import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
+import java.util.function.Consumer;
 
 abstract class RemapperHolderAnnotationNode extends AdjustableAnnotationNode implements RemappableAnnotationNode {
-    private Runnable remapper;
+    private Consumer<RemappableAnnotationNode> remapper;
 
     protected RemapperHolderAnnotationNode(AnnotationNode node) {
         super(node);
     }
 
     @ApiStatus.Internal
-    public Runnable getRemapper() {
+    public Consumer<RemappableAnnotationNode> getRemapper() {
         return remapper;
     }
 
     @ApiStatus.Internal
-    public void setRemapper(Runnable remapper) {
+    public void setRemapper(Consumer<RemappableAnnotationNode> remapper) {
         this.remapper = remapper;
     }
 }
