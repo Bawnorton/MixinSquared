@@ -160,6 +160,10 @@ public final class AnnotationEqualityVisitor extends AnnotationVisitor {
     }
 
     private Object getExpectedValue(String name) {
+        if(other.values == null || index >= other.values.size()) {
+            isEqual = false;
+            return null;
+        }
         Object expectedName = other.values.get(index++);
         Object expectedValue = other.values.get(index++);
 
@@ -169,15 +173,6 @@ public final class AnnotationEqualityVisitor extends AnnotationVisitor {
         }
 
         return expectedValue;
-    }
-
-    public static boolean areEqual(AnnotationNode a1, AnnotationNode a2) {
-        if (a1 == a2) return true;
-        if (a1 == null || a2 == null) return false;
-        if (!Objects.equals(a1.desc, a2.desc)) return false;
-        AnnotationEqualityVisitor visitor = new AnnotationEqualityVisitor(a2);
-        a1.accept(visitor);
-        return visitor.isEqual();
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
