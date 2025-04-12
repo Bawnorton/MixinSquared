@@ -71,14 +71,15 @@ public final class ExtensionAnnotationAdjust implements IExtension, MixinSquared
                     List<AdjustableAnnotationNode> postAdjust = new ArrayList<>();
                     for (AnnotationNode annotationNode : visibleAnnotations) {
                         AdjustableAnnotationNode preAdjusted = AdjustableAnnotationNode.fromNode(annotationNode);
+                        AdjustableAnnotationNode initial = preAdjusted.copy();
                         if(preAdjusted instanceof RemappableAnnotationNode) {
                             RemappableAnnotationNode remappable = (RemappableAnnotationNode) preAdjusted;
                             remappable.setRemapper(node -> node.applyRefmap(mixinInfoExtension::remapClassName));
                         }
                         AdjustableAnnotationNode postAdjusted = MixinAnnotationAdjusterRegistrar.adjust(targetClassNames, mixinClassName, methodNode, preAdjusted, (adjuster, node) -> {
                             LOGGER.warn("Modified mixin \"{}\". Check debug logs for more information.", mixinClassName);
-                            LOGGER.debug("Adjuster \"{}\" modified annotation on method \"{}\" in mixinInfo \"{}\"", adjuster, methodNode.name + methodNode.desc, mixinClassName);
-                            LOGGER.debug("Pre-adjustment: {}", preAdjusted);
+                            LOGGER.debug("Adjuster \"{}\" modified annotation on method \"{}\" in mixin \"{}\"", adjuster, methodNode.name + methodNode.desc, mixinClassName);
+                            LOGGER.debug("Pre-adjustment: {}", initial);
                             LOGGER.debug("Post-adjustment: {}", node == null ? "null" : node);
                         });
                         if (postAdjusted != null) {
