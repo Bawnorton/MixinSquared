@@ -152,7 +152,7 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode implements
         AT(AdjustableAtNode::new, At.class),
         CONSTANT(AdjustableConstantNode::new, Constant.class),
         DESC(AdjustableDescNode::new, Desc.class),
-        NEXT(AdjustableNextNode::new, "Lorg/spongepowered/asm.mixin/injection/Next"),
+        NEXT(AdjustableNextNode::new, "Lorg/spongepowered/asm/mixin/injection/Next"),
         SLICE(AdjustableSliceNode::new, Slice.class),
         INJECT(AdjustableInjectNode::new, Inject.class),
         MODIFY_ARG(AdjustableModifyArgNode::new, ModifyArg.class),
