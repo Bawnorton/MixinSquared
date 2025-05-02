@@ -24,6 +24,7 @@
 
 package com.bawnorton.mixinsquared;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.util.logging.MessageRouter;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -34,6 +35,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
+@ApiStatus.Internal
 @SupportedAnnotationTypes({})
 public final class MixinSquaredAnnotationProcessor extends AbstractProcessor {
     @Override

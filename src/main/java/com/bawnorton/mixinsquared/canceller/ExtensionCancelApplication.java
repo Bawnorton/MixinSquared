@@ -26,6 +26,7 @@ package com.bawnorton.mixinsquared.canceller;
 
 import com.bawnorton.mixinsquared.ext.MixinSquaredExtension;
 import com.bawnorton.mixinsquared.reflection.TargetClassContextExtension;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
+@ApiStatus.Internal
 public final class ExtensionCancelApplication implements IExtension, MixinSquaredExtension {
     private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared-canceller");
 

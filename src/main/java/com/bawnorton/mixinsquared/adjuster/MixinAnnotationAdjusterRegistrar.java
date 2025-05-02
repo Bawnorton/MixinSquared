@@ -46,7 +46,7 @@ public final class MixinAnnotationAdjusterRegistrar {
         for (MixinAnnotationAdjuster adjuster : adjusters) {
             AnnotationEqualityVisitor equalityVisitor = new AnnotationEqualityVisitor(annotationNode.copy());
             annotationNode = adjuster.adjust(targetClassNames, mixinClassName, handlerNode, annotationNode);
-            annotationNode.accept(equalityVisitor);
+            equalityVisitor.visit(annotationNode);
             if (!equalityVisitor.isEqual()) {
                 postAdjustmentConsumer.accept(adjuster.getClass().getName(), annotationNode);
             }

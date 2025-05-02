@@ -26,6 +26,7 @@ package com.bawnorton.mixinsquared.selector;
 
 import com.bawnorton.mixinsquared.TargetHandler;
 import com.bawnorton.mixinsquared.reflection.AnnotatedMixinExtension;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -51,6 +52,7 @@ import org.spongepowered.tools.obfuscation.interfaces.ITypeHandleProvider;
 import org.spongepowered.tools.obfuscation.mirror.TypeHandle;
 import java.util.List;
 
+@ApiStatus.Internal
 @ITargetSelectorDynamic.SelectorId("Handler")
 public final class DynamicSelectorHandler implements ITargetSelectorDynamic {
     private final String mixinName;

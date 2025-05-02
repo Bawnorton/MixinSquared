@@ -32,6 +32,7 @@ import com.bawnorton.mixinsquared.reflection.StateExtension;
 import com.bawnorton.mixinsquared.reflection.TargetClassContextExtension;
 import com.bawnorton.mixinsquared.util.AnnotationEqualityVisitor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -46,6 +47,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
+@ApiStatus.Internal
 public final class ExtensionAnnotationAdjust implements IExtension, MixinSquaredExtension {
     private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared-annotation-adjuster");
 

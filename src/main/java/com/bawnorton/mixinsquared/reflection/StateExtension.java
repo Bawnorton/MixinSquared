@@ -24,10 +24,12 @@
 
 package com.bawnorton.mixinsquared.reflection;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.ClassNode;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+@ApiStatus.Internal
 public final class StateExtension {
     private final Object reference;
 

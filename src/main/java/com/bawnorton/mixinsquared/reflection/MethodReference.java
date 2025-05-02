@@ -24,8 +24,10 @@
 
 package com.bawnorton.mixinsquared.reflection;
 
+import org.jetbrains.annotations.ApiStatus;
 import java.lang.reflect.Method;
 
+@ApiStatus.Internal
 public final class MethodReference<T> {
     private final Method method;
 

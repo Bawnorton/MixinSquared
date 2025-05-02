@@ -31,7 +31,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.service.IClassBytecodeProvider;
 import org.spongepowered.asm.service.MixinService;
 import org.spongepowered.asm.util.Annotations;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;

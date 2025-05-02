@@ -47,6 +47,14 @@ public final class AnnotationEqualityVisitor extends AnnotationVisitor {
         return isEqual;
     }
 
+    public void visit(AnnotationNode annotationNode) {
+        if (annotationNode == null) {
+            isEqual = false;
+            return;
+        }
+        annotationNode.accept(this);
+    }
+
     @Override
     public void visit(String name, Object value) {
         if (!isEqual) return;

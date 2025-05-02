@@ -24,8 +24,10 @@
 
 package com.bawnorton.mixinsquared.reflection;
 
+import org.jetbrains.annotations.ApiStatus;
 import java.lang.reflect.Field;
 
+@ApiStatus.Internal
 public final class FieldReference<T> {
     private final Field field;
 
