@@ -24,14 +24,14 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
-import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.ConstraintAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableOverwriteNode extends RemapperHolderAnnotationNode implements RemappableAnnotationNode {
+public class AdjustableOverwriteNode extends RemapperHolderAnnotationNode implements ConstraintAnnotationNode {
     public AdjustableOverwriteNode(AnnotationNode node) {
         super(node);
     }
@@ -41,17 +41,9 @@ public class AdjustableOverwriteNode extends RemapperHolderAnnotationNode implem
         return new AdjustableOverwriteNode(node);
     }
 
-    public String getConstraints() {
-        return this.<String>get("constraints").orElse("");
-    }
-
-    public void setConstraints(String constraints) {
-        this.set("constraints", constraints);
-    }
-
+    @Override
     public AdjustableOverwriteNode withConstraints(UnaryOperator<String> constraints) {
-        this.setConstraints(constraints.apply(this.getConstraints()));
-        return this;
+        return (AdjustableOverwriteNode) ConstraintAnnotationNode.super.withConstraints(constraints);
     }
 
     public List<String> getAliases() {

@@ -24,7 +24,6 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
-import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -33,15 +32,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableAtNode extends RemapperHolderAnnotationNode implements RemappableAnnotationNode {
+public class AdjustableAtNode extends RemapperHolderAnnotationNode {
     public AdjustableAtNode(AnnotationNode node) {
         super(node);
     }
 
     public static AdjustableAtNode defaultNode(InjectionPoint point) {
         AnnotationNode node = new AnnotationNode(KnownAnnotations.AT.desc());
-        node.visit("value", point.name().toUpperCase());
-        return new AdjustableAtNode(node);
+        AdjustableAtNode defaultNode = new AdjustableAtNode(node);
+        defaultNode.setValue(point.name());
+        return defaultNode;
     }
 
     public String getId() {

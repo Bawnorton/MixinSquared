@@ -24,13 +24,15 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.ConstraintAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.MatchCountAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.MethodListAnnotationNode;
 import org.objectweb.asm.tree.AnnotationNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public abstract class AdjustableInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode {
+public abstract class AdjustableInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode, MatchCountAnnotationNode, ConstraintAnnotationNode {
     protected AdjustableInjectorNode(AnnotationNode node) {
         super(node);
     }
@@ -55,55 +57,19 @@ public abstract class AdjustableInjectorNode extends RemapperHolderAnnotationNod
         return this;
     }
 
-    public int getRequire() {
-        return this.<Integer>get("require").orElse(-1);
-    }
-
-    public void setRequire(int require) {
-        this.set("require", require);
-    }
-
     public AdjustableInjectorNode withRequire(UnaryOperator<Integer> require) {
-        this.setRequire(require.apply(this.getRequire()));
-        return this;
-    }
-
-    public int getExpect() {
-        return this.<Integer>get("expect").orElse(-1);
-    }
-
-    public void setExpect(int expect) {
-        this.set("expect", expect);
+        return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withRequire(require);
     }
 
     public AdjustableInjectorNode withExpect(UnaryOperator<Integer> expect) {
-        this.setExpect(expect.apply(this.getExpect()));
-        return this;
-    }
-
-    public int getAllow() {
-        return this.<Integer>get("allow").orElse(-1);
-    }
-
-    public void setAllow(int allow) {
-        this.set("allow", allow);
+        return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withExpect(expect);
     }
 
     public AdjustableInjectorNode withAllow(UnaryOperator<Integer> allow) {
-        this.setAllow(allow.apply(this.getAllow()));
-        return this;
-    }
-
-    public String getConstraints() {
-        return this.<String>get("constraints").orElse("");
-    }
-
-    public void setConstraints(String constraints) {
-        this.set("constraints", constraints);
+        return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withAllow(allow);
     }
 
     public AdjustableInjectorNode withConstraints(UnaryOperator<String> constraints) {
-        this.setConstraints(constraints.apply(this.getConstraints()));
-        return this;
+        return (AdjustableInjectorNode) ConstraintAnnotationNode.super.withConstraints(constraints);
     }
 }

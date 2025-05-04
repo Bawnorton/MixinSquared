@@ -164,6 +164,7 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode implements
         MODIFY_VARIABLE(AdjustableModifyVariableNode::new, ModifyVariable.class),
         OVERWRITE(AdjustableOverwriteNode::new, Overwrite.class),
         REDIRECT(AdjustableRedirectNode::new, Redirect.class),
+        WRAP_METHOD(AdjustableWrapMethodNode::new, "com/llamalad7/mixinextras/injector/wrapmethod/WrapMethod;"),
         WRAP_OPERATION(AdjustableWrapOperationNode::new, "Lcom/llamalad7/mixinextras/injector/wrapoperation/WrapOperation;"),
         WRAP_WITH_CONDITION(AdjustableWrapWithConditionNode::new, "Lcom/llamalad7/mixinextras/injector/v2/WrapWithCondition;"),
         INVOKER(AdjustableInvokerNode::new, Invoker.class),

@@ -25,6 +25,7 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.bawnorton.mixinsquared.adjuster.tools.type.AtListAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.MatchCountAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.MethodListAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.SliceListAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
@@ -32,7 +33,7 @@ import org.objectweb.asm.tree.AnnotationNode;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public abstract class AdjustableMixinExtrasInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode, SliceListAnnotationNode, AtListAnnotationNode {
+public abstract class AdjustableMixinExtrasInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode, SliceListAnnotationNode, AtListAnnotationNode, MatchCountAnnotationNode {
     protected AdjustableMixinExtrasInjectorNode(AnnotationNode node) {
         super(node);
     }
@@ -52,43 +53,19 @@ public abstract class AdjustableMixinExtrasInjectorNode extends RemapperHolderAn
         return (AdjustableMixinExtrasInjectorNode) SliceListAnnotationNode.super.withSlice(slice);
     }
 
-    public int getRequire() {
-        return this.<Integer>get("require").orElse(-1);
-    }
-
-    public void setRequire(int require) {
-        this.set("require", require);
-    }
-
+    @Override
     public AdjustableMixinExtrasInjectorNode withRequire(UnaryOperator<Integer> require) {
-        this.setRequire(require.apply(this.getRequire()));
-        return this;
+        return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withRequire(require);
     }
 
-    public int getExpect() {
-        return this.<Integer>get("expect").orElse(-1);
-    }
-
-    public void setExpect(int expect) {
-        this.set("expect", expect);
-    }
-
+    @Override
     public AdjustableMixinExtrasInjectorNode withExpect(UnaryOperator<Integer> expect) {
-        this.setExpect(expect.apply(this.getExpect()));
-        return this;
+        return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withExpect(expect);
     }
 
-    public int getAllow() {
-        return this.<Integer>get("allow").orElse(-1);
-    }
-
-    public void setAllow(int allow) {
-        this.set("allow", allow);
-    }
-
+    @Override
     public AdjustableMixinExtrasInjectorNode withAllow(UnaryOperator<Integer> allow) {
-        this.setAllow(allow.apply(this.getAllow()));
-        return this;
+        return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withAllow(allow);
     }
 
     @Override
