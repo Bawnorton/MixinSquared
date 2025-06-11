@@ -26,7 +26,7 @@ For each platform:<br>
 
 ```gradle
 dependencies {
-    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.2-beta.4")))
+    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.3")))
 }
 ```
 
@@ -38,9 +38,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.2-beta.4"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.2-beta.4")) {
-        jarJar.ranged(it, "[0.3.2-beta.4,)")
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.3"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.3")) {
+        jarJar.ranged(it, "[0.3.3,)")
     }
 }
 ```
@@ -51,9 +51,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.2-beta.4"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.2-beta.4")) {
-        jarJar.ranged(it, "[0.3.2-beta.4,)")
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.3"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.3")) {
+        jarJar.ranged(it, "[0.3.3,)")
     }
 }
 ```
@@ -65,8 +65,8 @@ dependencies {
 
 ```gradle
 dependencies {
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.2-beta.4"))
-    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.2-beta.4"))
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.3"))
+    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.3"))
 }
 ```
 
@@ -90,7 +90,7 @@ repositories {
 }
 
 dependencies {
-    shadow(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.2-beta.4"))
+    shadow(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.3"))
 }
 
 shadowJar {

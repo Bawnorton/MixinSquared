@@ -30,8 +30,6 @@ import com.bawnorton.mixinsquared.ext.MixinSquaredExtension;
 import com.bawnorton.mixinsquared.reflection.MixinInfoExtension;
 import com.bawnorton.mixinsquared.reflection.StateExtension;
 import com.bawnorton.mixinsquared.reflection.TargetClassContextExtension;
-import com.bawnorton.mixinsquared.util.AnnotationEqualityVisitor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;

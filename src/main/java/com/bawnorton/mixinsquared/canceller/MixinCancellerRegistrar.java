@@ -28,7 +28,6 @@ import com.bawnorton.mixinsquared.api.MixinCanceller;
 import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.service.MixinService;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -28,10 +28,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.transformer.ext.Extensions;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 import org.spongepowered.asm.mixin.transformer.ext.IExtensionRegistry;
-
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 @ApiStatus.Internal

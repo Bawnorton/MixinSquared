@@ -28,7 +28,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.refmap.IMixinContext;
 import org.spongepowered.tools.obfuscation.interfaces.IObfuscationManager;
 import org.spongepowered.tools.obfuscation.interfaces.ITypeHandleProvider;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 @ApiStatus.Internal

@@ -2,7 +2,6 @@ package com.bawnorton.mixinsquared.reflection;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 @ApiStatus.Internal

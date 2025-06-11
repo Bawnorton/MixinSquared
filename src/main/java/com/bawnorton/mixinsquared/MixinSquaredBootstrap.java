@@ -35,15 +35,13 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
-import org.spongepowered.asm.service.MixinService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public final class MixinSquaredBootstrap {
     public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.3.3-beta.1";
+    public static final String VERSION = "0.3.3";
 
     private static boolean initialized = false;
 

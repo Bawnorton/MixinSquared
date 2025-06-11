@@ -25,7 +25,6 @@
 package com.bawnorton.mixinsquared.adjuster;
 
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
-import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAtNode;
 import com.bawnorton.mixinsquared.api.MixinAnnotationAdjuster;
 import com.bawnorton.mixinsquared.util.AnnotationEqualityVisitor;
 import org.jetbrains.annotations.ApiStatus;
