@@ -29,8 +29,10 @@ import com.bawnorton.mixinsquared.canceller.ExtensionCancelApplication;
 import com.bawnorton.mixinsquared.ext.ExtensionRegistrar;
 import com.bawnorton.mixinsquared.ext.MixinSquaredExtension;
 import com.bawnorton.mixinsquared.reflection.ExtensionsExtension;
+import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
 import com.google.common.collect.ImmutableList;
 import org.spongepowered.asm.mixin.MixinEnvironment;
+import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 import java.util.List;
@@ -39,7 +41,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public final class MixinSquaredBootstrap {
     public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.3.5-beta.1";
+    public static final String VERSION = "0.3.5-beta.2";
 
     private static boolean initialized = false;
 
@@ -47,6 +49,8 @@ public final class MixinSquaredBootstrap {
         if (initialized) return;
 
         initialized = true;
+
+        TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
 
         ExtensionRegistrar.register(new ExtensionCancelApplication());
         ExtensionRegistrar.register(new ExtensionAnnotationAdjust());
