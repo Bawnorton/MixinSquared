@@ -26,6 +26,7 @@ package com.bawnorton.mixinsquared.api;
 
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.MethodNode;
 import java.util.List;
 
@@ -39,5 +40,5 @@ public interface MixinAnnotationAdjuster {
      * @return Adjusted annotation node. Return null to remove the annotation.
      * @see RemappableAnnotationNode#applyRefmap()
      */
-    AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode);
+    @Nullable AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode);
 }

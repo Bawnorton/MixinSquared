@@ -43,6 +43,10 @@ public final class MixinAnnotationAdjusterRegistrar {
     @ApiStatus.Internal
     public static AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode, BiConsumer<String, AdjustableAnnotationNode> postAdjustmentConsumer) {
         for (MixinAnnotationAdjuster adjuster : adjusters) {
+            if (annotationNode == null) {
+                LOGGER.debug("Skipping annotation adjuster {} as the annotation has been removed", adjuster.getClass().getName());
+                continue;
+            }
             AnnotationEqualityVisitor equalityVisitor = new AnnotationEqualityVisitor(annotationNode.copy());
             annotationNode = adjuster.adjust(targetClassNames, mixinClassName, handlerNode, annotationNode);
             equalityVisitor.visit(annotationNode);

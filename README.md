@@ -26,7 +26,7 @@ For each platform:<br>
 
 ```gradle
 dependencies {
-    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.3")))
+    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.5")))
 }
 ```
 
@@ -38,9 +38,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.3"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.3")) {
-        jarJar.ranged(it, "[0.3.3,)")
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.5"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.5")) {
+        jarJar.ranged(it, "[0.3.5,)")
     }
 }
 ```
@@ -51,9 +51,9 @@ dependencies {
 ```gradle
 dependencies {
     // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.3"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.3")) {
-        jarJar.ranged(it, "[0.3.3,)")
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.5"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.5")) {
+        jarJar.ranged(it, "[0.3.5,)")
     }
 }
 ```
@@ -65,8 +65,8 @@ dependencies {
 
 ```gradle
 dependencies {
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.3"))
-    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.3"))
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.5"))
+    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.5"))
 }
 ```
 
@@ -90,7 +90,7 @@ repositories {
 }
 
 dependencies {
-    shadow(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.3"))
+    shadow(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.5"))
 }
 
 shadowJar {
@@ -100,15 +100,20 @@ shadowJar {
 }
 ```
 
-To initialize MixinSquared, simply call
+To initialize MixinSquared yourself, implement a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html) and call
 
 ```java
 MixinSquaredBootstrap.init();
+MixinSquaredApiImplLoader.load();
 ```
-In the `onLoad` method inside a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html)
+In the `onLoad` method and
+```java
+MixinSquaredBootstrap.reOrderExtenstions();
+```
+In the `getMixins` method<br>
 
-#### :warning: Warning :warning:
-If you are also using MixinExtras, ensure that MixinSquared's init is called after MixinExtras' init.
+It is necessary for MixinSquared's extensions to be applied before MixinExtra's extensions to avoid
+passing half-processed sugar annotations to the `MixinAnnotationAdjuster`
 
 </details>
 
