@@ -23,7 +23,7 @@ tasks.withType<Jar> {
         rename { "${it}_MixinSquared" }
     }
     manifest.attributes(
-        "MixinConfigs" to "mixinsquared.init.mixins.json",
+        "MixinConfigs" to "mixinsquared.neoforge.init.mixins.json",
         "FMLModType" to "GAMELIBRARY",
     )
 }
