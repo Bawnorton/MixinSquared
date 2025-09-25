@@ -14,7 +14,7 @@
   "license": "MIT",
   "environment": "*",
   "mixins": [
-    "mixinsquared.init.mixins.json"
+    "mixinsquared.fabric.init.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.11"
