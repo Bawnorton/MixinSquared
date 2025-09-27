@@ -37,7 +37,6 @@ dependencies {
 
 ```gradle
 dependencies {
-    // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
     compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.6-beta.1"))
     implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.6-beta.1")) {
         jarJar.ranged(it, "[0.3.6-beta.1,)")
@@ -50,7 +49,6 @@ dependencies {
 
 ```gradle
 dependencies {
-    // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
     compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.6-beta.1"))
     implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.6-beta.1")) {
         jarJar.ranged(it, "[0.3.6-beta.1,)")
