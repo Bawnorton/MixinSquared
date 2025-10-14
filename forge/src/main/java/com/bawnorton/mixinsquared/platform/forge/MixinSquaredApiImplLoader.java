@@ -28,15 +28,16 @@ import com.bawnorton.mixinsquared.adjuster.MixinAnnotationAdjusterRegistrar;
 import com.bawnorton.mixinsquared.api.MixinAnnotationAdjuster;
 import com.bawnorton.mixinsquared.api.MixinCanceller;
 import com.bawnorton.mixinsquared.canceller.MixinCancellerRegistrar;
+
 import java.util.ServiceLoader;
 
 public final class MixinSquaredApiImplLoader {
-    private static final ServiceLoader<MixinCanceller> CANCELLERS = ServiceLoader.load(MixinCanceller.class);
-    private static final ServiceLoader<MixinAnnotationAdjuster> ANNOTATION_ADJUSTERS = ServiceLoader.load(MixinAnnotationAdjuster.class);
+	private static final ServiceLoader<MixinCanceller> CANCELLERS = ServiceLoader.load(MixinCanceller.class);
+	private static final ServiceLoader<MixinAnnotationAdjuster> ANNOTATION_ADJUSTERS = ServiceLoader.load(MixinAnnotationAdjuster.class);
 
 
-    public static void load() {
-        CANCELLERS.forEach(MixinCancellerRegistrar::register);
-        ANNOTATION_ADJUSTERS.forEach(MixinAnnotationAdjusterRegistrar::register);
-    }
+	public static void load() {
+		CANCELLERS.forEach(MixinCancellerRegistrar::register);
+		ANNOTATION_ADJUSTERS.forEach(MixinAnnotationAdjusterRegistrar::register);
+	}
 }

@@ -27,46 +27,47 @@ package com.bawnorton.mixinsquared.adjuster.tools.type;
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableSliceNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.function.UnaryOperator;
 
 public interface SliceAnnotationNode extends RemappableAnnotationNode {
-    default AdjustableSliceNode getSlice() {
-        return this.<AnnotationNode>get("slice")
-                   .map(node -> {
-                       AdjustableSliceNode slice = new AdjustableSliceNode(node);
-                       slice.withFrom(from -> {
-                           from.setRemapper(this.getRemapper());
-                           return from;
-                       }).withTo(to -> {
-                           to.setRemapper(this.getRemapper());
-                           return to;
-                       });
-                       return slice;
-                   })
-                   .orElse(AdjustableSliceNode.defaultNode());
-    }
+	default AdjustableSliceNode getSlice() {
+		return this.<AnnotationNode>get("slice")
+				.map(node -> {
+					AdjustableSliceNode slice = new AdjustableSliceNode(node);
+					slice.withFrom(from -> {
+						from.setRemapper(this.getRemapper());
+						return from;
+					}).withTo(to -> {
+						to.setRemapper(this.getRemapper());
+						return to;
+					});
+					return slice;
+				})
+				.orElse(AdjustableSliceNode.defaultNode());
+	}
 
-    default void setSlice(AdjustableSliceNode slice) {
-        this.set("slice", slice);
-    }
+	default void setSlice(AdjustableSliceNode slice) {
+		this.set("slice", slice);
+	}
 
-    default SliceAnnotationNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
-        this.setSlice(slice.apply(this.getSlice()));
-        return this;
-    }
+	default SliceAnnotationNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
+		this.setSlice(slice.apply(this.getSlice()));
+		return this;
+	}
 
-    @Override
-    @ApiStatus.Internal
-    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        this.withSlice(slice -> {
-            slice.withFrom(from -> {
-                from.applyRefmap(refmapApplicator);
-                return from;
-            }).withTo(to -> {
-                to.applyRefmap(refmapApplicator);
-                return to;
-            });
-            return slice;
-        });
-    }
+	@Override
+	@ApiStatus.Internal
+	default void applyRefmap(UnaryOperator<String> refmapApplicator) {
+		this.withSlice(slice -> {
+			slice.withFrom(from -> {
+				from.applyRefmap(refmapApplicator);
+				return from;
+			}).withTo(to -> {
+				to.applyRefmap(refmapApplicator);
+				return to;
+			});
+			return slice;
+		});
+	}
 }

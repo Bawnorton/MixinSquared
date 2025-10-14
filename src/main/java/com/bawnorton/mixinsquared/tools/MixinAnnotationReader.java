@@ -31,77 +31,79 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.service.IClassBytecodeProvider;
 import org.spongepowered.asm.service.MixinService;
 import org.spongepowered.asm.util.Annotations;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public final class MixinAnnotationReader {
-    private static final IClassBytecodeProvider bytecodeProvider;
-    private final AnnotationNode mixinAnnotation;
+	private static final IClassBytecodeProvider bytecodeProvider;
 
-    public MixinAnnotationReader(String mixinClassName) {
-        try {
-            ClassNode classNode = bytecodeProvider.getClassNode(mixinClassName);
-            mixinAnnotation = Annotations.getInvisible(classNode, Mixin.class);
-        } catch (ClassNotFoundException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	static {
+		bytecodeProvider = MixinService.getService().getBytecodeProvider();
+	}
 
-    public MixinAnnotationReader(ClassNode mixinClassNode) {
-        mixinAnnotation = Annotations.getInvisible(mixinClassNode, Mixin.class);
-    }
+	private final AnnotationNode mixinAnnotation;
 
-    static {
-         bytecodeProvider = MixinService.getService().getBytecodeProvider();
-    }
+	public MixinAnnotationReader(String mixinClassName) {
+		try {
+			ClassNode classNode = bytecodeProvider.getClassNode(mixinClassName);
+			mixinAnnotation = Annotations.getInvisible(classNode, Mixin.class);
+		} catch (ClassNotFoundException | IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public List<Type> getValue() {
-        return Annotations.getValue(mixinAnnotation, "value", Collections.emptyList());
-    }
+	public MixinAnnotationReader(ClassNode mixinClassNode) {
+		mixinAnnotation = Annotations.getInvisible(mixinClassNode, Mixin.class);
+	}
 
-    public List<String> getTargets() {
-        return Annotations.getValue(mixinAnnotation, "targets", Collections.emptyList());
-    }
+	public static List<Type> getValue(String mixinClassName) {
+		return new MixinAnnotationReader(mixinClassName).getValue();
+	}
 
-    public int getPriority() {
-        return Annotations.getValue(mixinAnnotation, "priority", 1000);
-    }
+	public static List<String> getTargets(String mixinClassName) {
+		return new MixinAnnotationReader(mixinClassName).getTargets();
+	}
 
-    public boolean getRemap() {
-        return Annotations.getValue(mixinAnnotation, "remap", Boolean.TRUE);
-    }
+	public static int getPriority(String mixinClassName) {
+		return new MixinAnnotationReader(mixinClassName).getPriority();
+	}
 
-    public static List<Type> getValue(String mixinClassName) {
-        return new MixinAnnotationReader(mixinClassName).getValue();
-    }
+	public static boolean getRemap(String mixinClassName) {
+		return new MixinAnnotationReader(mixinClassName).getRemap();
+	}
 
-    public static List<String> getTargets(String mixinClassName) {
-        return new MixinAnnotationReader(mixinClassName).getTargets();
-    }
+	public static List<Type> getValue(ClassNode mixinClassNode) {
+		return new MixinAnnotationReader(mixinClassNode).getValue();
+	}
 
-    public static int getPriority(String mixinClassName) {
-        return new MixinAnnotationReader(mixinClassName).getPriority();
-    }
+	public static List<String> getTargets(ClassNode mixinClassNode) {
+		return new MixinAnnotationReader(mixinClassNode).getTargets();
+	}
 
-    public static boolean getRemap(String mixinClassName) {
-        return new MixinAnnotationReader(mixinClassName).getRemap();
-    }
+	public static int getPriority(ClassNode mixinClassNode) {
+		return new MixinAnnotationReader(mixinClassNode).getPriority();
+	}
 
-    public static List<Type> getValue(ClassNode mixinClassNode) {
-        return new MixinAnnotationReader(mixinClassNode).getValue();
-    }
+	public static boolean getRemap(ClassNode mixinClassNode) {
+		return new MixinAnnotationReader(mixinClassNode).getRemap();
+	}
 
-    public static List<String> getTargets(ClassNode mixinClassNode) {
-        return new MixinAnnotationReader(mixinClassNode).getTargets();
-    }
+	public List<Type> getValue() {
+		return Annotations.getValue(mixinAnnotation, "value", Collections.emptyList());
+	}
 
-    public static int getPriority(ClassNode mixinClassNode) {
-        return new MixinAnnotationReader(mixinClassNode).getPriority();
-    }
+	public List<String> getTargets() {
+		return Annotations.getValue(mixinAnnotation, "targets", Collections.emptyList());
+	}
 
-    public static boolean getRemap(ClassNode mixinClassNode) {
-        return new MixinAnnotationReader(mixinClassNode).getRemap();
-    }
+	public int getPriority() {
+		return Annotations.getValue(mixinAnnotation, "priority", 1000);
+	}
+
+	public boolean getRemap() {
+		return Annotations.getValue(mixinAnnotation, "remap", Boolean.TRUE);
+	}
 }

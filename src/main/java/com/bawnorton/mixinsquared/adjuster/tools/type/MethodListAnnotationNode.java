@@ -25,33 +25,34 @@
 package com.bawnorton.mixinsquared.adjuster.tools.type;
 
 import org.jetbrains.annotations.ApiStatus;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 public interface MethodListAnnotationNode extends RemappableAnnotationNode {
-    default List<String> getMethod() {
-        return this.<List<String>>get("method").orElse(new ArrayList<>());
-    }
+	default List<String> getMethod() {
+		return this.<List<String>>get("method").orElse(new ArrayList<>());
+	}
 
-    default void setMethod(List<String> method) {
-        this.set("method", method);
-    }
+	default void setMethod(List<String> method) {
+		this.set("method", method);
+	}
 
-    default MethodListAnnotationNode withMethod(UnaryOperator<List<String>> method) {
-        this.setMethod(method.apply(this.getMethod()));
-        return this;
-    }
+	default MethodListAnnotationNode withMethod(UnaryOperator<List<String>> method) {
+		this.setMethod(method.apply(this.getMethod()));
+		return this;
+	}
 
-    @Override
-    @ApiStatus.Internal
-    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        this.withMethod(methods -> {
-            List<String> newMethods = new ArrayList<>(methods.size());
-            for (String method : methods) {
-                newMethods.add(refmapApplicator.apply(method));
-            }
-            return newMethods;
-        });
-    }
+	@Override
+	@ApiStatus.Internal
+	default void applyRefmap(UnaryOperator<String> refmapApplicator) {
+		this.withMethod(methods -> {
+			List<String> newMethods = new ArrayList<>(methods.size());
+			for (String method : methods) {
+				newMethods.add(refmapApplicator.apply(method));
+			}
+			return newMethods;
+		});
+	}
 }

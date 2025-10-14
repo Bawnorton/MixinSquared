@@ -3,11 +3,13 @@
 The `@TargetHandler` selector allows any injector to target a handler that was added to the mixin'd class.
 
 The handler takes in two required and two optional arguments:
+
 - `mixin`: The fully qualified class name for the mixin the handler originates from.
     - Required
 - `name`: The name of the handler method.
     - Required
-    - This must be the exact name of the handler in the target mixin if the handler is prefixed with the modid, then the `name` argument must also.
+    - This must be the exact name of the handler in the target mixin if the handler is prefixed with the modid, then the
+      `name` argument must also.
 - `prefix`: The prefix added to the front of handler methods by Mixin.
     - Optional, will match the first prefix if not specified.
     - See the [table](#prefixes) below for the prefixes.
@@ -15,10 +17,13 @@ The handler takes in two required and two optional arguments:
     - Optional
     - Due to the limitations of selectors, this will print until the first match is found.
 
-When targetting a mixin'd handler with an injector, set the method parameter to `@MixinSquared:Handler` to delegate the targeting to the dynamic selector.
+When targetting a mixin'd handler with an injector, set the method parameter to `@MixinSquared:Handler` to delegate the
+targeting to the dynamic selector.
 
 ## Example:
+
 Let's say the following mixin exists:
+
 ```java
 @Mixin(TargetClass.class)
 public abstract class TargetClassMixin {
@@ -36,9 +41,12 @@ public abstract class TargetClassMixin {
     }
 }
 ```
-You may want to stop this mixin from always giving a warning when the mod doesn't handle the damage, and instead reduce the level to debug.
+
+You may want to stop this mixin from always giving a warning when the mod doesn't handle the damage, and instead reduce
+the level to debug.
 
 This can be done like so:
+
 ```java
 @Mixin(value = TargetClass.class, priority = 1500) // priority is higher than the target mixin
 public abstract class TargetClassMixinSquared {
@@ -58,13 +66,16 @@ public abstract class TargetClassMixinSquared {
     }
 }
 ```
+
 The target handler can target other mod's mixin squared mixins as long as the priority is higher.
 
 ### More Examples:
+
 <details>
     <summary>Targeting a handler with a specific prefix</summary>
 
 Target mixin:
+
 ```java
 @Mixin(TargetClass.class)
 public abstract class TargetClassMixin {
@@ -85,7 +96,9 @@ public abstract class TargetClassMixin {
     }
 }
 ```
+
 Targeting `@Inject` handler:
+
 ```java
 @Mixin(value = TargetClass.class, priority = 1500)
 public abstract class TargetClassMixinSquared {
@@ -100,7 +113,9 @@ public abstract class TargetClassMixinSquared {
     }
 }
 ```
+
 Targeting `@ModifyArg` handler:
+
 ```java
 @Mixin(value = TargetClass.class, priority = 1500)
 public abstract class TargetClassMixinSquared {
@@ -115,11 +130,13 @@ public abstract class TargetClassMixinSquared {
     }
 }
 ```
+
 </details>
 <details>
     <summary>Targeting handler that explicitly contains the modid</summary>
 
 Target mixin:
+
 ```java
 @Mixin(TargetClass.class)
 public abstract class TargetClassMixin {
@@ -131,6 +148,7 @@ public abstract class TargetClassMixin {
 ```
 
 Targeting the handler:
+
 ```java
 @Mixin(value = TargetClass.class, priority = 1500)
 public abstract class TargetClassMixinSquared {
@@ -144,11 +162,13 @@ public abstract class TargetClassMixinSquared {
     }
 }
 ```
+
 </details>
 <details>
     <summary>Targeting and using MixinExtras injectors</summary>
 
 Target mixin:
+
 ```java
 @Mixin(TargetClass.class)
 public abstract class TargetClassMixin {
@@ -166,7 +186,9 @@ public abstract class TargetClassMixin {
 }
 
 ```
+
 Changing the returned value of the `AnotherMod.someMethod` call:
+
 ```java
 @Mixin(value = TargetClass.class, priority = 1500)
 public abstract class TargetClassMixinSquared {
@@ -186,9 +208,11 @@ public abstract class TargetClassMixinSquared {
     }
 }
 ```
+
 </details>
 
 ## Prefixes:
+
 <table>
     <tr>
         <th>Annotation</th>

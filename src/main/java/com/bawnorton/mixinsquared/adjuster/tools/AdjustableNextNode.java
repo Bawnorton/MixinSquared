@@ -26,82 +26,83 @@ package com.bawnorton.mixinsquared.adjuster.tools;
 
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class AdjustableNextNode extends AdjustableAnnotationNode {
-    public AdjustableNextNode(AnnotationNode node) {
-        super(node);
-    }
+	public AdjustableNextNode(AnnotationNode node) {
+		super(node);
+	}
 
-    public static AdjustableNextNode defaultNode() {
-        AnnotationNode node = new AnnotationNode(KnownAnnotations.NEXT.desc());
-        return new AdjustableNextNode(node);
-    }
+	public static AdjustableNextNode defaultNode() {
+		AnnotationNode node = new AnnotationNode(KnownAnnotations.NEXT.desc());
+		return new AdjustableNextNode(node);
+	}
 
-    public String getName() {
-        return this.<String>get("name").orElse("");
-    }
+	public String getName() {
+		return this.<String>get("name").orElse("");
+	}
 
-    public void setName(String name) {
-        this.set("name", name);
-    }
+	public void setName(String name) {
+		this.set("name", name);
+	}
 
-    public AdjustableNextNode withName(UnaryOperator<String> name) {
-        this.setName(name.apply(this.getName()));
-        return this;
-    }
+	public AdjustableNextNode withName(UnaryOperator<String> name) {
+		this.setName(name.apply(this.getName()));
+		return this;
+	}
 
-    public Type getRet() {
-        return this.<Type>get("ret").orElse(Type.VOID_TYPE);
-    }
+	public Type getRet() {
+		return this.<Type>get("ret").orElse(Type.VOID_TYPE);
+	}
 
-    public void setRet(Type ret) {
-        this.set("ret", ret);
-    }
+	public void setRet(Type ret) {
+		this.set("ret", ret);
+	}
 
-    public AdjustableNextNode withRet(UnaryOperator<Type> ret) {
-        this.setRet(ret.apply(this.getRet()));
-        return this;
-    }
+	public AdjustableNextNode withRet(UnaryOperator<Type> ret) {
+		this.setRet(ret.apply(this.getRet()));
+		return this;
+	}
 
-    public List<Type> getArgs() {
-        return this.<List<Type>>get("args").orElse(new ArrayList<>());
-    }
+	public List<Type> getArgs() {
+		return this.<List<Type>>get("args").orElse(new ArrayList<>());
+	}
 
-    public void setArgs(List<Type> args) {
-        this.set("args", args);
-    }
+	public void setArgs(List<Type> args) {
+		this.set("args", args);
+	}
 
-    public AdjustableNextNode withArgs(UnaryOperator<List<Type>> args) {
-        this.setArgs(args.apply(this.getArgs()));
-        return this;
-    }
+	public AdjustableNextNode withArgs(UnaryOperator<List<Type>> args) {
+		this.setArgs(args.apply(this.getArgs()));
+		return this;
+	}
 
-    public int getMin() {
-        return this.<Integer>get("min").orElse(0);
-    }
+	public int getMin() {
+		return this.<Integer>get("min").orElse(0);
+	}
 
-    public void setMin(int min) {
-        this.set("min", min);
-    }
+	public void setMin(int min) {
+		this.set("min", min);
+	}
 
-    public AdjustableNextNode withMin(UnaryOperator<Integer> min) {
-        this.setMin(min.apply(this.getMin()));
-        return this;
-    }
+	public AdjustableNextNode withMin(UnaryOperator<Integer> min) {
+		this.setMin(min.apply(this.getMin()));
+		return this;
+	}
 
-    public int getMax() {
-        return this.<Integer>get("max").orElse(Integer.MAX_VALUE);
-    }
+	public int getMax() {
+		return this.<Integer>get("max").orElse(Integer.MAX_VALUE);
+	}
 
-    public void setMax(int max) {
-        this.set("max", max);
-    }
+	public void setMax(int max) {
+		this.set("max", max);
+	}
 
-    public AdjustableNextNode withMax(UnaryOperator<Integer> max) {
-        this.setMax(max.apply(this.getMax()));
-        return this;
-    }
+	public AdjustableNextNode withMax(UnaryOperator<Integer> max) {
+		this.setMax(max.apply(this.getMax()));
+		return this;
+	}
 }

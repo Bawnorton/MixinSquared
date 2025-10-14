@@ -35,49 +35,50 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public final class MixinSquaredBootstrap {
-    public static final String NAME = "mixinsquared";
-    public static final String VERSION = "0.3.6-beta.1";
+	public static final String NAME = "mixinsquared";
+	public static final String VERSION = "0.3.6-beta.1";
 
-    private static boolean initialized = false;
+	private static boolean initialized = false;
 
-    public static void init() {
-        if (initialized) return;
+	public static void init() {
+		if (initialized) return;
 
-        initialized = true;
+		initialized = true;
 
-        TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
+		TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
 
-        ExtensionRegistrar.register(new ExtensionCancelApplication());
-        ExtensionRegistrar.register(new ExtensionAnnotationAdjust());
-    }
+		ExtensionRegistrar.register(new ExtensionCancelApplication());
+		ExtensionRegistrar.register(new ExtensionAnnotationAdjust());
+	}
 
-    public static void reOrderExtensions() {
-        IMixinTransformer transformer = (IMixinTransformer) MixinEnvironment.getDefaultEnvironment().getActiveTransformer();
-        ExtensionsExtension.tryAs(transformer.getExtensions(), extensionsExtension -> {
-            List<IExtension> extensions = extensionsExtension.getExtensions();
-            List<IExtension> mixinSquaredExtensions = extensions
-                    .stream()
-                    .filter(MixinSquaredExtension.class::isInstance)
-                    .collect(Collectors.toList());
-            extensions.removeAll(mixinSquaredExtensions);
-            extensions.addAll(0, mixinSquaredExtensions);
+	public static void reOrderExtensions() {
+		IMixinTransformer transformer = (IMixinTransformer) MixinEnvironment.getDefaultEnvironment().getActiveTransformer();
+		ExtensionsExtension.tryAs(transformer.getExtensions(), extensionsExtension -> {
+			List<IExtension> extensions = extensionsExtension.getExtensions();
+			List<IExtension> mixinSquaredExtensions = extensions
+					.stream()
+					.filter(MixinSquaredExtension.class::isInstance)
+					.collect(Collectors.toList());
+			extensions.removeAll(mixinSquaredExtensions);
+			extensions.addAll(0, mixinSquaredExtensions);
 
-            List<IExtension> activeExtensions = extensionsExtension.getActiveExtensions();
-            ImmutableList.Builder<IExtension> builder = ImmutableList.builder();
+			List<IExtension> activeExtensions = extensionsExtension.getActiveExtensions();
+			ImmutableList.Builder<IExtension> builder = ImmutableList.builder();
 
-            activeExtensions.stream()
-                            .filter(MixinSquaredExtension.class::isInstance)
-                            .forEach(builder::add);
-            activeExtensions.stream()
-                            .filter(extension -> !(extension instanceof MixinSquaredExtension))
-                            .forEach(builder::add);
+			activeExtensions.stream()
+					.filter(MixinSquaredExtension.class::isInstance)
+					.forEach(builder::add);
+			activeExtensions.stream()
+					.filter(extension -> !(extension instanceof MixinSquaredExtension))
+					.forEach(builder::add);
 
-            extensionsExtension.setActiveExtensions(builder.build());
-        });
-    }
+			extensionsExtension.setActiveExtensions(builder.build());
+		});
+	}
 }

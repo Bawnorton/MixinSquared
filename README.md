@@ -8,7 +8,8 @@ Works with [MixinExtras](https://github.com/LlamaLad7/MixinExtras)
 
 ### Plugin
 
-An MCDev Addon IntellJ Plugin can be installed from [here](https://plugins.jetbrains.com/plugin/26828-mixinsquared) which provides syntax highlighting and suggestions when using MixinSquared
+An MCDev Addon IntellJ Plugin can be installed from [here](https://plugins.jetbrains.com/plugin/26828-mixinsquared)
+which provides syntax highlighting and suggestions when using MixinSquared
 
 ## Gradle
 
@@ -37,7 +38,6 @@ dependencies {
 
 ```gradle
 dependencies {
-    // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
     compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.6-beta.1"))
     implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.6-beta.1")) {
         jarJar.ranged(it, "[0.3.6-beta.1,)")
@@ -50,7 +50,6 @@ dependencies {
 
 ```gradle
 dependencies {
-    // MixinSquared's annotationProcessor MUST be registered BEFORE Mixin's one.
     compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.6-beta.1"))
     implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.6-beta.1")) {
         jarJar.ranged(it, "[0.3.6-beta.1,)")
@@ -100,16 +99,21 @@ shadowJar {
 }
 ```
 
-To initialize MixinSquared yourself, implement a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html) and call
+To initialize MixinSquared yourself, implement
+a [IMixinConfigPlugin](https://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/org/spongepowered/asm/mixin/extensibility/IMixinConfigPlugin.html)
+and call
 
 ```java
 MixinSquaredBootstrap.init();
 MixinSquaredApiImplLoader.load();
 ```
+
 In the `onLoad` method and
+
 ```java
 MixinSquaredBootstrap.reOrderExtenstions();
 ```
+
 In the `getMixins` method<br>
 
 It is necessary for MixinSquared's extensions to be applied before MixinExtra's extensions to avoid

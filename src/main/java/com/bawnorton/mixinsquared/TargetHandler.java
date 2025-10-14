@@ -32,75 +32,75 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TargetHandler {
-    /**
-     * The exact name of the original handler method. Optionally followed by the method descriptor for more specificity.
-     */
-    String name();
+	/**
+	 * The exact name of the original handler method. Optionally followed by the method descriptor for more specificity.
+	 */
+	String name();
 
-    /**
-     * The fully qualified name of the mixin class that contains the handler method.
-     */
-    String mixin();
+	/**
+	 * The fully qualified name of the mixin class that contains the handler method.
+	 */
+	String mixin();
 
-    /**
-     * The prefix applied to the merged handler by the injector.
-     * <table>
-     *     <caption>Prefixes</caption>
-     *     <tr>
-     *         <th>Annotation</th>
-     *         <th>Prefix</th>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@Inject</b></td>
-     *         <td>handler</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@ModifyArg</b></td>
-     *         <td>modify</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@ModifyArgs</b></td>
-     *         <td>args</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@ModifyConstant</b></td>
-     *         <td>constant</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@ModifyVariable</b></td>
-     *         <td>localvar</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@Redirect</b></td>
-     *         <td>redirect</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@ModifyExpressionValue</b></td>
-     *         <td>modifyExpressionValue</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@ModifyReciever</b></td>
-     *         <td>modifyReciever</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@ModifyReturnValue</b></td>
-     *         <td>modifyReturnValue</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@WrapWithCondition</b></td>
-     *         <td>wrapWithCondition</td>
-     *     </tr>
-     *     <tr>
-     *         <td><b>@WrapOperation</b></td>
-     *         <td>wrapOperation</td>
-     *     </tr>
-     * </table>
-     */
-    String prefix() default "";
+	/**
+	 * The prefix applied to the merged handler by the injector.
+	 * <table>
+	 *     <caption>Prefixes</caption>
+	 *     <tr>
+	 *         <th>Annotation</th>
+	 *         <th>Prefix</th>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@Inject</b></td>
+	 *         <td>handler</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@ModifyArg</b></td>
+	 *         <td>modify</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@ModifyArgs</b></td>
+	 *         <td>args</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@ModifyConstant</b></td>
+	 *         <td>constant</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@ModifyVariable</b></td>
+	 *         <td>localvar</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@Redirect</b></td>
+	 *         <td>redirect</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@ModifyExpressionValue</b></td>
+	 *         <td>modifyExpressionValue</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@ModifyReciever</b></td>
+	 *         <td>modifyReciever</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@ModifyReturnValue</b></td>
+	 *         <td>modifyReturnValue</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@WrapWithCondition</b></td>
+	 *         <td>wrapWithCondition</td>
+	 *     </tr>
+	 *     <tr>
+	 *         <td><b>@WrapOperation</b></td>
+	 *         <td>wrapOperation</td>
+	 *     </tr>
+	 * </table>
+	 */
+	String prefix() default "";
 
-    /**
-     * Print all possible candidates for the handler method.
-     * Will disable selector matching.
-     */
-    boolean print() default false;
+	/**
+	 * Print all possible candidates for the handler method.
+	 * Will disable selector matching.
+	 */
+	boolean print() default false;
 }

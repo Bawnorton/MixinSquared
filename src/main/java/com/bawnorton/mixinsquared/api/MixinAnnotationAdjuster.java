@@ -28,17 +28,19 @@ import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.RemappableAnnotationNode;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.MethodNode;
+
 import java.util.List;
 
 public interface MixinAnnotationAdjuster {
-    /**
-     * Adjusts the annotation node for the given handler method node.
-     * @param targetClassNames List of target class names in "com.example.Example" format. These are unmapped class names.
-     * @param mixinClassName Mixin class name in "com.example.ExampleMixin" format.
-     * @param handlerNode Method node of the handler method. Read/Write.
-     * @param annotationNode Annotation node to adjust. Read/Write. Node will always be present but the annotation class may not exist at runtime.
-     * @return Adjusted annotation node. Return null to remove the annotation.
-     * @see RemappableAnnotationNode#applyRefmap()
-     */
-    @Nullable AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode);
+	/**
+	 * Adjusts the annotation node for the given handler method node.
+	 *
+	 * @param targetClassNames List of target class names in "com.example.Example" format. These are unmapped class names.
+	 * @param mixinClassName   Mixin class name in "com.example.ExampleMixin" format.
+	 * @param handlerNode      Method node of the handler method. Read/Write.
+	 * @param annotationNode   Annotation node to adjust. Read/Write. Node will always be present but the annotation class may not exist at runtime.
+	 * @return Adjusted annotation node. Return null to remove the annotation.
+	 * @see RemappableAnnotationNode#applyRefmap()
+	 */
+	@Nullable AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode);
 }

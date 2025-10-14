@@ -27,41 +27,42 @@ package com.bawnorton.mixinsquared.adjuster.tools;
 import com.bawnorton.mixinsquared.adjuster.tools.type.ConstraintAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class AdjustableOverwriteNode extends RemapperHolderAnnotationNode implements ConstraintAnnotationNode {
-    public AdjustableOverwriteNode(AnnotationNode node) {
-        super(node);
-    }
+	public AdjustableOverwriteNode(AnnotationNode node) {
+		super(node);
+	}
 
-    public static AdjustableOverwriteNode defaultNode() {
-        AnnotationNode node = new AnnotationNode(KnownAnnotations.OVERWRITE.desc());
-        return new AdjustableOverwriteNode(node);
-    }
+	public static AdjustableOverwriteNode defaultNode() {
+		AnnotationNode node = new AnnotationNode(KnownAnnotations.OVERWRITE.desc());
+		return new AdjustableOverwriteNode(node);
+	}
 
-    @Override
-    public AdjustableOverwriteNode withConstraints(UnaryOperator<String> constraints) {
-        return (AdjustableOverwriteNode) ConstraintAnnotationNode.super.withConstraints(constraints);
-    }
+	@Override
+	public AdjustableOverwriteNode withConstraints(UnaryOperator<String> constraints) {
+		return (AdjustableOverwriteNode) ConstraintAnnotationNode.super.withConstraints(constraints);
+	}
 
-    public List<String> getAliases() {
-        return this.<List<String>>get("aliases").orElse(new ArrayList<>());
-    }
+	public List<String> getAliases() {
+		return this.<List<String>>get("aliases").orElse(new ArrayList<>());
+	}
 
-    public void setAliases(List<String> aliases) {
-        this.set("aliases", aliases);
-    }
+	public void setAliases(List<String> aliases) {
+		this.set("aliases", aliases);
+	}
 
-    public AdjustableOverwriteNode withAliases(UnaryOperator<List<String>> aliases) {
-        this.setAliases(aliases.apply(this.getAliases()));
-        return this;
-    }
+	public AdjustableOverwriteNode withAliases(UnaryOperator<List<String>> aliases) {
+		this.setAliases(aliases.apply(this.getAliases()));
+		return this;
+	}
 
-    @Override
-    @ApiStatus.Internal
-    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        // no-op - Overwrite does not use the refmap currently
-    }
+	@Override
+	@ApiStatus.Internal
+	public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+		// no-op - Overwrite does not use the refmap currently
+	}
 }

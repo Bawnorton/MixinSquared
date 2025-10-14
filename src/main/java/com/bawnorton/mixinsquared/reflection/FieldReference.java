@@ -25,37 +25,38 @@
 package com.bawnorton.mixinsquared.reflection;
 
 import org.jetbrains.annotations.ApiStatus;
+
 import java.lang.reflect.Field;
 
 @ApiStatus.Internal
 public final class FieldReference<T> {
-    private final Field field;
+	private final Field field;
 
-    public FieldReference(Class<?> clazz, String fieldName) {
-        Field field;
-        try {
-            field = clazz.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-        field.setAccessible(true);
-        this.field = field;
-    }
+	public FieldReference(Class<?> clazz, String fieldName) {
+		Field field;
+		try {
+			field = clazz.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		}
+		field.setAccessible(true);
+		this.field = field;
+	}
 
-    @SuppressWarnings("unchecked")
-    public T get(Object instance) {
-        try {
-            return (T) field.get(instance);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@SuppressWarnings("unchecked")
+	public T get(Object instance) {
+		try {
+			return (T) field.get(instance);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public void set(Object instance, T value) {
-        try {
-            field.set(instance, value);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public void set(Object instance, T value) {
+		try {
+			field.set(instance, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

@@ -26,26 +26,27 @@ package com.bawnorton.mixinsquared.reflection;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.ClassNode;
+
 import java.util.function.Consumer;
 
 @ApiStatus.Internal
 public final class StateExtension {
-    private final Object reference;
+	private final Object reference;
 
-    private final FieldReference<ClassNode> classNodeField;
+	private final FieldReference<ClassNode> classNodeField;
 
-    private StateExtension(Object reference) {
-        this.reference = reference;
-        this.classNodeField = new FieldReference<>(reference.getClass(), "classNode");
-    }
+	private StateExtension(Object reference) {
+		this.reference = reference;
+		this.classNodeField = new FieldReference<>(reference.getClass(), "classNode");
+	}
 
-    public static void tryAs(Object object, Consumer<StateExtension> consumer) {
-        if (object.getClass().getName().equals("org.spongepowered.asm.mixin.transformer.MixinInfo$State")) {
-            consumer.accept(new StateExtension(object));
-        }
-    }
+	public static void tryAs(Object object, Consumer<StateExtension> consumer) {
+		if (object.getClass().getName().equals("org.spongepowered.asm.mixin.transformer.MixinInfo$State")) {
+			consumer.accept(new StateExtension(object));
+		}
+	}
 
-    public void setClassNode(ClassNode classNode) {
-        classNodeField.set(reference, classNode);
-    }
+	public void setClassNode(ClassNode classNode) {
+		classNodeField.set(reference, classNode);
+	}
 }

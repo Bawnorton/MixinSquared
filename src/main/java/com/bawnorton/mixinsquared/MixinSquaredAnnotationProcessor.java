@@ -26,41 +26,42 @@ package com.bawnorton.mixinsquared;
 
 import com.bawnorton.mixinsquared.selector.DynamicSelectorHandler;
 import com.bawnorton.mixinsquared.util.SimpleMessager;
+import org.jetbrains.annotations.ApiStatus;
+import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
+import org.spongepowered.asm.util.logging.MessageRouter;
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
-import org.jetbrains.annotations.ApiStatus;
-import org.spongepowered.asm.mixin.injection.selectors.TargetSelector;
-import org.spongepowered.asm.util.logging.MessageRouter;
 import java.util.Set;
 
 @ApiStatus.Internal
 @SupportedAnnotationTypes({})
 public final class MixinSquaredAnnotationProcessor extends AbstractProcessor {
-    static {
-        if (setupLogging()) {
-            TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
-        }
-    }
+	static {
+		if (setupLogging()) {
+			TargetSelector.register(DynamicSelectorHandler.class, "MixinSquared");
+		}
+	}
 
-    private static boolean setupLogging() {
-        try {
-            MessageRouter.setMessager(new SimpleMessager());
-            return true;
-        } catch (NoClassDefFoundError e) {
-            return false;
-        }
-    }
+	private static boolean setupLogging() {
+		try {
+			MessageRouter.setMessager(new SimpleMessager());
+			return true;
+		} catch (NoClassDefFoundError e) {
+			return false;
+		}
+	}
 
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.latestSupported();
-    }
+	@Override
+	public SourceVersion getSupportedSourceVersion() {
+		return SourceVersion.latestSupported();
+	}
 
-    @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        return true;
-    }
+	@Override
+	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+		return true;
+	}
 }

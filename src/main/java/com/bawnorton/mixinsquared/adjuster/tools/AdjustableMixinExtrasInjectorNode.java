@@ -30,49 +30,50 @@ import com.bawnorton.mixinsquared.adjuster.tools.type.MethodListAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.SliceListAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 public abstract class AdjustableMixinExtrasInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode, SliceListAnnotationNode, AtListAnnotationNode, MatchCountAnnotationNode {
-    protected AdjustableMixinExtrasInjectorNode(AnnotationNode node) {
-        super(node);
-    }
+	protected AdjustableMixinExtrasInjectorNode(AnnotationNode node) {
+		super(node);
+	}
 
-    @Override
-    public AdjustableMixinExtrasInjectorNode withMethod(UnaryOperator<List<String>> method) {
-        return (AdjustableMixinExtrasInjectorNode) MethodListAnnotationNode.super.withMethod(method);
-    }
+	@Override
+	public AdjustableMixinExtrasInjectorNode withMethod(UnaryOperator<List<String>> method) {
+		return (AdjustableMixinExtrasInjectorNode) MethodListAnnotationNode.super.withMethod(method);
+	}
 
-    @Override
-    public AdjustableMixinExtrasInjectorNode withAt(UnaryOperator<List<AdjustableAtNode>> at) {
-        return (AdjustableMixinExtrasInjectorNode) AtListAnnotationNode.super.withAt(at);
-    }
+	@Override
+	public AdjustableMixinExtrasInjectorNode withAt(UnaryOperator<List<AdjustableAtNode>> at) {
+		return (AdjustableMixinExtrasInjectorNode) AtListAnnotationNode.super.withAt(at);
+	}
 
-    @Override
-    public AdjustableMixinExtrasInjectorNode withSlice(UnaryOperator<List<AdjustableSliceNode>> slice) {
-        return (AdjustableMixinExtrasInjectorNode) SliceListAnnotationNode.super.withSlice(slice);
-    }
+	@Override
+	public AdjustableMixinExtrasInjectorNode withSlice(UnaryOperator<List<AdjustableSliceNode>> slice) {
+		return (AdjustableMixinExtrasInjectorNode) SliceListAnnotationNode.super.withSlice(slice);
+	}
 
-    @Override
-    public AdjustableMixinExtrasInjectorNode withRequire(UnaryOperator<Integer> require) {
-        return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withRequire(require);
-    }
+	@Override
+	public AdjustableMixinExtrasInjectorNode withRequire(UnaryOperator<Integer> require) {
+		return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withRequire(require);
+	}
 
-    @Override
-    public AdjustableMixinExtrasInjectorNode withExpect(UnaryOperator<Integer> expect) {
-        return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withExpect(expect);
-    }
+	@Override
+	public AdjustableMixinExtrasInjectorNode withExpect(UnaryOperator<Integer> expect) {
+		return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withExpect(expect);
+	}
 
-    @Override
-    public AdjustableMixinExtrasInjectorNode withAllow(UnaryOperator<Integer> allow) {
-        return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withAllow(allow);
-    }
+	@Override
+	public AdjustableMixinExtrasInjectorNode withAllow(UnaryOperator<Integer> allow) {
+		return (AdjustableMixinExtrasInjectorNode) MatchCountAnnotationNode.super.withAllow(allow);
+	}
 
-    @Override
-    @ApiStatus.Internal
-    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        MethodListAnnotationNode.super.applyRefmap(refmapApplicator);
-        SliceListAnnotationNode.super.applyRefmap(refmapApplicator);
-        AtListAnnotationNode.super.applyRefmap(refmapApplicator);
-    }
+	@Override
+	@ApiStatus.Internal
+	public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+		MethodListAnnotationNode.super.applyRefmap(refmapApplicator);
+		SliceListAnnotationNode.super.applyRefmap(refmapApplicator);
+		AtListAnnotationNode.super.applyRefmap(refmapApplicator);
+	}
 }

@@ -28,28 +28,29 @@ import com.bawnorton.mixinsquared.api.MixinCanceller;
 import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.service.MixinService;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public final class MixinCancellerRegistrar {
-    private static final Set<MixinCanceller> cancellers = new HashSet<>();
-    private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
+	private static final Set<MixinCanceller> cancellers = new HashSet<>();
+	private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
 
-    @ApiStatus.Internal
-    public static boolean shouldCancel(List<String> targetClassNames, String mixinClassName, Consumer<String> cancelConsumer) {
-        return cancellers.stream().anyMatch(canceller -> {
-            boolean shouldCancel = canceller.shouldCancel(targetClassNames, mixinClassName);
-            if (shouldCancel) {
-                cancelConsumer.accept(canceller.getClass().getName());
-            }
-            return shouldCancel;
-        });
-    }
+	@ApiStatus.Internal
+	public static boolean shouldCancel(List<String> targetClassNames, String mixinClassName, Consumer<String> cancelConsumer) {
+		return cancellers.stream().anyMatch(canceller -> {
+			boolean shouldCancel = canceller.shouldCancel(targetClassNames, mixinClassName);
+			if (shouldCancel) {
+				cancelConsumer.accept(canceller.getClass().getName());
+			}
+			return shouldCancel;
+		});
+	}
 
-    public static void register(MixinCanceller canceller) {
-        cancellers.add(canceller);
-        LOGGER.debug("Registered canceller {}", canceller.getClass().getName());
-    }
+	public static void register(MixinCanceller canceller) {
+		cancellers.add(canceller);
+		LOGGER.debug("Registered canceller {}", canceller.getClass().getName());
+	}
 }

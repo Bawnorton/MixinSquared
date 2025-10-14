@@ -31,34 +31,35 @@ import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.service.MixinService;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
 public final class MixinAnnotationAdjusterRegistrar {
-    private static final Set<MixinAnnotationAdjuster> adjusters = new HashSet<>();
-    private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
+	private static final Set<MixinAnnotationAdjuster> adjusters = new HashSet<>();
+	private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared");
 
-    @ApiStatus.Internal
-    public static AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode, BiConsumer<String, AdjustableAnnotationNode> postAdjustmentConsumer) {
-        for (MixinAnnotationAdjuster adjuster : adjusters) {
-            if (annotationNode == null) {
-                LOGGER.debug("Skipping annotation adjuster {} as the annotation has been removed", adjuster.getClass().getName());
-                continue;
-            }
-            AnnotationEqualityVisitor equalityVisitor = new AnnotationEqualityVisitor(annotationNode.copy());
-            annotationNode = adjuster.adjust(targetClassNames, mixinClassName, handlerNode, annotationNode);
-            equalityVisitor.visit(annotationNode);
-            if (!equalityVisitor.isEqual()) {
-                postAdjustmentConsumer.accept(adjuster.getClass().getName(), annotationNode);
-            }
-        }
-        return annotationNode;
-    }
+	@ApiStatus.Internal
+	public static AdjustableAnnotationNode adjust(List<String> targetClassNames, String mixinClassName, MethodNode handlerNode, AdjustableAnnotationNode annotationNode, BiConsumer<String, AdjustableAnnotationNode> postAdjustmentConsumer) {
+		for (MixinAnnotationAdjuster adjuster : adjusters) {
+			if (annotationNode == null) {
+				LOGGER.debug("Skipping annotation adjuster {} as the annotation has been removed", adjuster.getClass().getName());
+				continue;
+			}
+			AnnotationEqualityVisitor equalityVisitor = new AnnotationEqualityVisitor(annotationNode.copy());
+			annotationNode = adjuster.adjust(targetClassNames, mixinClassName, handlerNode, annotationNode);
+			equalityVisitor.visit(annotationNode);
+			if (!equalityVisitor.isEqual()) {
+				postAdjustmentConsumer.accept(adjuster.getClass().getName(), annotationNode);
+			}
+		}
+		return annotationNode;
+	}
 
-    public static void register(MixinAnnotationAdjuster adjuster) {
-        adjusters.add(adjuster);
-        LOGGER.debug("Registered annotation adjuster {}", adjuster.getClass().getName());
-    }
+	public static void register(MixinAnnotationAdjuster adjuster) {
+		adjusters.add(adjuster);
+		LOGGER.debug("Registered annotation adjuster {}", adjuster.getClass().getName());
+	}
 }

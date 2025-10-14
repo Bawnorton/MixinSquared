@@ -25,20 +25,21 @@
 package com.bawnorton.mixinsquared.adjuster.tools.type;
 
 import org.objectweb.asm.Type;
+
 import java.util.Optional;
 
 public interface MutableAnnotationNode {
-    <T> Optional<T> get(String key);
+	<T> Optional<T> get(String key);
 
-    <T> void set(String key, T value);
+	<T> void set(String key, T value);
 
-    default <T extends Enum<T>> Optional<T> getEnum(String key, Class<T> enumType) {
-        return this.<String[]>get(key).map(value -> {
-            if (value.length < 2) return null;
-            if (enumType.getName().equals(Type.getType(value[0]).getClassName())) {
-                return Enum.valueOf(enumType, value[1]);
-            }
-            return null;
-        });
-    }
+	default <T extends Enum<T>> Optional<T> getEnum(String key, Class<T> enumType) {
+		return this.<String[]>get(key).map(value -> {
+			if (value.length < 2) return null;
+			if (enumType.getName().equals(Type.getType(value[0]).getClassName())) {
+				return Enum.valueOf(enumType, value[1]);
+			}
+			return null;
+		});
+	}
 }

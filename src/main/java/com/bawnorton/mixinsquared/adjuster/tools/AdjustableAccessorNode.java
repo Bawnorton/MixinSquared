@@ -25,20 +25,21 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.function.UnaryOperator;
 
 public class AdjustableAccessorNode extends AdjustableAccessNode {
-    public AdjustableAccessorNode(AnnotationNode node) {
-        super(node);
-    }
+	public AdjustableAccessorNode(AnnotationNode node) {
+		super(node);
+	}
 
-    public static AdjustableAccessorNode defaultNode() {
-        AnnotationNode node = new AnnotationNode(KnownAnnotations.ACCESSOR.desc());
-        return new AdjustableAccessorNode(node);
-    }
+	public static AdjustableAccessorNode defaultNode() {
+		AnnotationNode node = new AnnotationNode(KnownAnnotations.ACCESSOR.desc());
+		return new AdjustableAccessorNode(node);
+	}
 
-    @Override
-    public AdjustableAccessorNode withValue(UnaryOperator<String> value) {
-        return (AdjustableAccessorNode) super.withValue(value);
-    }
+	@Override
+	public AdjustableAccessorNode withValue(UnaryOperator<String> value) {
+		return (AdjustableAccessorNode) super.withValue(value);
+	}
 }

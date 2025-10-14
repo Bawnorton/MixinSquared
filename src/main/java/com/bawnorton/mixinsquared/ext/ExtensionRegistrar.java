@@ -32,9 +32,9 @@ import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 
 @ApiStatus.Internal
 public final class ExtensionRegistrar {
-    public static void register(IExtension extension) {
-        IMixinTransformer transformer = (IMixinTransformer) MixinEnvironment.getDefaultEnvironment().getActiveTransformer();
-        Extensions extensions = (Extensions) transformer.getExtensions();
-        extensions.add(extension);
-    }
+	public static void register(IExtension extension) {
+		IMixinTransformer transformer = (IMixinTransformer) MixinEnvironment.getDefaultEnvironment().getActiveTransformer();
+		Extensions extensions = (Extensions) transformer.getExtensions();
+		extensions.add(extension);
+	}
 }

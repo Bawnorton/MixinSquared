@@ -28,70 +28,71 @@ import com.bawnorton.mixinsquared.adjuster.tools.type.AtAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.SliceAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class AdjustableModifyArgsNode extends AdjustableInjectorNode implements SliceAnnotationNode, AtAnnotationNode {
-    public AdjustableModifyArgsNode(AnnotationNode node) {
-        super(node);
-    }
+	public AdjustableModifyArgsNode(AnnotationNode node) {
+		super(node);
+	}
 
-    public static AdjustableModifyArgsNode defaultNode(AdjustableAtNode atNode) {
-        AnnotationNode node = new AnnotationNode(KnownAnnotations.MODIFY_ARGS.desc());
-        AdjustableModifyArgsNode defaultNode = new AdjustableModifyArgsNode(node);
-        defaultNode.setAt(atNode);
-        return defaultNode;
-    }
+	public static AdjustableModifyArgsNode defaultNode(AdjustableAtNode atNode) {
+		AnnotationNode node = new AnnotationNode(KnownAnnotations.MODIFY_ARGS.desc());
+		AdjustableModifyArgsNode defaultNode = new AdjustableModifyArgsNode(node);
+		defaultNode.setAt(atNode);
+		return defaultNode;
+	}
 
-    @Override
-    public AdjustableModifyArgsNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
-        return (AdjustableModifyArgsNode) SliceAnnotationNode.super.withSlice(slice);
-    }
+	@Override
+	public AdjustableModifyArgsNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
+		return (AdjustableModifyArgsNode) SliceAnnotationNode.super.withSlice(slice);
+	}
 
-    public AdjustableModifyArgsNode withAt(UnaryOperator<AdjustableAtNode> at) {
-        return (AdjustableModifyArgsNode) AtAnnotationNode.super.withAt(at);
-    }
+	public AdjustableModifyArgsNode withAt(UnaryOperator<AdjustableAtNode> at) {
+		return (AdjustableModifyArgsNode) AtAnnotationNode.super.withAt(at);
+	}
 
-    @Override
-    public AdjustableModifyArgsNode withMethod(UnaryOperator<List<String>> method) {
-        return (AdjustableModifyArgsNode) super.withMethod(method);
-    }
+	@Override
+	public AdjustableModifyArgsNode withMethod(UnaryOperator<List<String>> method) {
+		return (AdjustableModifyArgsNode) super.withMethod(method);
+	}
 
-    @Override
-    public AdjustableModifyArgsNode withTarget(UnaryOperator<List<AdjustableDescNode>> target) {
-        return (AdjustableModifyArgsNode) super.withTarget(target);
-    }
+	@Override
+	public AdjustableModifyArgsNode withTarget(UnaryOperator<List<AdjustableDescNode>> target) {
+		return (AdjustableModifyArgsNode) super.withTarget(target);
+	}
 
-    @Override
-    public AdjustableModifyArgsNode withRemap(UnaryOperator<Boolean> remap) {
-        return (AdjustableModifyArgsNode) super.withRemap(remap);
-    }
+	@Override
+	public AdjustableModifyArgsNode withRemap(UnaryOperator<Boolean> remap) {
+		return (AdjustableModifyArgsNode) super.withRemap(remap);
+	}
 
-    @Override
-    public AdjustableModifyArgsNode withRequire(UnaryOperator<Integer> require) {
-        return (AdjustableModifyArgsNode) super.withRequire(require);
-    }
+	@Override
+	public AdjustableModifyArgsNode withRequire(UnaryOperator<Integer> require) {
+		return (AdjustableModifyArgsNode) super.withRequire(require);
+	}
 
-    @Override
-    public AdjustableModifyArgsNode withExpect(UnaryOperator<Integer> expect) {
-        return (AdjustableModifyArgsNode) super.withExpect(expect);
-    }
+	@Override
+	public AdjustableModifyArgsNode withExpect(UnaryOperator<Integer> expect) {
+		return (AdjustableModifyArgsNode) super.withExpect(expect);
+	}
 
-    @Override
-    public AdjustableModifyArgsNode withAllow(UnaryOperator<Integer> allow) {
-        return (AdjustableModifyArgsNode) super.withAllow(allow);
-    }
+	@Override
+	public AdjustableModifyArgsNode withAllow(UnaryOperator<Integer> allow) {
+		return (AdjustableModifyArgsNode) super.withAllow(allow);
+	}
 
-    @Override
-    public AdjustableModifyArgsNode withConstraints(UnaryOperator<String> constraints) {
-        return (AdjustableModifyArgsNode) super.withConstraints(constraints);
-    }
+	@Override
+	public AdjustableModifyArgsNode withConstraints(UnaryOperator<String> constraints) {
+		return (AdjustableModifyArgsNode) super.withConstraints(constraints);
+	}
 
-    @Override
-    @ApiStatus.Internal
-    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        super.applyRefmap(refmapApplicator);
-        SliceAnnotationNode.super.applyRefmap(refmapApplicator);
-        AtAnnotationNode.super.applyRefmap(refmapApplicator);
-    }
+	@Override
+	@ApiStatus.Internal
+	public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+		super.applyRefmap(refmapApplicator);
+		SliceAnnotationNode.super.applyRefmap(refmapApplicator);
+		AtAnnotationNode.super.applyRefmap(refmapApplicator);
+	}
 }

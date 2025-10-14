@@ -27,28 +27,29 @@ package com.bawnorton.mixinsquared.reflection;
 import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.mixin.transformer.ext.ITargetClassContext;
+
 import java.util.SortedSet;
 import java.util.function.Consumer;
 
 @ApiStatus.Internal
 public final class TargetClassContextExtension {
-    private final ITargetClassContext reference;
+	private final ITargetClassContext reference;
 
-    private final FieldReference<SortedSet<?>> mixinsField;
+	private final FieldReference<SortedSet<?>> mixinsField;
 
-    public TargetClassContextExtension(ITargetClassContext reference) {
-        this.reference = reference;
-        mixinsField = new FieldReference<>(reference.getClass(), "mixins");
-    }
+	public TargetClassContextExtension(ITargetClassContext reference) {
+		this.reference = reference;
+		mixinsField = new FieldReference<>(reference.getClass(), "mixins");
+	}
 
-    public static void tryAs(ITargetClassContext reference, Consumer<TargetClassContextExtension> consumer) {
-        if (reference.getClass().getName().equals("org.spongepowered.asm.mixin.transformer.TargetClassContext")) {
-            consumer.accept(new TargetClassContextExtension(reference));
-        }
-    }
+	public static void tryAs(ITargetClassContext reference, Consumer<TargetClassContextExtension> consumer) {
+		if (reference.getClass().getName().equals("org.spongepowered.asm.mixin.transformer.TargetClassContext")) {
+			consumer.accept(new TargetClassContextExtension(reference));
+		}
+	}
 
-    @SuppressWarnings("unchecked")
-    public SortedSet<IMixinInfo> getMixins() {
-        return (SortedSet<IMixinInfo>) mixinsField.get(this.reference);
-    }
+	@SuppressWarnings("unchecked")
+	public SortedSet<IMixinInfo> getMixins() {
+		return (SortedSet<IMixinInfo>) mixinsField.get(this.reference);
+	}
 }

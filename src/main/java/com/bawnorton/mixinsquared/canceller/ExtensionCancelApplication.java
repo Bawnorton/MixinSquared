@@ -34,39 +34,40 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 import org.spongepowered.asm.mixin.transformer.ext.ITargetClassContext;
 import org.spongepowered.asm.service.MixinService;
+
 import java.util.List;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 @ApiStatus.Internal
 public final class ExtensionCancelApplication implements IExtension, MixinSquaredExtension {
-    private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared-canceller");
+	private static final ILogger LOGGER = MixinService.getService().getLogger("mixinsquared-canceller");
 
-    @Override
-    public boolean checkActive(MixinEnvironment environment) {
-        return true;
-    }
+	@Override
+	public boolean checkActive(MixinEnvironment environment) {
+		return true;
+	}
 
-    @Override
-    public void preApply(ITargetClassContext context) {
-        TargetClassContextExtension.tryAs(context, contextExtension -> {
-            SortedSet<IMixinInfo> mixins = contextExtension.getMixins();
-            mixins.removeIf(mixin -> {
-                List<String> targetClassNames = mixin.getTargetClasses().stream().map(s -> s.replaceAll("/", ".")).collect(Collectors.toList());
-                boolean shouldCancel = MixinCancellerRegistrar.shouldCancel(targetClassNames, mixin.getClassName(), canceller -> LOGGER.debug("Canceller {} cancelled mixin {}", canceller, mixin.getClassName()));
-                if (shouldCancel) {
-                    LOGGER.warn("Cancelled mixin {}. Check debug logs for more information.", mixin.getClassName());
-                }
-                return shouldCancel;
-            });
-        });
-    }
+	@Override
+	public void preApply(ITargetClassContext context) {
+		TargetClassContextExtension.tryAs(context, contextExtension -> {
+			SortedSet<IMixinInfo> mixins = contextExtension.getMixins();
+			mixins.removeIf(mixin -> {
+				List<String> targetClassNames = mixin.getTargetClasses().stream().map(s -> s.replaceAll("/", ".")).collect(Collectors.toList());
+				boolean shouldCancel = MixinCancellerRegistrar.shouldCancel(targetClassNames, mixin.getClassName(), canceller -> LOGGER.debug("Canceller {} cancelled mixin {}", canceller, mixin.getClassName()));
+				if (shouldCancel) {
+					LOGGER.warn("Cancelled mixin {}. Check debug logs for more information.", mixin.getClassName());
+				}
+				return shouldCancel;
+			});
+		});
+	}
 
-    @Override
-    public void postApply(ITargetClassContext context) {
-    }
+	@Override
+	public void postApply(ITargetClassContext context) {
+	}
 
-    @Override
-    public void export(MixinEnvironment env, String name, boolean force, ClassNode classNode) {
-    }
+	@Override
+	public void export(MixinEnvironment env, String name, boolean force, ClassNode classNode) {
+	}
 }

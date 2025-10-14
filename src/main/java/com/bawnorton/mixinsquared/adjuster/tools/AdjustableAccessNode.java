@@ -25,29 +25,30 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.function.UnaryOperator;
 
 public abstract class AdjustableAccessNode extends RemapperHolderAnnotationNode {
-    protected AdjustableAccessNode(AnnotationNode node) {
-        super(node);
-    }
+	protected AdjustableAccessNode(AnnotationNode node) {
+		super(node);
+	}
 
-    public String getValue() {
-        return this.<String>get("value").orElse("");
-    }
+	public String getValue() {
+		return this.<String>get("value").orElse("");
+	}
 
-    public void setValue(String value) {
-        if (value == null) throw new IllegalArgumentException("Value cannot be null");
-        this.set("value", value);
-    }
+	public void setValue(String value) {
+		if (value == null) throw new IllegalArgumentException("Value cannot be null");
+		this.set("value", value);
+	}
 
-    public AdjustableAccessNode withValue(UnaryOperator<String> value) {
-        this.setValue(value.apply(this.getValue()));
-        return this;
-    }
+	public AdjustableAccessNode withValue(UnaryOperator<String> value) {
+		this.setValue(value.apply(this.getValue()));
+		return this;
+	}
 
-    @Override
-    public void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        this.withValue(refmapApplicator);
-    }
+	@Override
+	public void applyRefmap(UnaryOperator<String> refmapApplicator) {
+		this.withValue(refmapApplicator);
+	}
 }

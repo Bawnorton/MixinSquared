@@ -28,32 +28,33 @@ import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.refmap.IMixinContext;
 import org.spongepowered.tools.obfuscation.interfaces.IObfuscationManager;
 import org.spongepowered.tools.obfuscation.interfaces.ITypeHandleProvider;
+
 import java.util.function.Consumer;
 
 @ApiStatus.Internal
 public final class AnnotatedMixinExtension {
-    private final Object reference;
+	private final Object reference;
 
-    private final FieldReference<IObfuscationManager> obfField;
-    private final FieldReference<ITypeHandleProvider> typeProviderField;
+	private final FieldReference<IObfuscationManager> obfField;
+	private final FieldReference<ITypeHandleProvider> typeProviderField;
 
-    public AnnotatedMixinExtension(IMixinContext reference) {
-        this.reference = reference;
-        obfField = new FieldReference<>(reference.getClass(), "obf");
-        typeProviderField = new FieldReference<>(reference.getClass(), "typeProvider");
-    }
+	public AnnotatedMixinExtension(IMixinContext reference) {
+		this.reference = reference;
+		obfField = new FieldReference<>(reference.getClass(), "obf");
+		typeProviderField = new FieldReference<>(reference.getClass(), "typeProvider");
+	}
 
-    public static void tryAs(IMixinContext reference, Consumer<AnnotatedMixinExtension> consumer) {
-        if(reference.getClass().getName().equals("org.spongepowered.tools.obfuscation.AnnotatedMixin")) {
-            consumer.accept(new AnnotatedMixinExtension(reference));
-        }
-    }
+	public static void tryAs(IMixinContext reference, Consumer<AnnotatedMixinExtension> consumer) {
+		if (reference.getClass().getName().equals("org.spongepowered.tools.obfuscation.AnnotatedMixin")) {
+			consumer.accept(new AnnotatedMixinExtension(reference));
+		}
+	}
 
-    public IObfuscationManager getObfuscationManager() {
-        return obfField.get(this.reference);
-    }
+	public IObfuscationManager getObfuscationManager() {
+		return obfField.get(this.reference);
+	}
 
-    public ITypeHandleProvider getTypeProvider() {
-        return typeProviderField.get(this.reference);
-    }
+	public ITypeHandleProvider getTypeProvider() {
+		return typeProviderField.get(this.reference);
+	}
 }

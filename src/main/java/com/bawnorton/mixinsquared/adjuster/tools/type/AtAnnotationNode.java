@@ -27,34 +27,35 @@ package com.bawnorton.mixinsquared.adjuster.tools.type;
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAtNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.function.UnaryOperator;
 
 public interface AtAnnotationNode extends RemappableAnnotationNode {
-    default AdjustableAtNode getAt() {
-        return this.<AnnotationNode>get("at")
-                   .map(node -> {
-                       AdjustableAtNode at = new AdjustableAtNode(node);
-                       at.setRemapper(this.getRemapper());
-                       return at;
-                   })
-                   .orElse(null);
-    }
+	default AdjustableAtNode getAt() {
+		return this.<AnnotationNode>get("at")
+				.map(node -> {
+					AdjustableAtNode at = new AdjustableAtNode(node);
+					at.setRemapper(this.getRemapper());
+					return at;
+				})
+				.orElse(null);
+	}
 
-    default void setAt(AdjustableAtNode at) {
-        this.set("at", at);
-    }
+	default void setAt(AdjustableAtNode at) {
+		this.set("at", at);
+	}
 
-    default AtAnnotationNode withAt(UnaryOperator<AdjustableAtNode> at) {
-        this.setAt(at.apply(this.getAt()));
-        return this;
-    }
+	default AtAnnotationNode withAt(UnaryOperator<AdjustableAtNode> at) {
+		this.setAt(at.apply(this.getAt()));
+		return this;
+	}
 
-    @Override
-    @ApiStatus.Internal
-    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        this.withAt(at -> {
-            at.applyRefmap(refmapApplicator);
-            return at;
-        });
-    }
+	@Override
+	@ApiStatus.Internal
+	default void applyRefmap(UnaryOperator<String> refmapApplicator) {
+		this.withAt(at -> {
+			at.applyRefmap(refmapApplicator);
+			return at;
+		});
+	}
 }

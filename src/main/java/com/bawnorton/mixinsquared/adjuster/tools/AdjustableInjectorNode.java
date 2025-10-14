@@ -28,48 +28,49 @@ import com.bawnorton.mixinsquared.adjuster.tools.type.ConstraintAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.MatchCountAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.MethodListAnnotationNode;
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 public abstract class AdjustableInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode, MatchCountAnnotationNode, ConstraintAnnotationNode {
-    protected AdjustableInjectorNode(AnnotationNode node) {
-        super(node);
-    }
+	protected AdjustableInjectorNode(AnnotationNode node) {
+		super(node);
+	}
 
-    @Override
-    public AdjustableInjectorNode withMethod(UnaryOperator<List<String>> method) {
-        return (AdjustableInjectorNode) MethodListAnnotationNode.super.withMethod(method);
-    }
+	@Override
+	public AdjustableInjectorNode withMethod(UnaryOperator<List<String>> method) {
+		return (AdjustableInjectorNode) MethodListAnnotationNode.super.withMethod(method);
+	}
 
-    public List<AdjustableDescNode> getTarget() {
-        return this.<List<AnnotationNode>>get("target")
-                   .map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableDescNode::new))
-                   .orElse(new ArrayList<>());
-    }
+	public List<AdjustableDescNode> getTarget() {
+		return this.<List<AnnotationNode>>get("target")
+				.map(nodes -> AdjustableAnnotationNode.fromList(nodes, AdjustableDescNode::new))
+				.orElse(new ArrayList<>());
+	}
 
-    public void setTarget(List<AdjustableDescNode> target) {
-        this.set("target", target);
-    }
+	public void setTarget(List<AdjustableDescNode> target) {
+		this.set("target", target);
+	}
 
-    public AdjustableInjectorNode withTarget(UnaryOperator<List<AdjustableDescNode>> target) {
-        this.setTarget(target.apply(this.getTarget()));
-        return this;
-    }
+	public AdjustableInjectorNode withTarget(UnaryOperator<List<AdjustableDescNode>> target) {
+		this.setTarget(target.apply(this.getTarget()));
+		return this;
+	}
 
-    public AdjustableInjectorNode withRequire(UnaryOperator<Integer> require) {
-        return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withRequire(require);
-    }
+	public AdjustableInjectorNode withRequire(UnaryOperator<Integer> require) {
+		return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withRequire(require);
+	}
 
-    public AdjustableInjectorNode withExpect(UnaryOperator<Integer> expect) {
-        return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withExpect(expect);
-    }
+	public AdjustableInjectorNode withExpect(UnaryOperator<Integer> expect) {
+		return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withExpect(expect);
+	}
 
-    public AdjustableInjectorNode withAllow(UnaryOperator<Integer> allow) {
-        return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withAllow(allow);
-    }
+	public AdjustableInjectorNode withAllow(UnaryOperator<Integer> allow) {
+		return (AdjustableInjectorNode) MatchCountAnnotationNode.super.withAllow(allow);
+	}
 
-    public AdjustableInjectorNode withConstraints(UnaryOperator<String> constraints) {
-        return (AdjustableInjectorNode) ConstraintAnnotationNode.super.withConstraints(constraints);
-    }
+	public AdjustableInjectorNode withConstraints(UnaryOperator<String> constraints) {
+		return (AdjustableInjectorNode) ConstraintAnnotationNode.super.withConstraints(constraints);
+	}
 }

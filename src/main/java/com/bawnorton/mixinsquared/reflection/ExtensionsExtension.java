@@ -28,37 +28,38 @@ import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.transformer.ext.Extensions;
 import org.spongepowered.asm.mixin.transformer.ext.IExtension;
 import org.spongepowered.asm.mixin.transformer.ext.IExtensionRegistry;
+
 import java.util.List;
 import java.util.function.Consumer;
 
 @ApiStatus.Internal
 public final class ExtensionsExtension {
-    private final Extensions reference;
+	private final Extensions reference;
 
-    private final FieldReference<List<IExtension>> extensionsField;
-    private final FieldReference<List<IExtension>> activeExtensionsField;
+	private final FieldReference<List<IExtension>> extensionsField;
+	private final FieldReference<List<IExtension>> activeExtensionsField;
 
-    public ExtensionsExtension(Extensions reference) {
-        this.reference = reference;
-        extensionsField = new FieldReference<>(reference.getClass(), "extensions");
-        activeExtensionsField = new FieldReference<>(reference.getClass(), "activeExtensions");
-    }
+	public ExtensionsExtension(Extensions reference) {
+		this.reference = reference;
+		extensionsField = new FieldReference<>(reference.getClass(), "extensions");
+		activeExtensionsField = new FieldReference<>(reference.getClass(), "activeExtensions");
+	}
 
-    public static void tryAs(IExtensionRegistry reference, Consumer<ExtensionsExtension> consumer) {
-        if (reference instanceof Extensions) {
-            consumer.accept(new ExtensionsExtension((Extensions) reference));
-        }
-    }
+	public static void tryAs(IExtensionRegistry reference, Consumer<ExtensionsExtension> consumer) {
+		if (reference instanceof Extensions) {
+			consumer.accept(new ExtensionsExtension((Extensions) reference));
+		}
+	}
 
-    public List<IExtension> getExtensions() {
-        return extensionsField.get(this.reference);
-    }
+	public List<IExtension> getExtensions() {
+		return extensionsField.get(this.reference);
+	}
 
-    public List<IExtension> getActiveExtensions() {
-        return reference.getActiveExtensions();
-    }
+	public List<IExtension> getActiveExtensions() {
+		return reference.getActiveExtensions();
+	}
 
-    public void setActiveExtensions(List<IExtension> extensions) {
-        activeExtensionsField.set(this.reference, extensions);
-    }
+	public void setActiveExtensions(List<IExtension> extensions) {
+		activeExtensionsField.set(this.reference, extensions);
+	}
 }

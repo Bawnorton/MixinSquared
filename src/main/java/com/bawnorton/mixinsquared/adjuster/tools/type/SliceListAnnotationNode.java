@@ -28,52 +28,53 @@ import com.bawnorton.mixinsquared.adjuster.tools.AdjustableAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.AdjustableSliceNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 public interface SliceListAnnotationNode extends RemappableAnnotationNode {
-    default List<AdjustableSliceNode> getSlice() {
-        return this.<List<AnnotationNode>>get("slice")
-                   .map(nodes -> {
-                       List<AdjustableSliceNode> sliceNodes = AdjustableAnnotationNode.fromList(nodes, AdjustableSliceNode::new);
-                       sliceNodes.forEach(slice -> {
-                           slice.withFrom(from -> {
-                               from.setRemapper(this.getRemapper());
-                               return from;
-                           }).withTo(to -> {
-                               to.setRemapper(this.getRemapper());
-                               return to;
-                           });
-                       });
-                       return sliceNodes;
-                   })
-                   .orElse(new ArrayList<>());
-    }
+	default List<AdjustableSliceNode> getSlice() {
+		return this.<List<AnnotationNode>>get("slice")
+				.map(nodes -> {
+					List<AdjustableSliceNode> sliceNodes = AdjustableAnnotationNode.fromList(nodes, AdjustableSliceNode::new);
+					sliceNodes.forEach(slice -> {
+						slice.withFrom(from -> {
+							from.setRemapper(this.getRemapper());
+							return from;
+						}).withTo(to -> {
+							to.setRemapper(this.getRemapper());
+							return to;
+						});
+					});
+					return sliceNodes;
+				})
+				.orElse(new ArrayList<>());
+	}
 
-    default void setSlice(List<AdjustableSliceNode> slice) {
-        this.set("slice", slice);
-    }
+	default void setSlice(List<AdjustableSliceNode> slice) {
+		this.set("slice", slice);
+	}
 
-    default SliceListAnnotationNode withSlice(UnaryOperator<List<AdjustableSliceNode>> slice) {
-        this.setSlice(slice.apply(this.getSlice()));
-        return this;
-    }
+	default SliceListAnnotationNode withSlice(UnaryOperator<List<AdjustableSliceNode>> slice) {
+		this.setSlice(slice.apply(this.getSlice()));
+		return this;
+	}
 
-    @Override
-    @ApiStatus.Internal
-    default void applyRefmap(UnaryOperator<String> refmapApplicator) {
-        this.withSlice(slices -> {
-            for (AdjustableSliceNode slice : slices) {
-                slice.withFrom(from -> {
-                    from.applyRefmap(refmapApplicator);
-                    return from;
-                }).withTo(to -> {
-                    to.applyRefmap(refmapApplicator);
-                    return to;
-                });
-            }
-            return slices;
-        });
-    }
+	@Override
+	@ApiStatus.Internal
+	default void applyRefmap(UnaryOperator<String> refmapApplicator) {
+		this.withSlice(slices -> {
+			for (AdjustableSliceNode slice : slices) {
+				slice.withFrom(from -> {
+					from.applyRefmap(refmapApplicator);
+					return from;
+				}).withTo(to -> {
+					to.applyRefmap(refmapApplicator);
+					return to;
+				});
+			}
+			return slices;
+		});
+	}
 }

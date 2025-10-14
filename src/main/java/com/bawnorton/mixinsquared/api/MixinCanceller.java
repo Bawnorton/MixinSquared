@@ -27,11 +27,12 @@ package com.bawnorton.mixinsquared.api;
 import java.util.List;
 
 public interface MixinCanceller {
-    /**
-     * Prevents the mixin from being applied to the target classes.
-     * @param targetClassNames List of target class names in "com.example.Example" format. These are unmapped class names.
-     * @param mixinClassName Mixin class name in "com.example.ExampleMixin" format.
-     * @return True to cancel the mixin, false to apply the mixin.
-     */
-    boolean shouldCancel(List<String> targetClassNames, String mixinClassName);
+	/**
+	 * Prevents the mixin from being applied to the target classes.
+	 *
+	 * @param targetClassNames List of target class names in "com.example.Example" format. These are unmapped class names.
+	 * @param mixinClassName   Mixin class name in "com.example.ExampleMixin" format.
+	 * @return True to cancel the mixin, false to apply the mixin.
+	 */
+	boolean shouldCancel(List<String> targetClassNames, String mixinClassName);
 }
