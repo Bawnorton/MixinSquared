@@ -24,12 +24,13 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.IndexedAnnotationNode;
 import org.objectweb.asm.tree.AnnotationNode;
 
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableModifyArgNode extends AdjustableModifyArgsNode {
+public class AdjustableModifyArgNode extends AdjustableModifyArgsNode implements IndexedAnnotationNode {
 	public AdjustableModifyArgNode(AnnotationNode node) {
 		super(node);
 	}
@@ -41,17 +42,9 @@ public class AdjustableModifyArgNode extends AdjustableModifyArgsNode {
 		return defaultNode;
 	}
 
-	public int getIndex() {
-		return this.<Integer>get("index").orElse(-1);
-	}
-
-	public void setIndex(int index) {
-		this.set("index", index);
-	}
-
+	@Override
 	public AdjustableModifyArgNode withIndex(UnaryOperator<Integer> index) {
-		this.setIndex(index.apply(this.getIndex()));
-		return this;
+		return (AdjustableModifyArgNode) IndexedAnnotationNode.super.withIndex(index);
 	}
 
 	@Override
@@ -97,5 +90,10 @@ public class AdjustableModifyArgNode extends AdjustableModifyArgsNode {
 	@Override
 	public AdjustableModifyArgNode withConstraints(UnaryOperator<String> constraints) {
 		return (AdjustableModifyArgNode) super.withConstraints(constraints);
+	}
+
+	@Override
+	public AdjustableModifyArgNode withOrder(UnaryOperator<Integer> order) {
+		return (AdjustableModifyArgNode) super.withOrder(order);
 	}
 }

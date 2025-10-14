@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "com.bawnorton"
-    version = "0.3.6-beta.1"
+    version = "0.3.7-beta.1"
 
     repositories {
         mavenCentral()

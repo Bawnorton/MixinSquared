@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-present Bawnorton
+ * Copyright (c) 2025-present Bawnorton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,50 +27,38 @@ package com.bawnorton.mixinsquared.adjuster.tools;
 import com.bawnorton.mixinsquared.adjuster.tools.type.OptionalIdAnnotationNode;
 import org.objectweb.asm.tree.AnnotationNode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableSliceNode extends AdjustableAnnotationNode implements OptionalIdAnnotationNode {
-	public AdjustableSliceNode(AnnotationNode node) {
+public class AdjustableExpressionNode extends AdjustableAnnotationNode implements OptionalIdAnnotationNode {
+	public AdjustableExpressionNode(AnnotationNode node) {
 		super(node);
 	}
 
-	public static AdjustableSliceNode defaultNode() {
-		AnnotationNode node = new AnnotationNode(KnownAnnotations.SLICE.desc());
-		return new AdjustableSliceNode(node);
+	public static AdjustableExpressionNode defaultNode(List<String> value) {
+		AnnotationNode node = new AnnotationNode(KnownAnnotations.EXPRESSION.desc());
+		AdjustableExpressionNode defaultNode = new AdjustableExpressionNode(node);
+		defaultNode.setValue(value);
+		return defaultNode;
 	}
 
 	@Override
-	public AdjustableSliceNode withId(UnaryOperator<String> id) {
-		return (AdjustableSliceNode) OptionalIdAnnotationNode.super.withId(id);
+	public AdjustableExpressionNode withId(UnaryOperator<String> id) {
+		return (AdjustableExpressionNode) OptionalIdAnnotationNode.super.withId(id);
 	}
 
-	public AdjustableAtNode getFrom() {
-		return this.<AnnotationNode>get("from")
-				.map(AdjustableAtNode::new)
-				.orElse(AdjustableAtNode.InjectionPoint.HEAD.toNode());
+	public List<String> getValue() {
+		return this.<List<String>>get("value").orElse(new ArrayList<>());
 	}
 
-	public void setFrom(AdjustableAtNode from) {
-		this.set("from", from);
+	public void setValue(List<String> value) {
+		if (value == null) throw new IllegalArgumentException("value cannot be null");
+		this.set("value", value);
 	}
 
-	public AdjustableSliceNode withFrom(UnaryOperator<AdjustableAtNode> from) {
-		this.setFrom(from.apply(this.getFrom()));
-		return this;
-	}
-
-	public AdjustableAtNode getTo() {
-		return this.<AnnotationNode>get("to")
-				.map(AdjustableAtNode::new)
-				.orElse(AdjustableAtNode.InjectionPoint.TAIL.toNode());
-	}
-
-	public void setTo(AdjustableAtNode to) {
-		this.set("to", to);
-	}
-
-	public AdjustableSliceNode withTo(UnaryOperator<AdjustableAtNode> to) {
-		this.setTo(to.apply(this.getTo()));
+	public AdjustableExpressionNode withValue(UnaryOperator<List<String>> value) {
+		this.setValue(value.apply(this.getValue()));
 		return this;
 	}
 }

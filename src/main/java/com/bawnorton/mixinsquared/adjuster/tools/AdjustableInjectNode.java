@@ -25,6 +25,7 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.bawnorton.mixinsquared.adjuster.tools.type.AtListAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.OptionalIdAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.SliceListAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -35,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableInjectNode extends AdjustableInjectorNode implements SliceListAnnotationNode, AtListAnnotationNode {
+public class AdjustableInjectNode extends AdjustableInjectorNode implements SliceListAnnotationNode, AtListAnnotationNode, OptionalIdAnnotationNode {
 	public AdjustableInjectNode(AnnotationNode node) {
 		super(node);
 	}
@@ -47,17 +48,8 @@ public class AdjustableInjectNode extends AdjustableInjectorNode implements Slic
 		return defaultNode;
 	}
 
-	public String getId() {
-		return this.<String>get("id").orElse("");
-	}
-
-	public void setId(String id) {
-		this.set("id", id);
-	}
-
 	public AdjustableInjectNode withId(UnaryOperator<String> id) {
-		this.setId(id.apply(this.getId()));
-		return this;
+		return (AdjustableInjectNode) OptionalIdAnnotationNode.super.withId(id);
 	}
 
 	@Override
@@ -129,6 +121,11 @@ public class AdjustableInjectNode extends AdjustableInjectorNode implements Slic
 	@Override
 	public AdjustableInjectNode withConstraints(UnaryOperator<String> constraints) {
 		return (AdjustableInjectNode) super.withConstraints(constraints);
+	}
+
+	@Override
+	public AdjustableInjectNode withOrder(UnaryOperator<Integer> order) {
+		return (AdjustableInjectNode) super.withOrder(order);
 	}
 
 	@Override

@@ -98,6 +98,11 @@ public class AdjustableModifyConstantNode extends AdjustableInjectorNode impleme
 	}
 
 	@Override
+	public AdjustableModifyConstantNode withOrder(UnaryOperator<Integer> order) {
+		return (AdjustableModifyConstantNode) super.withOrder(order);
+	}
+
+	@Override
 	@ApiStatus.Internal
 	public void applyRefmap(UnaryOperator<String> refmapApplicator) {
 		super.applyRefmap(refmapApplicator);

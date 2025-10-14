@@ -27,13 +27,14 @@ package com.bawnorton.mixinsquared.adjuster.tools;
 import com.bawnorton.mixinsquared.adjuster.tools.type.ConstraintAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.MatchCountAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.MethodListAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.OrderAnnotationNode;
 import org.objectweb.asm.tree.AnnotationNode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public abstract class AdjustableInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode, MatchCountAnnotationNode, ConstraintAnnotationNode {
+public abstract class AdjustableInjectorNode extends RemapperHolderAnnotationNode implements MethodListAnnotationNode, MatchCountAnnotationNode, ConstraintAnnotationNode, OrderAnnotationNode {
 	protected AdjustableInjectorNode(AnnotationNode node) {
 		super(node);
 	}
@@ -72,5 +73,9 @@ public abstract class AdjustableInjectorNode extends RemapperHolderAnnotationNod
 
 	public AdjustableInjectorNode withConstraints(UnaryOperator<String> constraints) {
 		return (AdjustableInjectorNode) ConstraintAnnotationNode.super.withConstraints(constraints);
+	}
+
+	public AdjustableInjectorNode withOrder(UnaryOperator<Integer> order) {
+		return (AdjustableInjectorNode) OrderAnnotationNode.super.withOrder(order);
 	}
 }

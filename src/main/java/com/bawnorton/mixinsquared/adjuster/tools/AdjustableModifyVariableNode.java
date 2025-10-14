@@ -25,6 +25,8 @@
 package com.bawnorton.mixinsquared.adjuster.tools;
 
 import com.bawnorton.mixinsquared.adjuster.tools.type.AtAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.NthTargetAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.PrintableAnnotationNode;
 import com.bawnorton.mixinsquared.adjuster.tools.type.SliceAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableModifyVariableNode extends AdjustableInjectorNode implements SliceAnnotationNode, AtAnnotationNode {
+public class AdjustableModifyVariableNode extends AdjustableInjectorNode implements SliceAnnotationNode, AtAnnotationNode, NthTargetAnnotationNode, PrintableAnnotationNode {
 	public AdjustableModifyVariableNode(AnnotationNode node) {
 		super(node);
 	}
@@ -53,43 +55,16 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode impleme
 		return (AdjustableModifyVariableNode) AtAnnotationNode.super.withAt(at);
 	}
 
-	public boolean getPrint() {
-		return this.<Boolean>get("print").orElse(false);
-	}
-
-	public void setPrint(boolean print) {
-		this.set("print", print);
-	}
-
 	public AdjustableModifyVariableNode withPrint(UnaryOperator<Boolean> print) {
-		this.setPrint(print.apply(this.getPrint()));
-		return this;
-	}
-
-	public int getOrdinal() {
-		return this.<Integer>get("ordinal").orElse(-1);
-	}
-
-	public void setOrdinal(int ordinal) {
-		this.set("ordinal", ordinal);
+		return (AdjustableModifyVariableNode) PrintableAnnotationNode.super.withPrint(print);
 	}
 
 	public AdjustableModifyVariableNode withOrdinal(UnaryOperator<Integer> ordinal) {
-		this.setOrdinal(ordinal.apply(this.getOrdinal()));
-		return this;
-	}
-
-	public int getIndex() {
-		return this.<Integer>get("index").orElse(-1);
-	}
-
-	public void setIndex(int index) {
-		this.set("index", index);
+		return (AdjustableModifyVariableNode) NthTargetAnnotationNode.super.withOrdinal(ordinal);
 	}
 
 	public AdjustableModifyVariableNode withIndex(UnaryOperator<Integer> index) {
-		this.setIndex(index.apply(this.getIndex()));
-		return this;
+		return (AdjustableModifyVariableNode) NthTargetAnnotationNode.super.withIndex(index);
 	}
 
 	public List<String> getName() {
@@ -151,6 +126,11 @@ public class AdjustableModifyVariableNode extends AdjustableInjectorNode impleme
 	@Override
 	public AdjustableModifyVariableNode withConstraints(UnaryOperator<String> constraints) {
 		return (AdjustableModifyVariableNode) super.withConstraints(constraints);
+	}
+
+	@Override
+	public AdjustableModifyVariableNode withOrder(UnaryOperator<Integer> order) {
+		return (AdjustableModifyVariableNode) super.withOrder(order);
 	}
 
 	@Override

@@ -89,6 +89,11 @@ public class AdjustableRedirectNode extends AdjustableInjectorNode implements Sl
 	}
 
 	@Override
+	public AdjustableRedirectNode withOrder(UnaryOperator<Integer> order) {
+		return (AdjustableRedirectNode) super.withOrder(order);
+	}
+
+	@Override
 	@ApiStatus.Internal
 	public void applyRefmap(UnaryOperator<String> refmapApplicator) {
 		super.applyRefmap(refmapApplicator);

@@ -24,6 +24,7 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.OptionalIdAnnotationNode;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableDescNode extends AdjustableAnnotationNode {
+public class AdjustableDescNode extends AdjustableAnnotationNode implements OptionalIdAnnotationNode {
 	public AdjustableDescNode(AnnotationNode node) {
 		super(node);
 	}
@@ -43,17 +44,9 @@ public class AdjustableDescNode extends AdjustableAnnotationNode {
 		return defaultNode;
 	}
 
-	public String getId() {
-		return this.<String>get("id").orElse("");
-	}
-
-	public void setId(String id) {
-		this.set("id", id);
-	}
-
+	@Override
 	public AdjustableDescNode withId(UnaryOperator<String> id) {
-		this.setId(id.apply(this.getId()));
-		return this;
+		return (AdjustableDescNode) OptionalIdAnnotationNode.super.withId(id);
 	}
 
 	public Type getOwner() {

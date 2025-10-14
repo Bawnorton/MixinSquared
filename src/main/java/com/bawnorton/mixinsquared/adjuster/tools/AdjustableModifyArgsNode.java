@@ -49,6 +49,7 @@ public class AdjustableModifyArgsNode extends AdjustableInjectorNode implements 
 		return (AdjustableModifyArgsNode) SliceAnnotationNode.super.withSlice(slice);
 	}
 
+	@Override
 	public AdjustableModifyArgsNode withAt(UnaryOperator<AdjustableAtNode> at) {
 		return (AdjustableModifyArgsNode) AtAnnotationNode.super.withAt(at);
 	}
@@ -86,6 +87,11 @@ public class AdjustableModifyArgsNode extends AdjustableInjectorNode implements 
 	@Override
 	public AdjustableModifyArgsNode withConstraints(UnaryOperator<String> constraints) {
 		return (AdjustableModifyArgsNode) super.withConstraints(constraints);
+	}
+
+	@Override
+	public AdjustableModifyArgsNode withOrder(UnaryOperator<Integer> order) {
+		return (AdjustableModifyArgsNode) super.withOrder(order);
 	}
 
 	@Override

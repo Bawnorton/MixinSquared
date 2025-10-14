@@ -24,6 +24,8 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.OptionalIdAnnotationNode;
+import com.bawnorton.mixinsquared.adjuster.tools.type.OrdinalAnnotationNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class AdjustableAtNode extends RemapperHolderAnnotationNode {
+public class AdjustableAtNode extends RemapperHolderAnnotationNode implements OptionalIdAnnotationNode, OrdinalAnnotationNode {
 	public AdjustableAtNode(AnnotationNode node) {
 		super(node);
 	}
@@ -45,17 +47,8 @@ public class AdjustableAtNode extends RemapperHolderAnnotationNode {
 		return defaultNode;
 	}
 
-	public String getId() {
-		return this.<String>get("id").orElse("");
-	}
-
-	public void setId(String id) {
-		this.set("id", id);
-	}
-
 	public AdjustableAtNode withId(UnaryOperator<String> id) {
-		this.setId(id.apply(this.getId()));
-		return this;
+		return (AdjustableAtNode) OptionalIdAnnotationNode.super.withId(id);
 	}
 
 	public String getValue() {
@@ -152,17 +145,8 @@ public class AdjustableAtNode extends RemapperHolderAnnotationNode {
 		return this;
 	}
 
-	public int getOrdinal() {
-		return this.<Integer>get("ordinal").orElse(-1);
-	}
-
-	public void setOrdinal(int ordinal) {
-		this.set("ordinal", ordinal);
-	}
-
 	public AdjustableAtNode withOrdinal(UnaryOperator<Integer> ordinal) {
-		this.setOrdinal(ordinal.apply(this.getOrdinal()));
-		return this;
+		return (AdjustableAtNode) OrdinalAnnotationNode.super.withOrdinal(ordinal);
 	}
 
 	public int getOpcode() {
@@ -213,10 +197,31 @@ public class AdjustableAtNode extends RemapperHolderAnnotationNode {
 		FIELD,
 		NEW,
 		CONSTANT,
-		JUMP;
+		JUMP,
+		CUSTOM;
+
+		private String customName;
+
+		/**
+		 * If using a custom injection point, like {@code MIXINEXTRAS:EXPRESSION} to create<br>
+		 * an adjustable at node for {@code @At("MIXINEXTRAS:EXPRESSION")}, use this method:
+		 * <pre>
+		 * AdjustableAtNode at = AdjustableAtNode.InjectionPoint.custom("MIXINEXTRAS:EXPRESSION").toNode();
+		 * </pre>
+		 */
+		public static InjectionPoint custom(String name) {
+			InjectionPoint point = InjectionPoint.CUSTOM;
+			point.customName = name;
+			return point;
+		}
 
 		public AdjustableAtNode toNode() {
-			return AdjustableAtNode.defaultNode(this);
+			if (this != CUSTOM) return AdjustableAtNode.defaultNode(this);
+
+			return AdjustableAtNode.defaultNode(this).withValue(v -> {
+				if (customName == null) throw new IllegalStateException("Custom InjectionPoint name not set");
+				return customName;
+			});
 		}
 	}
 }

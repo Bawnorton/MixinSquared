@@ -164,7 +164,12 @@ public abstract class AdjustableAnnotationNode extends AnnotationNode implements
 		WRAP_OPERATION(AdjustableWrapOperationNode::new, "Lcom/llamalad7/mixinextras/injector/wrapoperation/WrapOperation;"),
 		WRAP_WITH_CONDITION(AdjustableWrapWithConditionNode::new, "Lcom/llamalad7/mixinextras/injector/v2/WrapWithCondition;"),
 		INVOKER(AdjustableInvokerNode::new, Invoker.class),
-		ACCESSOR(AdjustableAccessorNode::new, Accessor.class);
+		ACCESSOR(AdjustableAccessorNode::new, Accessor.class),
+		EXPRESSION(AdjustableExpressionNode::new, "Lcom/llamalad7/mixinextras/expression/Expression;"),
+		DEFINITION(AdjustableDefinitionNode::new, "Lcom/llamalad7/mixinextras/expression/Definition;"),
+		EXPRESSIONS(AdjustableExpressionsNode::new, "Lcom/llamalad7/mixinextras/expression/Expressions;"),
+		DEFINITIONS(AdjustableDefinitionsNode::new, "Lcom/llamalad7/mixinextras/expression/Definitions;"),
+		LOCAL(AdjustableLocalNode::new, "Lcom/llamalad7/mixinextras/sugar/Local;");
 
 		private final AdjustableAnnotationNodeFactory<?> factory;
 		private final String annotationClassDesc;

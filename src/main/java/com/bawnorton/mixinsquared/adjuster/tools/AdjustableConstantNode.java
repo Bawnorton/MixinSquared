@@ -24,13 +24,14 @@
 
 package com.bawnorton.mixinsquared.adjuster.tools;
 
+import com.bawnorton.mixinsquared.adjuster.tools.type.OrdinalAnnotationNode;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.spongepowered.asm.mixin.injection.Constant;
 
 import java.util.function.UnaryOperator;
 
-public class AdjustableConstantNode extends AdjustableAnnotationNode {
+public class AdjustableConstantNode extends AdjustableAnnotationNode implements OrdinalAnnotationNode {
 	public AdjustableConstantNode(AnnotationNode node) {
 		super(node);
 	}
@@ -131,17 +132,9 @@ public class AdjustableConstantNode extends AdjustableAnnotationNode {
 		return this;
 	}
 
-	public int getOrdinal() {
-		return this.<Integer>get("ordinal").orElse(-1);
-	}
-
-	public void setOrdinal(int ordinal) {
-		this.set("ordinal", ordinal);
-	}
-
+	@Override
 	public AdjustableConstantNode withOrdinal(UnaryOperator<Integer> ordinal) {
-		this.setOrdinal(ordinal.apply(this.getOrdinal()));
-		return this;
+		return (AdjustableConstantNode) OrdinalAnnotationNode.super.withOrdinal(ordinal);
 	}
 
 	public String getSlice() {
