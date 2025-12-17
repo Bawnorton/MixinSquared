@@ -105,7 +105,6 @@ and call
 
 ```java
 MixinSquaredBootstrap.init();
-MixinSquaredApiImplLoader.load();
 ```
 
 In the `onLoad` method and
