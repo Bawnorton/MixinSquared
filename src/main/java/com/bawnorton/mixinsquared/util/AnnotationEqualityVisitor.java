@@ -25,21 +25,25 @@
 package com.bawnorton.mixinsquared.util;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.tree.AnnotationNode;
 
-import java.util.Arrays;
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Objects;
 
 @ApiStatus.Internal
 public final class AnnotationEqualityVisitor extends AnnotationVisitor {
+	private static final int ASM_API = 327680;
+	private static final Object ARRAY_END = new Object();
+
 	private final AnnotationNode other;
 	private boolean isEqual = true;
 	private int index = 0;
 
 	public AnnotationEqualityVisitor(AnnotationNode other) {
-		super(327680);
+		super(ASM_API);
 		this.other = other;
 	}
 
@@ -48,27 +52,15 @@ public final class AnnotationEqualityVisitor extends AnnotationVisitor {
 		if (o1 == o2) return true;
 		if (o1 == null || o2 == null) return false;
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
-			if (o1 instanceof Object[] && o2 instanceof Object[]) {
-				return Objects.deepEquals(o1, o2);
-			} else if (o1 instanceof byte[] && o2 instanceof byte[]) {
-				return Arrays.equals((byte[]) o1, (byte[]) o2);
-			} else if (o1 instanceof short[] && o2 instanceof short[]) {
-				return Arrays.equals((short[]) o1, (short[]) o2);
-			} else if (o1 instanceof int[] && o2 instanceof int[]) {
-				return Arrays.equals((int[]) o1, (int[]) o2);
-			} else if (o1 instanceof long[] && o2 instanceof long[]) {
-				return Arrays.equals((long[]) o1, (long[]) o2);
-			} else if (o1 instanceof char[] && o2 instanceof char[]) {
-				return Arrays.equals((char[]) o1, (char[]) o2);
-			} else if (o1 instanceof float[] && o2 instanceof float[]) {
-				return Arrays.equals((float[]) o1, (float[]) o2);
-			} else if (o1 instanceof double[] && o2 instanceof double[]) {
-				return Arrays.equals((double[]) o1, (double[]) o2);
-			} else if (o1 instanceof boolean[] && o2 instanceof boolean[]) {
-				return Arrays.equals((boolean[]) o1, (boolean[]) o2);
-			} else {
-				return false;
+			if (!o1.getClass().equals(o2.getClass())) return false;
+			int length = Array.getLength(o1);
+			if (length != Array.getLength(o2)) return false;
+			for (int i = 0; i < length; i++) {
+				if (!deepEquals(Array.get(o1, i), Array.get(o2, i))) {
+					return false;
+				}
 			}
+			return true;
 		}
 		return o1.equals(o2);
 	}
@@ -79,6 +71,10 @@ public final class AnnotationEqualityVisitor extends AnnotationVisitor {
 
 	public void visit(AnnotationNode annotationNode) {
 		if (annotationNode == null) {
+			isEqual = false;
+			return;
+		}
+		if (!Objects.equals(annotationNode.desc, other.desc)) {
 			isEqual = false;
 			return;
 		}
@@ -108,12 +104,7 @@ public final class AnnotationEqualityVisitor extends AnnotationVisitor {
 		if (!isEqual) return null;
 
 		Object expectedValue = getExpectedValue(name);
-		if (!(expectedValue instanceof AnnotationNode)) {
-			isEqual = false;
-			return null;
-		}
-
-		return new AnnotationEqualityVisitor((AnnotationNode) expectedValue);
+		return compareNestedAnnotation(desc, expectedValue);
 	}
 
 	@Override
@@ -134,11 +125,11 @@ public final class AnnotationEqualityVisitor extends AnnotationVisitor {
 			@Override
 			public void visit(String name, Object value) {
 				if (!isEqual) return;
-				if (arrayIndex >= expectedList.size()) {
+				Object expectedElement = getNextArrayElement();
+				if (expectedElement == ARRAY_END) {
 					isEqual = false;
 					return;
 				}
-				Object expectedElement = expectedList.get(arrayIndex++);
 				if (!deepEquals(value, expectedElement)) {
 					isEqual = false;
 				}
@@ -147,33 +138,63 @@ public final class AnnotationEqualityVisitor extends AnnotationVisitor {
 			@Override
 			public void visitEnum(String name, String desc, String value) {
 				if (!isEqual) return;
-				if (arrayIndex >= expectedList.size()) {
+				Object expectedElement = getNextArrayElement();
+				if (expectedElement == ARRAY_END) {
 					isEqual = false;
 					return;
 				}
-				Object expectedElement = expectedList.get(arrayIndex++);
 				compareEnum(desc, value, expectedElement);
 			}
 
 			@Override
 			public AnnotationVisitor visitAnnotation(String name, String desc) {
 				if (!isEqual) return null;
-				if (arrayIndex >= expectedList.size()) {
+				Object expectedElement = getNextArrayElement();
+				if (expectedElement == ARRAY_END) {
 					isEqual = false;
 					return null;
 				}
-				Object expectedElement = expectedList.get(arrayIndex++);
-				if (!(expectedElement instanceof AnnotationNode)) {
-					isEqual = false;
-					return null;
-				}
-				return new AnnotationEqualityVisitor((AnnotationNode) expectedElement);
+				return compareNestedAnnotation(desc, expectedElement);
 			}
 
 			@Override
 			public void visitEnd() {
 				if (arrayIndex != expectedList.size()) {
 					isEqual = false;
+				}
+			}
+
+			private Object getNextArrayElement() {
+				if (arrayIndex >= expectedList.size()) {
+					return ARRAY_END;
+				}
+				return expectedList.get(arrayIndex++);
+			}
+		};
+	}
+
+	@Nullable
+	private AnnotationVisitor compareNestedAnnotation(String desc, Object expectedElement) {
+		if (!(expectedElement instanceof AnnotationNode)) {
+			isEqual = false;
+			return null;
+		}
+		AnnotationNode expectedAnnotation = (AnnotationNode) expectedElement;
+		if (!Objects.equals(desc, expectedAnnotation.desc)) {
+			isEqual = false;
+			return null;
+		}
+		return createLinkedVisitor(expectedAnnotation);
+	}
+
+	private AnnotationVisitor createLinkedVisitor(AnnotationNode expectedAnnotation) {
+		AnnotationEqualityVisitor childVisitor = new AnnotationEqualityVisitor(expectedAnnotation);
+		return new AnnotationVisitor(api, childVisitor) {
+			@Override
+			public void visitEnd() {
+				super.visitEnd();
+				if (!childVisitor.isEqual()) {
+					AnnotationEqualityVisitor.this.isEqual = false;
 				}
 			}
 		};

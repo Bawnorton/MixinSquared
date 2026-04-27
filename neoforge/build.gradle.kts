@@ -1,5 +1,5 @@
 repositories {
-    maven("https://maven.neoforged.net/")
+    maven("https://maven.neoforged.net/releases/")
 }
 
 dependencies {

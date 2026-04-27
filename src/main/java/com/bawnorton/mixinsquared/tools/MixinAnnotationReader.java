@@ -38,17 +38,15 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public final class MixinAnnotationReader {
-	private static final IClassBytecodeProvider bytecodeProvider;
-
-	static {
-		bytecodeProvider = MixinService.getService().getBytecodeProvider();
-	}
-
 	private final AnnotationNode mixinAnnotation;
+
+	private static IClassBytecodeProvider getBytecodeProvider() {
+		return MixinService.getService().getBytecodeProvider();
+	}
 
 	public MixinAnnotationReader(String mixinClassName) {
 		try {
-			ClassNode classNode = bytecodeProvider.getClassNode(mixinClassName);
+			ClassNode classNode = getBytecodeProvider().getClassNode(mixinClassName);
 			mixinAnnotation = Annotations.getInvisible(classNode, Mixin.class);
 		} catch (ClassNotFoundException | IOException e) {
 			throw new RuntimeException(e);

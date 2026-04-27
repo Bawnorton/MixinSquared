@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "com.bawnorton"
-    version = "0.3.7-beta.1"
+    version = "0.3.7-beta.2"
 
     repositories {
         mavenCentral()
@@ -21,6 +21,12 @@ allprojects {
         compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
         compileOnly("org.jetbrains:annotations:26.0.2")
         compileOnly("com.google.guava:guava:31.1-jre")
+
+        testImplementation(platform("org.junit:junit-bom:5.10.2"))
+        testImplementation("org.junit.jupiter:junit-jupiter")
+        testImplementation("org.spongepowered:mixin:0.8.7")
+        testImplementation("org.ow2.asm:asm-debug-all:5.2")
+        testImplementation("com.google.guava:guava:21.0")
     }
 
     java {
@@ -32,6 +38,10 @@ allprojects {
 
     tasks.withType<Jar> {
         archiveBaseName.set("mixinsquared-$moduleName")
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
     }
 
     tasks.register<Copy>("buildAndCollect") {
