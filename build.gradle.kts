@@ -1,10 +1,12 @@
 plugins {
     java
+    id("dev.isxander.secrets") version "0.1.0"
 }
 
 allprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
+    apply(plugin = "dev.isxander.secrets")
 
     group = "com.bawnorton"
     version = "0.3.7-beta.2"
@@ -58,9 +60,9 @@ allprojects {
             maven {
                 name = "bawnorton"
                 url = uri("https://maven.bawnorton.com/releases")
-                credentials(PasswordCredentials::class)
-                authentication {
-                    create<BasicAuthentication>("basic")
+                credentials {
+                    username = onePassword["op://Private/Maven API Key/username"].get()
+                    password = onePassword["op://Private/Maven API Key/credential"].get()
                 }
             }
         }
