@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public final class MixinSquaredBootstrap {
 	public static final String NAME = "mixinsquared";
-	public static final String VERSION = "0.3.7-beta.2";
+	public static final String VERSION = "0.3.7-beta.3";
 
 	private static boolean initialized = false;
 
