@@ -9,7 +9,7 @@ allprojects {
     apply(plugin = "dev.isxander.secrets")
 
     group = "com.bawnorton"
-    version = "0.3.7"
+    version = "0.3.8"
 
     repositories {
         mavenCentral()

@@ -47,14 +47,36 @@ public class AdjustableModifyArgNode extends AdjustableModifyArgsNode implements
 		return (AdjustableModifyArgNode) IndexedAnnotationNode.super.withIndex(index);
 	}
 
+	/**
+	 * @apiNote If using fabric mixin >=0.17.4 prefer {@link AdjustableModifyArgNode#withSlices(UnaryOperator)}
+	 */
 	@Override
 	public AdjustableModifyArgNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
 		return (AdjustableModifyArgNode) super.withSlice(slice);
 	}
 
+	/**
+	 * @apiNote If using anything other than fabric mixin >=0.17.4 prefer {@link AdjustableModifyArgNode#withSlice(UnaryOperator)}
+	 */
+	@Override
+	public AdjustableModifyArgNode withSlices(UnaryOperator<List<AdjustableSliceNode>> slices) {
+		return (AdjustableModifyArgNode) super.withSlices(slices);
+	}
+
+	/**
+	 * @apiNote If using fabric mixin >=0.17.4 prefer {@link AdjustableModifyArgNode#withAts(UnaryOperator)}
+	 */
 	@Override
 	public AdjustableModifyArgNode withAt(UnaryOperator<AdjustableAtNode> at) {
 		return (AdjustableModifyArgNode) super.withAt(at);
+	}
+
+	/**
+	 * @apiNote If using anything other than fabric mixin >=0.17.4 prefer {@link AdjustableModifyArgNode#withAt(UnaryOperator)}
+	 */
+	@Override
+	public AdjustableModifyArgNode withAts(UnaryOperator<List<AdjustableAtNode>> ats) {
+		return (AdjustableModifyArgNode) super.withAts(ats);
 	}
 
 	@Override

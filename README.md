@@ -27,7 +27,7 @@ For each platform:<br>
 
 ```gradle
 dependencies {
-    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.7")))
+    include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.8")))
 }
 ```
 
@@ -38,9 +38,9 @@ dependencies {
 
 ```gradle
 dependencies {
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.7")) {
-        jarJar.ranged(it, "[0.3.7,)")
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.8"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.8")) {
+        jarJar.ranged(it, "[0.3.8,)")
     }
 }
 ```
@@ -50,9 +50,9 @@ dependencies {
 
 ```gradle
 dependencies {
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.7")) {
-        jarJar.ranged(it, "[0.3.7,)")
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.8"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.8")) {
+        jarJar.ranged(it, "[0.3.8,)")
     }
 }
 ```
@@ -64,8 +64,8 @@ dependencies {
 
 ```gradle
 dependencies {
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7"))
-    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.7"))
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.8"))
+    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.8"))
 }
 ```
 
@@ -89,7 +89,7 @@ repositories {
 }
 
 dependencies {
-    shadow(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7"))
+    shadow(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.8"))
 }
 
 shadowJar {

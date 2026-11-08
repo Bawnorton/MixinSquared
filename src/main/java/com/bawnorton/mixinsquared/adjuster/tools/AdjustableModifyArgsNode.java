@@ -44,14 +44,36 @@ public class AdjustableModifyArgsNode extends AdjustableInjectorNode implements 
 		return defaultNode;
 	}
 
+	/**
+	 * @apiNote If using fabric mixin >=0.17.4 prefer {@link AdjustableModifyArgsNode#withSlices(UnaryOperator)}
+	 */
 	@Override
 	public AdjustableModifyArgsNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
 		return (AdjustableModifyArgsNode) SliceAnnotationNode.super.withSlice(slice);
 	}
 
+	/**
+	 * @apiNote If using anything other than fabric mixin >=0.17.4 prefer {@link AdjustableModifyArgsNode#withSlice(UnaryOperator)}
+	 */
+	@Override
+	public AdjustableModifyArgsNode withSlices(UnaryOperator<List<AdjustableSliceNode>> slices) {
+		return (AdjustableModifyArgsNode) SliceAnnotationNode.super.withSlices(slices);
+	}
+
+	/**
+	 * @apiNote If using fabric mixin >=0.17.4 prefer {@link AdjustableModifyArgsNode#withAts(UnaryOperator)}
+	 */
 	@Override
 	public AdjustableModifyArgsNode withAt(UnaryOperator<AdjustableAtNode> at) {
 		return (AdjustableModifyArgsNode) AtAnnotationNode.super.withAt(at);
+	}
+
+	/**
+	 * @apiNote If using anything other than fabric mixin >=0.17.4 prefer {@link AdjustableModifyArgsNode#withAt(UnaryOperator)}
+	 */
+	@Override
+	public AdjustableModifyArgsNode withAts(UnaryOperator<List<AdjustableAtNode>> ats) {
+		return (AdjustableModifyArgsNode) AtAnnotationNode.super.withAts(ats);
 	}
 
 	@Override

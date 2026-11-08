@@ -44,13 +44,36 @@ public class AdjustableRedirectNode extends AdjustableInjectorNode implements Sl
 		return defaultNode;
 	}
 
+	/**
+	 * @apiNote If using fabric mixin >=0.17.4 prefer {@link AdjustableRedirectNode#withSlices(UnaryOperator)}
+	 */
 	@Override
 	public AdjustableRedirectNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
 		return (AdjustableRedirectNode) SliceAnnotationNode.super.withSlice(slice);
 	}
 
+	/**
+	 * @apiNote If using anything other than fabric mixin >=0.17.4 prefer {@link AdjustableRedirectNode#withSlice(UnaryOperator)}
+	 */
+	@Override
+	public AdjustableRedirectNode withSlices(UnaryOperator<List<AdjustableSliceNode>> slices) {
+		return (AdjustableRedirectNode) SliceAnnotationNode.super.withSlices(slices);
+	}
+
+	/**
+	 * @apiNote If using fabric mixin >=0.17.4 prefer {@link AdjustableRedirectNode#withAts(UnaryOperator)}
+	 */
+	@Override
 	public AdjustableRedirectNode withAt(UnaryOperator<AdjustableAtNode> at) {
 		return (AdjustableRedirectNode) AtAnnotationNode.super.withAt(at);
+	}
+
+	/**
+	 * @apiNote If using anything other than fabric mixin >=0.17.4 prefer {@link AdjustableRedirectNode#withAt(UnaryOperator)}
+	 */
+	@Override
+	public AdjustableRedirectNode withAts(UnaryOperator<List<AdjustableAtNode>> ats) {
+		return (AdjustableRedirectNode) AtAnnotationNode.super.withAts(ats);
 	}
 
 	@Override

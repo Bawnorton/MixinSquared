@@ -28,27 +28,27 @@ import com.bawnorton.mixinsquared.adjuster.tools.AdjustableSliceNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.AnnotationNode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 public interface SliceAnnotationNode extends RemappableAnnotationNode {
+	/**
+	 * @apiNote If using fabric mixin >=0.17.4 prefer {@link SliceAnnotationNode#getSlices()}
+	 */
 	default AdjustableSliceNode getSlice() {
-		return this.<AnnotationNode>get("slice")
-				.map(node -> {
-					AdjustableSliceNode slice = new AdjustableSliceNode(node);
-					slice.withFrom(from -> {
-						from.setRemapper(this.getRemapper());
-						return from;
-					}).withTo(to -> {
-						to.setRemapper(this.getRemapper());
-						return to;
-					});
-					return slice;
-				})
-				.orElse(AdjustableSliceNode.defaultNode());
+		List<AdjustableSliceNode> slices = this.getSlices();
+		return slices.isEmpty() ? AdjustableSliceNode.defaultNode() : slices.get(0);
 	}
 
+	/**
+	 * @apiNote If using fabric mixin >=0.17.4 prefer {@link SliceAnnotationNode#setSlices(List)}
+	 */
 	default void setSlice(AdjustableSliceNode slice) {
-		this.set("slice", slice);
+		List<AdjustableSliceNode> slices = this.getSlices();
+		if (slices.isEmpty()) slices.add(slice);
+		else slices.set(0, slice);
+		this.setSlices(slices);
 	}
 
 	default SliceAnnotationNode withSlice(UnaryOperator<AdjustableSliceNode> slice) {
@@ -56,18 +56,51 @@ public interface SliceAnnotationNode extends RemappableAnnotationNode {
 		return this;
 	}
 
+	/**
+	 * @apiNote If using anything other than fabric mixin >=0.17.4 prefer {@link SliceAnnotationNode#getSlice()}
+	 */
+	default List<AdjustableSliceNode> getSlices() {
+		List<AdjustableSliceNode> slices = new ArrayList<>();
+		for (AnnotationNode node : AnnotationTargetValues.get(this, "slice")) {
+			AdjustableSliceNode slice = new AdjustableSliceNode(node);
+			slice.withFrom(from -> {
+				from.setRemapper(this.getRemapper());
+				return from;
+			}).withTo(to -> {
+				to.setRemapper(this.getRemapper());
+				return to;
+			});
+			slices.add(slice);
+		}
+		return slices;
+	}
+
+	/**
+	 * @apiNote If using anything other than fabric mixin >=0.17.4 prefer {@link SliceAnnotationNode#setSlice(AdjustableSliceNode)}
+	 */
+	default void setSlices(List<AdjustableSliceNode> slices) {
+		AnnotationTargetValues.set(this, "slice", slices);
+	}
+
+	default SliceAnnotationNode withSlices(UnaryOperator<List<AdjustableSliceNode>> slices) {
+		this.setSlices(slices.apply(this.getSlices()));
+		return this;
+	}
+
 	@Override
 	@ApiStatus.Internal
 	default void applyRefmap(UnaryOperator<String> refmapApplicator) {
-		this.withSlice(slice -> {
-			slice.withFrom(from -> {
-				from.applyRefmap(refmapApplicator);
-				return from;
-			}).withTo(to -> {
-				to.applyRefmap(refmapApplicator);
-				return to;
-			});
-			return slice;
+		this.withSlices(slices -> {
+			for (AdjustableSliceNode slice : slices) {
+				slice.withFrom(from -> {
+					from.applyRefmap(refmapApplicator);
+					return from;
+				}).withTo(to -> {
+					to.applyRefmap(refmapApplicator);
+					return to;
+				});
+			}
+			return slices;
 		});
 	}
 }
