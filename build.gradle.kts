@@ -57,13 +57,18 @@ allprojects {
 
     extensions.configure<PublishingExtension> {
         repositories {
-            maven {
-                name = "bawnorton"
-                url = uri("https://maven.bawnorton.com/releases")
-                credentials {
-                    username = onePassword["op://Private/Maven API Key/username"].get()
-                    password = onePassword["op://Private/Maven API Key/credential"].get()
+            try {
+                maven {
+                    name = "bawnorton"
+                    url = uri("https://maven.bawnorton.com/releases")
+                    credentials {
+                        username = onePassword["op://Private/Maven API Key/username"].get()
+                        password = onePassword["op://Private/Maven API Key/credential"].get()
+                    }
                 }
+            } catch (t: Throwable) {
+                println("Couldn't resolve maven repo, using mavenLocal\n${t}")
+                mavenLocal()
             }
         }
         publications {
